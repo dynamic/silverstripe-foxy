@@ -122,9 +122,9 @@ class Purchasable extends DataExtension
      */
     public function validate(ValidationResult $validationResult)
     {
-        if(!$this->owner->Code){
+        if (!$this->owner->Code) {
             $validationResult->addError(
-                _t(__CLASS__ . '.CodeRequired','You must set a product code')
+                _t(__CLASS__ . '.CodeRequired', 'You must set a product code')
             );
         }
     }
