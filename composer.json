@@ -1,10 +1,13 @@
 {
-    "name": "silverstripe-module/skeleton",
-    "description": "A skeleton for SilverStripe modules.",
+    "name": "dynamic/silverstripe-foxy",
+    "description": "Foxy.io integration for SilverStripe websites.",
     "type": "silverstripe-vendormodule",
     "keywords": [
         "silverstripe",
-        "CMS"
+        "CMS",
+        "ecommerce",
+        "foxy",
+        "shop"
     ],
     "license": "BSD-3-Clause",
     "require": {
@@ -17,17 +20,14 @@
     },
     "autoload": {
         "psr-4": {
-            "SilverStripeModule\\Skeleton\\": "src/",
-            "SilverStripeModule\\Skeleton\\Tests\\": "tests/"
+            "Dynamic\\Foxy\\": "src/",
+            "Dynamic\\Foxy\\Tests\\": "tests/"
         }
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "2.x-dev"
-        },
-        "expose": [
-            "client/dist"
-        ]
+            "dev-master": "1.x-dev"
+        }
     },
     "minimum-stability": "dev",
     "prefer-stable": true
