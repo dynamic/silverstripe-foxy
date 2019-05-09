@@ -44,6 +44,19 @@ class SettingsTest extends SapphireTest
     /**
      *
      */
+    public function testOnBeforeWrite()
+    {
+        /** @var Setting $object */
+        $object = Setting::create();
+        $this->assertNull($object->StoreKey);
+
+        $object->write();
+        $this->assertInternalType('string', $object->StoreKey);
+    }
+
+    /**
+     *
+     */
     public function testGenerateStoreKey()
     {
         /** @var Setting $object */
@@ -81,6 +94,22 @@ class SettingsTest extends SapphireTest
         $object = singleton(Setting::class);
         $this->assertInternalType('array', $object->providePermissions());
         $this->assertArrayHasKey('EDIT_FOXY_SETTING', $object->providePermissions());
+    }
+
+    /**
+     *
+     */
+    public function testCurrentFoxySetting()
+    {
+        $this->assertInstanceOf(Setting::class, Setting::current_foxy_setting());
+    }
+
+    /**
+     *
+     */
+    public function testMakeFoxySetting()
+    {
+        $this->assertInstanceOf(Setting::class, Setting::make_foxy_setting());
     }
 
     /**

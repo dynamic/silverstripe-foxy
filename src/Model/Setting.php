@@ -84,9 +84,9 @@ class Setting extends DataObject implements PermissionProvider, TemplateGlobalPr
      */
     public function getCMSActions()
     {
-        if (Permission::check('ADMIN') || Permission::check('EDIT_FOXYSTRIPE_SETTING')) {
+        if (Permission::check('ADMIN') || Permission::check('EDIT_FOXY_SETTING')) {
             $actions = new FieldList(
-                FormAction::create('save_foxystripe_setting', _t('FoxyStripeSetting.SAVE', 'Save'))
+                FormAction::create('save_foxystripe_setting', _t(static::class . '.SAVE', 'Save'))
                     ->addExtraClass('btn-primary font-icon-save')
             );
         } else {
@@ -97,23 +97,29 @@ class Setting extends DataObject implements PermissionProvider, TemplateGlobalPr
     }
 
     /**
-     * @throws \SilverStripe\ORM\ValidationException
+     *
      */
     public function requireDefaultRecords()
     {
         parent::requireDefaultRecords();
-        $config = self::current_foxy_setting();
-        if (!$config) {
-            $config = self::make_foxy_setting();
+        if (!self::current_foxy_setting()) {
+            self::make_foxy_setting();
             DB::alteration_message('Added default FoxyStripe Setting', 'created');
         }
-        if (!$config->StoreKey) {
+    }
+
+    /**
+     *
+     */
+    public function onBeforeWrite()
+    {
+        parent::onBeforeWrite();
+        if (!$this->StoreKey) {
             $key = $this->generateStoreKey();
             while (!ctype_alnum($key)) {
                 $key = $this->generateStoreKey();
             }
-            $config->StoreKey = $key;
-            $config->write();
+            $this->StoreKey = $key;
             DB::alteration_message('Created FoxyCart Store Key ' . $key, 'created');
         }
     }
