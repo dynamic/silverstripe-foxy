@@ -1,0 +1,31 @@
+SilverStripe\Security\Group:
+  administrators:
+    Title: Administrators
+  site-owners:
+    Title: "Site Owners"
+
+SilverStripe\Security\Permission:
+  administrators:
+    Code: ADMIN
+    Type: 1
+    Group: =>SilverStripe\Security\Group.administrators
+  foxy:
+    Code: EDIT_FOXY_SETTING
+    Type: 1
+    Group: =>SilverStripe\Security\Group.site-owners
+
+SilverStripe\Security\Member:
+  admin:
+    FirstName: Default
+    Surname: Admin
+    Email: admin@dynamicagency.com
+    Groups: =>SilverStripe\Security\Group.administrators
+  site-owner:
+    FirstName: "Site"
+    Surname: "Owner"
+    Email: "owner"
+    Groups: =>SilverStripe\Security\Group.site-owners
+  default:
+    FirstName: Default
+    Surname: User
+    Email: user@dynamicagency.com
