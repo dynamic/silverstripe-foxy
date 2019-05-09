@@ -20,7 +20,7 @@ use SilverStripe\View\TemplateGlobalProvider;
  *
  * @property string $StoreKey
  */
-class Setting extends DataObject  implements PermissionProvider, TemplateGlobalProvider
+class Setting extends DataObject implements PermissionProvider, TemplateGlobalProvider
 {
     /**
      * @var string
@@ -125,15 +125,15 @@ class Setting extends DataObject  implements PermissionProvider, TemplateGlobalP
     public function generateStoreKey($count = 0)
     {
         $length = $this->obj('StoreKey')->getSize() - strlen($this->config()->get('keyPrefix'));
-        $charset = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'.strtotime('now');
+        $charset = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789' . strtotime('now');
         $strLength = strlen($charset);
         $str = '';
 
-        while($count < $length){
-            $str .= $charset[mt_rand(0, $strLength-1)];
+        while ($count < $length) {
+            $str .= $charset[mt_rand(0, $strLength - 1)];
             $count++;
         }
-        return $this->config()->get('keyPrefix') . substr(base64_encode($str),0, $length);
+        return $this->config()->get('keyPrefix') . substr(base64_encode($str), 0, $length);
     }
 
     /**
