@@ -4,9 +4,8 @@ namespace Dynamic\Foxy\Test\TestOnly;
 
 use Dynamic\Foxy\Extension\Purchasable;
 use SilverStripe\Dev\TestOnly;
-use SilverStripe\ORM\DataObject;
 
-class TestProduct extends DataObject implements TestOnly
+class TestProduct extends \Page implements TestOnly
 {
     private static $table_name = 'TestProduct';
     
