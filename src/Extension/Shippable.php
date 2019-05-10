@@ -37,18 +37,20 @@ class Shippable extends Purchasable
      */
     public function updateCMSFields(FieldList $fields)
     {
+        parent::updateCMSFields($fields);
+
         $fields->addFieldsToTab(
-            'Root.Main',
+            'Root.Foxy',
             [
                 NumericField::create('Weight')
-                    ->setTitle(_t('ProductPage.Weight', 'Weight'))
+                    ->setTitle($this->owner->fieldLabel('Weight'))
                     ->setDescription(_t(
-                        'ProductPage.WeightDescription',
+                        __CLASS__ . '.WeightDescription',
                         'Base weight for this product in lbs. Can be modified using Product Options'
                     ))
                     ->setScale(2),
             ],
-            'Content'
+            'FoxyCategoryID'
         );
     }
 
@@ -59,7 +61,7 @@ class Shippable extends Purchasable
     {
         if (!$this->owner->Weight) {
             $validationResult->addError(
-                _t(__CLASS__ . '.WeightRequired', 'You must set a product weight')
+                _t(__CLASS__ . '.WeightRequired', 'You must set a product weight in the Foxy tab.')
             );
         }
     }

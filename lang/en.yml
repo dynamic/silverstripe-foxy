@@ -13,6 +13,15 @@ en:
     ReceiptTitleDescription: 'Optional. Alternate title to display on order receipt'
     AvailableDescription: 'If unchecked, will remove "Add to Cart" form and instead display "Currently unavailable"'
     CodeRequired: 'You must set a product code'
+    FoxyCategoryDescription: 'Required. Must also exist in <a href="https://admin.foxycart.com/admin.php?ThisAction=ManageProductCategories" target="_blank">Foxy Categories</a>. Used to set category specific options like shipping and taxes. Managed in Foxy > Categories'
+    FoxyCategoryLabel: 'Foxy Category'
+    FoxyCategoryRequired: 'You must set a foxy category.'
+
+  Dynamic\Foxy\Extension\Shippable:
     WeightDescription: 'Base weight for this product in lbs. Can be modified using Product Options'
     WeightLabel: 'Weight'
     WeightRequired: 'You must set a product weight'
+
+  Dynamic\Foxy\Model\FoxyCategory:
+    TitleLabel: 'Title'
+    CodeLabel: 'Code'

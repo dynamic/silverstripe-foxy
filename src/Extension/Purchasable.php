@@ -2,8 +2,10 @@
 
 namespace Dynamic\Foxy\Extension;
 
+use Dynamic\Foxy\Model\FoxyCategory;
 use SilverStripe\Forms\CheckboxField;
 use SilverStripe\Forms\CurrencyField;
+use SilverStripe\Forms\DropdownField;
 use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\NumericField;
 use SilverStripe\Forms\TextField;
@@ -20,6 +22,13 @@ class Purchasable extends DataExtension
         'Code' => 'Varchar(100)',
         'ReceiptTitle' => 'HTMLVarchar(255)',
         'Available' => 'Boolean',
+    ];
+
+    /**
+     * @var array
+     */
+    private static $has_one = [
+        'FoxyCategory' => FoxyCategory::class,
     ];
 
     /**
@@ -75,6 +84,7 @@ class Purchasable extends DataExtension
         $labels['Available.Nice'] = _t(__CLASS__ . '.AvailableLabelNice', 'Available');
         $labels['Image.CMSThumbnail'] = _t(__CLASS__ . '.ImageLabel', 'Image');
         $labels['ReceiptTitle'] = _t(__CLASS__ . '.ReceiptTitleLabel', 'Product title for receipt');
+        $labels['FoxyCategoryID'] = _t(__CLASS__ . '.FoxyCategoryLabel', 'Foxy Category');
     }
 
     /**
@@ -83,26 +93,29 @@ class Purchasable extends DataExtension
     public function updateCMSFields(FieldList $fields)
     {
         $fields->addFieldsToTab(
-            'Root.Main',
+            'Root.Foxy',
             [
-                TextField::create('Code')
-                    ->setDescription(_t(
-                        __CLASS__ . '.CodeDescription',
-                        'Required, must be unique. Product identifier used by FoxyCart in transactions'
-                    )),
                 CurrencyField::create('Price')
                     ->setDescription(_t(
                         __CLASS__ . '.PriceDescription',
                         'Base price for this product. Can be modified using Product Options'
                     )),
-            ],
-            'Content'
-        );
-
-        // Details tab
-        $fields->addFieldsToTab(
-            'Root.Details',
-            [
+                TextField::create('Code')
+                    ->setDescription(_t(
+                        __CLASS__ . '.CodeDescription',
+                        'Required, must be unique. Product identifier used by FoxyCart in transactions'
+                    )),
+                DropdownField::create('FoxyCategoryID')
+                    ->setSource(FoxyCategory::get()->map())
+                    ->setDescription(_t(
+                        __CLASS__ . '.FoxyCategoryDescription',
+                        'Required. Must also exist in 
+                        <a href="https://admin.foxycart.com/admin.php?ThisAction=ManageProductCategories" target="_blank">
+                            Foxy Categories
+                        </a>.
+                        Used to set category specific options like shipping and taxes. Managed in Foxy > Categories'
+                    ))
+                    ->setEmptyString(''),
                 TextField::create('ReceiptTitle')
                     ->setDescription(_t(
                         __CLASS__ . '.ReceiptTitleDescription',
@@ -113,7 +126,8 @@ class Purchasable extends DataExtension
                         __CLASS__ . '.AvailableDescription',
                         'If unchecked, will remove "Add to Cart" form and instead display "Currently unavailable"'
                     )),
-            ]
+            ],
+            'Content'
         );
     }
 
@@ -124,13 +138,19 @@ class Purchasable extends DataExtension
     {
         if (!$this->owner->Price) {
             $validationResult->addError(
-                _t(__CLASS__ . '.PriceRequired', 'You must set a product price')
+                _t(__CLASS__ . '.PriceRequired', 'You must set a product price in the Foxy tab')
             );
         }
 
         if (!$this->owner->Code) {
             $validationResult->addError(
-                _t(__CLASS__ . '.CodeRequired', 'You must set a product code')
+                _t(__CLASS__ . '.CodeRequired', 'You must set a product code in the Foxy tab')
+            );
+        }
+
+        if (!$this->owner->FoxyCategoryID) {
+            $validationResult->addError(
+                _t(__CLASS__ . '.FoxyCategoryRequired', 'You must set a foxy category in the Foxy tab.')
             );
         }
     }
