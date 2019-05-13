@@ -14,7 +14,6 @@ use SilverStripe\ORM\ArrayList;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\ValidationException;
 use SilverStripe\ORM\ValidationResult;
-use SilverStripe\SiteConfig\SiteConfig;
 use SilverStripe\Versioned\RecursivePublishable;
 use SilverStripe\View\ArrayData;
 use SilverStripe\View\Requirements;
@@ -27,7 +26,7 @@ class FoxyAdmin extends LeftAndMain
     /**
      * @var string
      */
-    private static $url_segment = 'foxystripe';
+    private static $url_segment = 'foxy';
 
     /**
      * @var string
@@ -42,7 +41,7 @@ class FoxyAdmin extends LeftAndMain
     /**
      * @var string
      */
-    private static $menu_title = 'FoxyStripe';
+    private static $menu_title = 'Foxy';
 
     /**
      * @var string
@@ -146,16 +145,15 @@ class FoxyAdmin extends LeftAndMain
      */
     public function save_foxy_setting($data, $form)
     {
-        $data = $form->getData();
-        $siteConfig = DataObject::get_by_id(Setting::class, $data['ID']);
-        $form->saveInto($siteConfig);
-        $siteConfig->write();
-        if ($siteConfig->hasExtension(RecursivePublishable::class)) {
-            $siteConfig->publishRecursive();
+        $settings = Setting::current_foxy_setting();
+        $form->saveInto($settings);
+        $settings->write();
+        if ($settings->hasExtension(RecursivePublishable::class)) {
+            $settings->publishRecursive();
         }
         $this->response->addHeader(
             'X-Status',
-            rawurlencode(_t('SilverStripe\\Admin\\LeftAndMain.SAVEDUP', 'Saved.'))
+            rawurlencode(_t(LeftAndMain::class . '.SAVEDUP', 'Saved.'))
         );
         return $form->forTemplate();
     }

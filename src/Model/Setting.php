@@ -5,7 +5,9 @@ namespace Dynamic\Foxy\Model;
 use Dynamic\Foxy\Admin\FoxyAdmin;
 use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\FormAction;
+use SilverStripe\Forms\HiddenField;
 use SilverStripe\Forms\ReadonlyField;
+use SilverStripe\Forms\TextField;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\DB;
 use SilverStripe\ORM\ValidationException;
@@ -19,17 +21,19 @@ use SilverStripe\View\TemplateGlobalProvider;
  * @package Dynamic\Foxy\Model
  *
  * @property string $StoreKey
+ * @property string $StoreTitle
+ * @property string $StoreDomain
  */
 class Setting extends DataObject implements PermissionProvider, TemplateGlobalProvider
 {
     /**
      * @var string
      */
-    private static $singular_name = 'FoxyStripe Setting';
+    private static $singular_name = 'Foxy Setting';
     /**
      * @var string
      */
-    private static $plural_name = 'FoxyStripe Settings';
+    private static $plural_name = 'Foxy Settings';
     /**
      * @var string
      */
@@ -38,7 +42,7 @@ class Setting extends DataObject implements PermissionProvider, TemplateGlobalPr
     /**
      * @var string
      */
-    private static $table_name = 'FoxyStripeSetting';
+    private static $table_name = 'FoxySetting';
 
     /**
      * @var string
@@ -50,6 +54,8 @@ class Setting extends DataObject implements PermissionProvider, TemplateGlobalPr
      */
     private static $db = [
         'StoreKey' => 'Varchar(60)',
+        'StoreTitle' => 'Varchar(255)',
+        'StoreDomain' => 'Varchar(255)',
         // TODO
     ];
 
@@ -69,6 +75,10 @@ class Setting extends DataObject implements PermissionProvider, TemplateGlobalPr
         $this->beforeUpdateCMSFields(function (FieldList $fields) {
             // TODO
             $fields->addFieldsToTab('Root.Main', [
+                TextField::create('StoreTitle', 'Store Title')
+                    ->setDescription('The name of your store as you\'d like it displayed to your customers'),
+                TextField::create('StoreDomain', 'Store Domain')
+                    ->setDescription('This is a unique FoxyCart subdomain for your cart, checkout, and receipt'),
             ]);
 
             $fields->addFieldsToTab('Root.Advanced', [
@@ -86,7 +96,7 @@ class Setting extends DataObject implements PermissionProvider, TemplateGlobalPr
     {
         if (Permission::check('ADMIN') || Permission::check('EDIT_FOXY_SETTING')) {
             $actions = new FieldList(
-                FormAction::create('save_foxystripe_setting', _t(static::class . '.SAVE', 'Save'))
+                FormAction::create('save_foxy_setting', _t(static::class . '.SAVE', 'Save'))
                     ->addExtraClass('btn-primary font-icon-save')
             );
         } else {
