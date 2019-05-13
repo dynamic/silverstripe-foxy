@@ -69,8 +69,8 @@ class FoxyAdmin extends LeftAndMain
     }
 
     /**
-     * @param null $id
-     * @param null $fields
+     * @param int|null $id
+     * @param \SilverStripe\Forms\FieldList|null $fields
      *
      * @return $this|Form
      */
