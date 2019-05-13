@@ -5,7 +5,6 @@ namespace Dynamic\Foxy\Model;
 use Dynamic\Foxy\Admin\FoxyAdmin;
 use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\FormAction;
-use SilverStripe\Forms\HiddenField;
 use SilverStripe\Forms\ReadonlyField;
 use SilverStripe\Forms\TextField;
 use SilverStripe\ORM\DataObject;
@@ -28,29 +27,37 @@ class Setting extends DataObject implements PermissionProvider, TemplateGlobalPr
 {
     /**
      * @var string
+     * @scrutinizer ignore-unused
      */
     private static $singular_name = 'Foxy Setting';
+
     /**
      * @var string
+     * @scrutinizer ignore-unused
      */
     private static $plural_name = 'Foxy Settings';
+
     /**
      * @var string
+     * @scrutinizer ignore-unused
      */
     private static $description = 'Update the settings for your store';
 
     /**
      * @var string
+     * @scrutinizer ignore-unused
      */
     private static $table_name = 'FoxySetting';
 
     /**
      * @var string
+     * @scrutinizer ignore-unused
      */
     private static $keyPrefix = "dYnm1c";
 
     /**
      * @var array
+     * @scrutinizer ignore-unused
      */
     private static $db = [
         'StoreKey' => 'Varchar(60)',
@@ -64,6 +71,7 @@ class Setting extends DataObject implements PermissionProvider, TemplateGlobalPr
      *
      * @var array
      * @config
+     * @scrutinizer ignore-unused
      */
     private static $required_permission = ['CMS_ACCESS_CMSMain', 'CMS_ACCESS_LeftAndMain'];
 
@@ -161,7 +169,7 @@ class Setting extends DataObject implements PermissionProvider, TemplateGlobalPr
     }
 
     /**
-     * @param null $member
+     * @param \SilverStripe\Security\Member|null $member
      *
      * @return bool|int|null
      */
@@ -232,6 +240,8 @@ class Setting extends DataObject implements PermissionProvider, TemplateGlobalPr
 
     /**
      * Add $GlobalConfig to all SSViewers.
+     *
+     * @return array
      */
     public static function get_template_global_variables()
     {
