@@ -8,14 +8,24 @@ use Dynamic\Foxy\Test\TestOnly\TestShippableProductController;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Dev\SapphireTest;
 use SilverStripe\Forms\FieldList;
+use SilverStripe\Forms\Form;
 
 class AddToCartFormTest extends SapphireTest
 {
     protected static $fixture_file = '../fixtures.yml';
 
+    public function testConstruct()
+    {
+        $object = Injector::inst()->create(TestShippableProduct::class);
+        $controller = TestShippableProductController::create($object);
+        $form = $controller->AddToCartForm($controller, __FUNCTION__, null, null, null, $object);
+        $this->assertInstanceOf(Form::class, $form);
+    }
+
     public function testGetProductFields()
     {
         $object = Injector::inst()->create(TestShippableProduct::class);
+        $object->Weight = 1.0;
         $controller = TestShippableProductController::create($object);
         $form = $controller->AddToCartForm($controller, __FUNCTION__, null, null, null, $object);
         $fields = $form->Fields();

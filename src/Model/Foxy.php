@@ -47,14 +47,8 @@ class Foxy
     public static function getStoreDomain()
     {
         $config = Setting::current_foxy_setting();
-        if ($config->CustomSSL) {
-            if ($config->RemoteDomain) {
-                return $config->RemoteDomain;
-            }
-        } else {
-            if ($config->StoreDomain) {
-                return $config->StoreDomain;
-            }
+        if ($config->StoreDomain) {
+            return $config->StoreDomain;
         }
         return false;
     }
