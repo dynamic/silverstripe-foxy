@@ -3,7 +3,6 @@
 namespace Dynamic\Foxy\Model;
 
 use Dynamic\Foxy\Admin\FoxyAdmin;
-use SilverStripe\Dev\Debug;
 use SilverStripe\Forms\CheckboxField;
 use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\FormAction;

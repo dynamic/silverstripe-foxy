@@ -5,7 +5,6 @@ namespace Dynamic\Foxy\Model;
 use SilverStripe\Core\Config\Configurable;
 use SilverStripe\Core\Extensible;
 use SilverStripe\Core\Injector\Injectable;
-use SilverStripe\Dev\Debug;
 
 class FoxyHelper extends \FoxyCart_Helper
 {
