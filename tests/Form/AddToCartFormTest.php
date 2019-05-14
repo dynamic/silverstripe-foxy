@@ -1,0 +1,33 @@
+<?php
+
+namespace Dynamic\Foxy\Test\Form;
+
+use Dynamic\Foxy\Form\AddToCartForm;
+use Dynamic\Foxy\Test\TestOnly\TestShippableProduct;
+use Dynamic\Foxy\Test\TestOnly\TestShippableProductController;
+use SilverStripe\Core\Injector\Injector;
+use SilverStripe\Dev\SapphireTest;
+use SilverStripe\Forms\FieldList;
+
+class AddToCartFormTest extends SapphireTest
+{
+    protected static $fixture_file = '../fixtures.yml';
+
+    public function testGetProductFields()
+    {
+        $object = Injector::inst()->create(TestShippableProduct::class);
+        $controller = TestShippableProductController::create($object);
+        $form = $controller->AddToCartForm($controller, __FUNCTION__, null, null, null, $object);
+        $fields = $form->Fields();
+        $this->assertInstanceOf(FieldList::class, $fields);
+    }
+
+    public function testGetProductActions()
+    {
+        $object = Injector::inst()->create(TestShippableProduct::class);
+        $controller = TestShippableProductController::create($object);
+        $form = $controller->AddToCartForm($controller, __FUNCTION__, null, null, null, $object);
+        $fields = $form->Actions();
+        $this->assertInstanceOf(FieldList::class, $fields);
+    }
+}

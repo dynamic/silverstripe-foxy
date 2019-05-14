@@ -175,17 +175,20 @@ class AddToCartForm extends Form
             }
 
             $image = null;
-            if ($this->product->getImage()) {
-                $image = $this->product->getImage()->CMSThumbnail()->absoluteURL;
+            if (method_exists($this->product, 'getImage')) {
+                if ($this->product->getImage()) {
+                    $image = $this->product->getImage()->CMSThumbnail()->absoluteURL;
+                }
+                if ($image) {
+                    $fields->push(
+                        HiddenField::create('image')
+                            ->setValue(
+                                Foxy::getGeneratedValue($code, 'image', $image, 'value')
+                            )
+                    );
+                }
             }
-            if ($image) {
-                $fields->push(
-                    HiddenField::create('image')
-                        ->setValue(
-                            Foxy::getGeneratedValue($code, 'image', $image, 'value')
-                        )
-                );
-            }
+
 
             /*
             // TODO: revisit after product options are implemented
