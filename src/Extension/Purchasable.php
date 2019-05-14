@@ -2,11 +2,14 @@
 
 namespace Dynamic\Foxy\Extension;
 
+use Dynamic\Foxy\Model\Foxy;
 use Dynamic\Foxy\Model\FoxyCategory;
+use Dynamic\Foxy\Model\Setting;
 use SilverStripe\Forms\CheckboxField;
 use SilverStripe\Forms\CurrencyField;
 use SilverStripe\Forms\DropdownField;
 use SilverStripe\Forms\FieldList;
+use SilverStripe\Forms\LiteralField;
 use SilverStripe\Forms\NumericField;
 use SilverStripe\Forms\TextField;
 use SilverStripe\ORM\DataExtension;
@@ -154,5 +157,36 @@ class Purchasable extends DataExtension
                 _t(__CLASS__ . '.FoxyCategoryRequired', 'You must set a foxy category in the Foxy tab.')
             );
         }
+    }
+
+    /**
+     * @return bool
+     */
+    public function isAvailable()
+    {
+        if (!$this->owner->Available) {
+            return false;
+        }
+        /*
+        // TODO: hook up when product options are implemented
+        if (!$this->owner->ProductOptions()->exists()) {
+            return true;
+        }
+        foreach ($this->owner->ProductOptions() as $option) {
+            if ($option->Available) {
+                return true;
+            }
+        }
+        */
+        return true;
+        //return false;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isProduct()
+    {
+        return true;
     }
 }

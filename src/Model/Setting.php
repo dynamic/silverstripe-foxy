@@ -3,8 +3,10 @@
 namespace Dynamic\Foxy\Model;
 
 use Dynamic\Foxy\Admin\FoxyAdmin;
+use SilverStripe\Forms\CheckboxField;
 use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\FormAction;
+use SilverStripe\Forms\LiteralField;
 use SilverStripe\Forms\ReadonlyField;
 use SilverStripe\Forms\TextField;
 use SilverStripe\ORM\DataObject;
@@ -55,9 +57,6 @@ class Setting extends DataObject implements PermissionProvider, TemplateGlobalPr
      */
     private static $db = [
         'StoreKey' => 'Varchar(60)',
-        'StoreTitle' => 'Varchar(255)',
-        'StoreDomain' => 'Varchar(255)',
-        // TODO
     ];
 
     /**
@@ -74,17 +73,38 @@ class Setting extends DataObject implements PermissionProvider, TemplateGlobalPr
     public function getCMSFields()
     {
         $this->beforeUpdateCMSFields(function (FieldList $fields) {
-            // TODO
-            $fields->addFieldsToTab('Root.Main', [
-                TextField::create('StoreTitle', 'Store Title')
-                    ->setDescription('The name of your store as you\'d like it displayed to your customers'),
-                TextField::create('StoreDomain', 'Store Domain')
-                    ->setDescription('This is a unique FoxyCart subdomain for your cart, checkout, and receipt'),
+            $fields->removeByName([
+                'StoreKey',
             ]);
 
-            $fields->addFieldsToTab('Root.Advanced', [
-                ReadonlyField::create('StoreKey', 'Store Key', $this->StoreKey),
+            $fields->addFieldsToTab('Root.Main', [
+                ReadonlyField::create('StoreDomain', 'Store Domain', FoxyHelper::config()->get('cart_url'))
+                    ->setDescription('This is a unique FoxyCart subdomain for your cart, checkout, and receipt'),
+                CheckboxField::create('CustomSSL', 'Use custom SSL', FoxyHelper::config()->get('custom_ssl'))
+                    ->performReadonlyTransformation(),
             ]);
+
+            if (FoxyHelper::config()->get('secret') != null) {
+                $key = FoxyHelper::config()->get('secret');
+                $description = 'Your secret key as set in config.yml';
+            } else {
+                $key = $this->StoreKey;
+                $description = 'Recommended secret key for your Foxy store. Add to your config.yml to implement';
+            }
+
+            $fields->addFieldToTab(
+                'Root.Main',
+                ReadonlyField::create('Key', 'Store Key', $key)
+                    ->setDescription($description)
+            );
+
+            if (self::store_name_warning() !== null) {
+                $fields->addFieldToTab('Root.Main', LiteralField::create('StoreSubDomainHeaderWarning', _t(
+                    'ProductPage.StoreSubDomainHeaderWarning',
+                    '<p class="message error">Store domain must be entered in the 
+                        <a href="/admin/foxy/">Foxy settings</a></p>'
+                )), 'StoreDomain');
+            }
         });
 
         return parent::getCMSFields();
@@ -105,6 +125,44 @@ class Setting extends DataObject implements PermissionProvider, TemplateGlobalPr
         }
         $this->extend('updateCMSActions', $actions);
         return $actions;
+    }
+
+    /**
+     * @return mixed|null
+     * @throws \SilverStripe\ORM\ValidationException
+     */
+    public static function getStoreSecret()
+    {
+        if ($storeKey = FoxyHelper::config()->get('secret')) {
+            return $storeKey;
+        }
+        return false;
+    }
+
+    /**
+     * @return mixed|null
+     * @throws \SilverStripe\ORM\ValidationException
+     */
+    public static function getStoreDomain()
+    {
+        if ($storeDomain = FoxyHelper::config()->get('cart_url')) {
+            return $storeDomain;
+        }
+        return false;
+    }
+
+    /**
+     * @return null|string
+     * @throws \SilverStripe\ORM\ValidationException
+     */
+    // todo - move to Setting
+    public static function store_name_warning()
+    {
+        $warning = null;
+        if (!self::getStoreDomain()) {
+            $warning = 'Must define FoxyCart Store Name or Store Remote Domain in your site settings in the cms';
+        }
+        return $warning;
     }
 
     /**
