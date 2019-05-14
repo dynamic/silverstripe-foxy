@@ -214,7 +214,6 @@ class AddToCartForm extends Form
             }
 
             $this->extend('updateProductFields', $fields);
-
         } else {
             $fields->push(HeaderField::create('unavailableText', 'currently unavaiable', 4));
         }
