@@ -110,7 +110,8 @@ class Purchasable extends DataExtension
                     ->setDescription(_t(
                         __CLASS__ . '.FoxyCategoryDescription',
                         'Required. Must also exist in 
-                        <a href="https://admin.foxycart.com/admin.php?ThisAction=ManageProductCategories" target="_blank">
+                        <a href="https://admin.foxycart.com/admin.php?ThisAction=ManageProductCategories" 
+                            target="_blank">
                             Foxy Categories
                         </a>.
                         Used to set category specific options like shipping and taxes. Managed in Foxy > Categories'
