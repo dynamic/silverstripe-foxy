@@ -176,7 +176,7 @@ class AddToCartForm extends Form
 
             $image = null;
             if ($this->product->getImage()) {
-                $image = $this->product->getImage()->getCMSThumbnail()->absoluteURL;
+                $image = $this->product->getImage()->CMSThumbnail()->absoluteURL;
             }
             if ($image) {
                 $fields->push(
