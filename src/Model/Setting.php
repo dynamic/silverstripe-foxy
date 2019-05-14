@@ -3,6 +3,7 @@
 namespace Dynamic\Foxy\Model;
 
 use Dynamic\Foxy\Admin\FoxyAdmin;
+use SilverStripe\Forms\CheckboxField;
 use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\FormAction;
 use SilverStripe\Forms\ReadonlyField;
@@ -57,6 +58,7 @@ class Setting extends DataObject implements PermissionProvider, TemplateGlobalPr
         'StoreKey' => 'Varchar(60)',
         'StoreTitle' => 'Varchar(255)',
         'StoreDomain' => 'Varchar(255)',
+        'CustomSSL' => 'Boolean',
         // TODO
     ];
 
@@ -80,6 +82,7 @@ class Setting extends DataObject implements PermissionProvider, TemplateGlobalPr
                     ->setDescription('The name of your store as you\'d like it displayed to your customers'),
                 TextField::create('StoreDomain', 'Store Domain')
                     ->setDescription('This is a unique FoxyCart subdomain for your cart, checkout, and receipt'),
+                CheckboxField::create('CustomSSL', 'Use custom SSL'),
             ]);
 
             $fields->addFieldsToTab('Root.Advanced', [
