@@ -5,6 +5,7 @@ namespace Dynamic\Foxy\Form;
 use Dynamic\Foxy\Extension\Purchasable;
 use Dynamic\Foxy\Extension\Shippable;
 use Dynamic\Foxy\Model\Foxy;
+use Dynamic\Foxy\Model\FoxyHelper;
 use Dynamic\Foxy\Model\Setting;
 use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\Form;
@@ -110,7 +111,7 @@ class AddToCartForm extends Form
         parent::__construct($controller, $name, $fields, $actions, $validator);
 
         //have to call after parent::__construct()
-        $this->setAttribute('action', Foxy::FormActionURL());
+        $this->setAttribute('action', FoxyHelper::FormActionURL());
         $this->disableSecurityToken();
         $this->setHTMLID($this->getTemplateHelper()->generateFormID($this) . "_{$product->ID}");
     }
@@ -131,35 +132,35 @@ class AddToCartForm extends Form
             $fields->push(
                 HiddenField::create('name')
                     ->setValue(
-                        Foxy::getGeneratedValue($code, 'name', $hiddenTitle, 'value')
+                        self::getGeneratedValue($code, 'name', $hiddenTitle, 'value')
                     )
             );
 
             $fields->push(
                 HiddenField::create('category')
                     ->setValue(
-                        Foxy::getGeneratedValue($code, 'category', $this->product->FoxyCategory()->Code, 'value')
+                        self::getGeneratedValue($code, 'category', $this->product->FoxyCategory()->Code, 'value')
                     )
             );
 
             $fields->push(
                 HiddenField::create('code')
                     ->setValue(
-                        Foxy::getGeneratedValue($code, 'code', $this->product->Code, 'value')
+                        self::getGeneratedValue($code, 'code', $this->product->Code, 'value')
                     )
             );
 
             $fields->push(
                 HiddenField::create('product_id')
                     ->setValue(
-                        Foxy::getGeneratedValue($code, 'product_id', $this->product->ID, 'value')
+                        self::getGeneratedValue($code, 'product_id', $this->product->ID, 'value')
                     )
             );
 
             $fields->push(
                 HiddenField::create('price')
                     ->setValue(
-                        Foxy::getGeneratedValue($code, 'price', $this->product->Price, 'value')
+                        self::getGeneratedValue($code, 'price', $this->product->Price, 'value')
                     )
             );
 
@@ -168,14 +169,14 @@ class AddToCartForm extends Form
                     $fields->push(
                         HiddenField::create('weight')
                             ->setValue(
-                                Foxy::getGeneratedValue($code, 'weight', $this->product->Weight, 'value')
+                                self::getGeneratedValue($code, 'weight', $this->product->Weight, 'value')
                             )
                     );
                 }
             }
 
             $image = null;
-            if (method_exists($this->product, 'getImage')) {
+            if ($this->product->hasMethod('getImage')) {
                 if ($this->product->getImage()) {
                     $image = $this->product->getImage()->CMSThumbnail()->absoluteURL;
                 }
@@ -183,7 +184,7 @@ class AddToCartForm extends Form
                     $fields->push(
                         HiddenField::create('image')
                             ->setValue(
-                                Foxy::getGeneratedValue($code, 'image', $image, 'value')
+                                self::getGeneratedValue($code, 'image', $image, 'value')
                             )
                     );
                 }
@@ -199,7 +200,7 @@ class AddToCartForm extends Form
             $fields->push(
                 HiddenField::create('quantity')
                     ->setValue(
-                        Foxy::getGeneratedValue($code, 'quantity', 1, 'value')
+                        self::getGeneratedValue($code, 'quantity', 1, 'value')
                     )
             );
             */
@@ -216,10 +217,11 @@ class AddToCartForm extends Form
                 $unavailable->addExtraClass('hidden');
             }
 
-            $this->extend('updateProductFields', $fields);
         } else {
             $fields->push(HeaderField::create('unavailableText', 'currently unavaiable', 4));
         }
+
+        $this->extend('updateProductFields', $fields);
 
         return $fields;
     }
@@ -245,5 +247,30 @@ class AddToCartForm extends Form
         $this->extend('updateProductActions', $actions);
 
         return $actions;
+    }
+
+    /**
+     * @param null $productCode
+     * @param null $optionName
+     * @param null $optionValue
+     * @param string $method
+     * @param bool $output
+     * @param bool $urlEncode
+     *
+     * @return null|string
+     */
+    // todo - Purchasable Extension or AddToCartForm? protected in Form
+    public static function getGeneratedValue(
+        $productCode = null,
+        $optionName = null,
+        $optionValue = null,
+        $method = 'name',
+        $output = false,
+        $urlEncode = false
+    ) {
+        $optionName = ($optionName !== null) ? preg_replace('/\s/', '_', $optionName) : $optionName;
+        $helper = FoxyHelper::create();
+
+        return $helper::fc_hash_value($productCode, $optionName, $optionValue, $method, $output, $urlEncode);
     }
 }

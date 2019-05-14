@@ -133,14 +133,6 @@ class Purchasable extends DataExtension
             ],
             'Content'
         );
-
-        if (Foxy::store_name_warning() !== null) {
-            $fields->addFieldToTab('Root.Main', LiteralField::create('StoreSubDomainHeaderWarning', _t(
-                'ProductPage.StoreSubDomainHeaderWarning',
-                '<p class="message error">Store domain must be entered in the 
-                        <a href="/admin/foxy/">Foxy settings</a></p>'
-            )), 'Title');
-        }
     }
 
     /**

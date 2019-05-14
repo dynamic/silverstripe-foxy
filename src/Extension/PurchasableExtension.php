@@ -3,7 +3,9 @@
 namespace Dynamic\Foxy\Extension;
 
 use Dynamic\Foxy\Form\AddToCartForm;
+use Dynamic\Foxy\Model\FoxyHelper;
 use SilverStripe\Core\Extension;
+use SilverStripe\Dev\Debug;
 
 class PurchasableExtension extends Extension
 {
@@ -23,6 +25,17 @@ class PurchasableExtension extends Extension
 
         $this->owner->extend('updateAddToCartForm', $form);
 
+        Debug::show($this->getStoreURL());
+
         return $form;
+    }
+
+    /**
+     * @return string
+     */
+    public function getStoreURL()
+    {
+        $helper = FoxyHelper::create();
+        return $helper::StoreURL();
     }
 }
