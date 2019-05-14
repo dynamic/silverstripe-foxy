@@ -216,7 +216,6 @@ class AddToCartForm extends Form
             if (!empty(trim($this->foxy_setting->StoreDomain)) && $this->product->isAvailable()) {
                 $unavailable->addExtraClass('hidden');
             }
-
         } else {
             $fields->push(HeaderField::create('unavailableText', 'currently unavaiable', 4));
         }

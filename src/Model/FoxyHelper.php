@@ -30,14 +30,16 @@ class FoxyHelper extends \FoxyCart_Helper
     /**
      * @param $custom_ssl
      */
-    public static function setCustomSSL($custom_ssl) {
+    public static function setCustomSSL($custom_ssl)
+    {
         self::$custom_ssl = $custom_ssl;
     }
 
     /**
      * @return mixed
      */
-    public static function getCustomSSL() {
+    public static function getCustomSSL()
+    {
         return self::$custom_ssl;
     }
 

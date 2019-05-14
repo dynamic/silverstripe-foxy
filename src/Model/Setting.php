@@ -131,9 +131,9 @@ class Setting extends DataObject implements PermissionProvider, TemplateGlobalPr
      * @return mixed|null
      * @throws \SilverStripe\ORM\ValidationException
      */
-    public static function getStoreKey()
+    public static function getStoreSecret()
     {
-        if ($storeKey = FoxyHelper::config()->get('StoreKey')) {
+        if ($storeKey = FoxyHelper::config()->get('secret')) {
             return $storeKey;
         }
         return false;
