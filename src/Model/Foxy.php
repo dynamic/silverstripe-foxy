@@ -113,7 +113,7 @@ class Foxy
         $urlEncode = false
     ) {
         $optionName = ($optionName !== null) ? preg_replace('/\s/', '_', $optionName) : $optionName;
-        $helper = new \FoxyCart_Helper();
+        $helper = new FoxyValidation();
 
         return $helper::fc_hash_value($productCode, $optionName, $optionValue, $method, $output, $urlEncode);
     }
