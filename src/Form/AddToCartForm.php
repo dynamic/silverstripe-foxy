@@ -6,7 +6,10 @@ use Dynamic\Foxy\Extension\Purchasable;
 use Dynamic\Foxy\Extension\Shippable;
 use Dynamic\Foxy\Model\Foxy;
 use Dynamic\Foxy\Model\FoxyHelper;
+use Dynamic\Foxy\Model\ProductOption;
 use Dynamic\Foxy\Model\Setting;
+use SilverStripe\Forms\CompositeField;
+use SilverStripe\Forms\DropdownField;
 use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\Form;
 use SilverStripe\Forms\FormAction;
@@ -155,6 +158,7 @@ class AddToCartForm extends Form
                     ->setValue(
                         self::getGeneratedValue($code, 'product_id', $this->product->ID, 'value')
                     )
+                    ->setName('h:product_id')
             );
 
             $fields->push(
@@ -190,12 +194,11 @@ class AddToCartForm extends Form
                 }
             }
 
-
-            /*
-            // TODO: revisit after product options are implemented
             $optionsSet = $this->getProductOptionSet();
             $fields->push($optionsSet);
-            $quantityMax = ($this->site_config->MaxQuantity) ? $this->site_config->MaxQuantity : 10;
+            $quantityMax = (FoxyHelper::config()->get('max_quantity' != null)) ?
+                FoxyHelper::config()->get('MaxQuantity') :
+                10;
             $fields->push(QuantityField::create('x:visibleQuantity')->setTitle('Quantity')->setValue(1));
             $fields->push(
                 HiddenField::create('quantity')
@@ -203,7 +206,6 @@ class AddToCartForm extends Form
                         self::getGeneratedValue($code, 'quantity', 1, 'value')
                     )
             );
-            */
 
             $fields->push(
                 HeaderField::create('submitPrice', '$' . $this->product->Price, 4)
@@ -271,5 +273,62 @@ class AddToCartForm extends Form
         $helper = FoxyHelper::create();
 
         return $helper::fc_hash_value($productCode, $optionName, $optionValue, $method, $output, $urlEncode);
+    }
+
+    /**
+     * @return CompositeField
+     */
+    protected function getProductOptionSet()
+    {
+        /** @var CompositeField $optionsSet */
+        $optionsSet = CompositeField::create();
+
+        $types = $this->product->OptionTypes();
+
+        foreach ($types as $type) {
+            $title = $type->Title;
+            $fieldName = preg_replace('/\s/', '_', $title);
+            $disabled = [];
+            $fullOptions = [];
+
+            foreach ($type->Options() as $option) {
+                $option = $this->setAvailability($option);
+                $name = self::getGeneratedValue(
+                    $this->product->Code,
+                    $type->Title,
+                    $option->getGeneratedValue(),
+                    'value'
+                );
+
+                $fullOptions[$name] = $option->getGeneratedTitle();
+                if (!$option->Availability) {
+                    array_push($disabled, $name);
+                }
+            }
+
+            $optionsSet->push(
+                $dropdown = DropdownField::create($fieldName, $title, $fullOptions)->setTitle($title)
+            );
+
+            if (!empty($disabled)) {
+                $dropdown->setDisabledItems($disabled);
+            }
+
+            $dropdown->addExtraClass("product-options");
+        }
+
+        $optionsSet->addExtraClass('foxycartOptionsContainer');
+
+        return $optionsSet;
+    }
+
+    /**
+     * @param OptionItem $option
+     * @return OptionItem
+     */
+    protected function setAvailability(ProductOption $option)
+    {
+        $option->Available = ($option->getAvailability()) ? true : false;
+        return $option;
     }
 }

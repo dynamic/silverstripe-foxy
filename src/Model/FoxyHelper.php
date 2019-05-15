@@ -28,6 +28,11 @@ class FoxyHelper extends \FoxyCart_Helper
     private static $custom_ssl;
 
     /**
+     * @var
+     */
+    private static $max_quantity = 10;
+
+    /**
      * @param $custom_ssl
      */
     public static function setCustomSSL($custom_ssl)
