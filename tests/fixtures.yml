@@ -29,3 +29,7 @@ SilverStripe\Security\Member:
     FirstName: Default
     Surname: User
     Email: user@dynamicagency.com
+
+Dynamic\Foxy\Model\FoxyCategory:
+  one:
+    Title: 'Category One'

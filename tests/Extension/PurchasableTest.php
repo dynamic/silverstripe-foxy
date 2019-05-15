@@ -3,6 +3,7 @@
 namespace Dynamic\Foxy\Test\Extension;
 
 use Dynamic\Foxy\Extension\Purchasable;
+use Dynamic\Foxy\Model\FoxyCategory;
 use Dynamic\Foxy\Test\TestOnly\TestProduct;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Dev\Debug;
@@ -18,5 +19,15 @@ class PurchasableTest extends SapphireTest
         $object = Injector::inst()->create(TestProduct::class);
         $fields = $object->getCMSFields();
         $this->assertInstanceOf(FieldList::class, $fields);
+
+        $object->Price = 10.00;
+        $object->Code = 000123;
+        $object->FoxyCategoryID = $this->objFromFixture(FoxyCategory::class, 'one')->ID;
+        /*
+        // todo - table TestProduct does not exist
+        $object->write();
+        $fields = $object->getCMSFields();
+        $this->assertInstanceOf(FieldList::class, $fields);
+        */
     }
 }

@@ -5,15 +5,21 @@ namespace Dynamic\Foxy\Extension;
 use Dynamic\Foxy\Model\Foxy;
 use Dynamic\Foxy\Model\FoxyCategory;
 use Dynamic\Foxy\Model\Setting;
+use Dynamic\Foxy\Model\OptionType;
 use SilverStripe\Forms\CheckboxField;
 use SilverStripe\Forms\CurrencyField;
 use SilverStripe\Forms\DropdownField;
 use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\LiteralField;
+use SilverStripe\Forms\GridField\GridField;
+use SilverStripe\Forms\GridField\GridFieldAddExistingAutocompleter;
+use SilverStripe\Forms\GridField\GridFieldConfig_RelationEditor;
 use SilverStripe\Forms\NumericField;
 use SilverStripe\Forms\TextField;
 use SilverStripe\ORM\DataExtension;
 use SilverStripe\ORM\ValidationResult;
+use Symbiote\GridFieldExtensions\GridFieldAddExistingSearchButton;
+use Symbiote\GridFieldExtensions\GridFieldOrderableRows;
 
 class Purchasable extends DataExtension
 {
@@ -32,6 +38,13 @@ class Purchasable extends DataExtension
      */
     private static $has_one = [
         'FoxyCategory' => FoxyCategory::class,
+    ];
+
+    /**
+     * @var array
+     */
+    private static $has_many = [
+        'OptionTypes' => OptionType::class,
     ];
 
     /**
@@ -133,6 +146,24 @@ class Purchasable extends DataExtension
             ],
             'Content'
         );
+
+        if ($this->owner->ID) {
+            $config = GridFieldConfig_RelationEditor::create();
+            $config
+                ->addComponents([
+                    new GridFieldOrderableRows('SortOrder'),
+                ])
+                ->removeComponentsByType([
+                    GridFieldAddExistingAutocompleter::class,
+                ]);
+            $options = GridField::create(
+                'OptionTypes',
+                'Options',
+                $this->owner->OptionTypes()->sort('SortOrder'),
+                $config
+            );
+            $fields->addFieldToTab('Root.Foxy', $options);
+        }
     }
 
     /**
