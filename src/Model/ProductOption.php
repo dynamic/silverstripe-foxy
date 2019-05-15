@@ -42,6 +42,13 @@ class ProductOption extends DataObject
     private static $plural_name = 'Options';
 
     /**
+     * @var array
+     */
+    private static $defaults = [
+        'ManyMany[Available]' => true,
+    ];
+
+    /**
      * @return FieldList
      */
     public function getCMSFields()
