@@ -24,13 +24,6 @@ class OptionType extends DataObject
     /**
      * @var array
      */
-    private static $has_one = [
-        'Product' => Product::class,
-    ];
-
-    /**
-     * @var array
-     */
     private static $many_many = [
         'Options' => ProductOption::class,
     ];

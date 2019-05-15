@@ -151,7 +151,6 @@ class Purchasable extends DataExtension
             $config = GridFieldConfig_RelationEditor::create();
             $config
                 ->addComponents([
-                    new GridFieldAddExistingSearchButton(),
                     new GridFieldOrderableRows('SortOrder'),
                 ])
                 ->removeComponentsByType([
