@@ -33,3 +33,7 @@ SilverStripe\Security\Member:
 Dynamic\Foxy\Model\FoxyCategory:
   one:
     Title: 'Category One'
+    Code: '12345'
+  two:
+    Title: 'Category Two'
+    Code: '67890'

@@ -82,8 +82,16 @@ class FoxyCategory extends DataObject
     {
         $result = parent::validate();
 
+        if (!$this->Code) {
+            $result->addError(
+                _t(__CLASS__ . '.CodeRequired', 'You must set a product price in the Foxy tab')
+            );
+        }
+
         if (FoxyCategory::get()->filter('Code', $this->Code)->exclude('ID', $this->ID)->first()) {
-            $result->addError('Code must be unique for each category.');
+            $result->addError(
+                _t(__CLASS__ . '.CodeUnique', 'Code must be unique for each category.')
+            );
         }
 
         return $result;
