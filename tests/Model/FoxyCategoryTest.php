@@ -29,7 +29,6 @@ class FoxyCategoryTest extends SapphireTest
         $object->write();
         $fields = $object->getCMSFields();
         $this->assertInstanceOf(FieldList::class, $fields);
-
     }
 
     /**
