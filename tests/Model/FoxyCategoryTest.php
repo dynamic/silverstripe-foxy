@@ -3,6 +3,7 @@
 namespace Dynamic\Foxy\Test\Model;
 
 use Dynamic\Foxy\Model\FoxyCategory;
+use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Dev\SapphireTest;
 use SilverStripe\Forms\FieldList;
 use SilverStripe\ORM\ValidationException;
@@ -22,6 +23,13 @@ class FoxyCategoryTest extends SapphireTest
         $object = $this->objFromFixture(FoxyCategory::class, 'one');
         $fields = $object->getCMSFields();
         $this->assertInstanceOf(FieldList::class, $fields);
+
+        $object = Injector::inst()->create(FoxyCategory::class);
+        $object->Code = 'DEFAULT';
+        $object->write();
+        $fields = $object->getCMSFields();
+        $this->assertInstanceOf(FieldList::class, $fields);
+
     }
 
     /**
@@ -35,7 +43,7 @@ class FoxyCategoryTest extends SapphireTest
         $object->write();
 
         $object = $this->objFromFixture(FoxyCategory::class, 'one');
-        $object->Code = '67890';
+        $object->Code = 'DEFAULT';
         $this->setExpectedException(ValidationException::class);
         $object->write();
     }

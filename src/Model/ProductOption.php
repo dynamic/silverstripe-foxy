@@ -181,14 +181,6 @@ class ProductOption extends DataObject
     }
 
     /**
-     * @return mixed
-     */
-    public function getProductOptionGroupTitle()
-    {
-        return $this->ProductOptionGroup()->Title;
-    }
-
-    /**
      * @return string
      */
     public function getGeneratedValue()
