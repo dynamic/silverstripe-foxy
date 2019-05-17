@@ -7,8 +7,14 @@ use SilverStripe\Dev\TestOnly;
 
 class TestProduct extends \Page implements TestOnly
 {
+    /**
+     * @var string
+     */
     private static $table_name = 'TestProduct';
-    
+
+    /**
+     * @var array
+     */
     private static $extensions = [
         Purchasable::class,
     ];
