@@ -131,11 +131,11 @@ class Setting extends DataObject implements PermissionProvider, TemplateGlobalPr
      * @return null|string
      * @throws \SilverStripe\ORM\ValidationException
      */
-    // todo - move to Setting
     public static function store_name_warning()
     {
         $warning = null;
-        if (!self::getStoreDomain()) {
+        $helper = FoxyHelper::create();
+        if (!$helper->getStoreCartURL()) {
             $warning = 'Must define FoxyCart Store Domain in your config';
         }
         return $warning;
