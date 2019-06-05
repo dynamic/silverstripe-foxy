@@ -9,6 +9,7 @@ use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\HeaderField;
 use SilverStripe\Forms\TextField;
 use SilverStripe\ORM\DataObject;
+use SilverStripe\ORM\FieldType\DBBoolean;
 
 class ProductOption extends DataObject
 {
@@ -49,6 +50,14 @@ class ProductOption extends DataObject
     ];
 
     /**
+     * @var array
+     */
+    private static $summary_fields = [
+        'Title' => 'Title',
+        'IsAvailable' => 'Available',
+    ];
+
+    /**
      * @return FieldList
      */
     public function getCMSFields()
@@ -57,6 +66,7 @@ class ProductOption extends DataObject
 
             $fields->removeByName([
                 'Types',
+
             ]);
 
             $fields->addFieldsToTab('Root.Main', array(
@@ -231,9 +241,8 @@ class ProductOption extends DataObject
      */
     public function getIsAvailable()
     {
-        if ($this->getAvailability()) {
-            return 'yes';
-        }
-        return 'no';
+        $available = DBBoolean::create();
+        $available->setValue($this->getAvailability());
+        return $available->Nice();
     }
 }
