@@ -128,39 +128,15 @@ class Setting extends DataObject implements PermissionProvider, TemplateGlobalPr
     }
 
     /**
-     * @return mixed|null
-     * @throws \SilverStripe\ORM\ValidationException
-     */
-    public static function getStoreSecret()
-    {
-        if ($storeKey = FoxyHelper::config()->get('secret')) {
-            return $storeKey;
-        }
-        return false;
-    }
-
-    /**
-     * @return mixed|null
-     * @throws \SilverStripe\ORM\ValidationException
-     */
-    public static function getStoreDomain()
-    {
-        if ($storeDomain = FoxyHelper::config()->get('cart_url')) {
-            return $storeDomain;
-        }
-        return false;
-    }
-
-    /**
      * @return null|string
      * @throws \SilverStripe\ORM\ValidationException
      */
-    // todo - move to Setting
     public static function store_name_warning()
     {
         $warning = null;
-        if (!self::getStoreDomain()) {
-            $warning = 'Must define FoxyCart Store Name or Store Remote Domain in your site settings in the cms';
+        $helper = FoxyHelper::create();
+        if (!$helper->getStoreCartURL()) {
+            $warning = 'Must define FoxyCart Store Domain in your config';
         }
         return $warning;
     }
