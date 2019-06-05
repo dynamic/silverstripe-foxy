@@ -30,7 +30,7 @@ class PurchasableExtension extends Extension
     /**
      * @return string
      */
-    public function getStoreURL()
+    public function StoreURL()
     {
         $helper = FoxyHelper::create();
         return $helper::StoreURL();

@@ -33,30 +33,124 @@ class FoxyHelper extends \FoxyCart_Helper
     private static $max_quantity = 10;
 
     /**
-     * @param $custom_ssl
+     * @var
      */
-    public static function setCustomSSL($custom_ssl)
+    private $_secret;
+
+    /**
+     * @var
+     */
+    private $_cart_url;
+
+    /**
+     * @var
+     */
+    private $_custom_ssl;
+
+    /**
+     * @var
+     */
+    private $_max_quantity;
+
+    /**
+     * @return mixed
+     */
+    public function getStoreSecret()
     {
-        self::$custom_ssl = $custom_ssl;
+        if (!$this->_secret) {
+            $this->setStoreSecret();
+        }
+
+        return $this->_secret;
+    }
+
+    /**
+     * @return $this
+     */
+    public function setStoreSecret()
+    {
+        $this->_secret = $this->config()->get('secret');
+
+        return $this;
     }
 
     /**
      * @return mixed
      */
-    public static function getCustomSSL()
+    public function getStoreCartURL()
     {
-        return self::$custom_ssl;
+        if (!$this->_cart_url) {
+            $this->setStoreCartURL();
+        }
+
+        return $this->_cart_url;
+    }
+
+    /**
+     * @return $this
+     */
+    public function setStoreCartURL()
+    {
+        $this->_cart_url = $this->config()->get('cart_url');
+
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getCustomSSL()
+    {
+        if (!$this->_custom_ssl) {
+            $this->setCustomSSL();
+        }
+
+        return $this->_custom_ssl;
+    }
+
+    /**
+     * @return $this
+     */
+    public function setCustomSSL()
+    {
+        $this->_custom_ssl = $this->config()->get('custom_ssl');
+
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getMaxQuantity()
+    {
+        if (!$this->_max_quantity) {
+            $this->setMaxQuantity();
+        }
+
+        return $this->_max_quantity;
+    }
+
+    /**
+     * @return $this
+     */
+    public function setMaxQuantity()
+    {
+        $this->_max_quantity = $this->config()->get('max_quantity');
+
+        return $this;
     }
 
     /**
      * FoxyHelper constructor.
+     *
+     * Set the private statics $secret and $cart_url in FoxyCart_Helper
+     *
      * @throws \SilverStripe\ORM\ValidationException
      */
     public function __construct()
     {
-        self::setCartURL($this->config()->get('cart_url'));
-        self::setSecret($this->config()->get('secret'));
-        self::setCustomSSL($this->config()->get('custom_ssl'));
+        self::setCartURL($this->getStoreCartURL());
+        self::setSecret($this->getStoreSecret());
     }
 
     /**
@@ -64,10 +158,11 @@ class FoxyHelper extends \FoxyCart_Helper
      */
     public static function StoreURL()
     {
-        if (self::config()->get('custom_ssl')) {
-            return sprintf('https://%s/', self::config()->get('cart_url'));
+        $helper = FoxyHelper::create();
+        if ($helper->getCustomSSL()) {
+            return sprintf('https://%s/', $helper->getStoreCartURL());
         } else {
-            return sprintf('https://%s.foxycart.com/', self::config()->get('cart_url'));
+            return sprintf('https://%s.foxycart.com/', $helper->getStoreCartURL());
         }
     }
 
