@@ -1,0 +1,29 @@
+{
+  "name": "dynamic-gulp",
+  "description": "package json for installing node/gulp modules",
+  "author": "Jason Korth",
+  "private": true,
+  "dependencies": {
+    "gulp": "^3.9.1",
+    "browser-sync": "^2",
+    "favicons": "^4",
+    "gulp-autoprefixer": "^5",
+    "gulp-clean-css": "^3",
+    "gulp-concat": "^2",
+    "gulp-favicons": "^2",
+    "gulp-imagemin": "^4",
+    "gulp-jshint": "^2",
+    "gulp-sass": "^3",
+    "gulp-sourcemaps": "^2",
+    "gulp-uglify": "^3",
+    "gulp-util": "^3",
+    "handlebars": "^4",
+    "imagemin-pngcrush": "^5",
+    "pump": "^3",
+    "sassdoc": "^2"
+  },
+  "devDependencies": {
+    "gulp-jshint": "^2",
+    "jshint": "^2"
+  }
+}
