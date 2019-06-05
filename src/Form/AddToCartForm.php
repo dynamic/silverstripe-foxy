@@ -7,7 +7,6 @@ use Dynamic\Foxy\Extension\Shippable;
 use Dynamic\Foxy\Model\Foxy;
 use Dynamic\Foxy\Model\FoxyHelper;
 use Dynamic\Foxy\Model\ProductOption;
-use Dynamic\Foxy\Model\Setting;
 use SilverStripe\Forms\CompositeField;
 use SilverStripe\Forms\DropdownField;
 use SilverStripe\Forms\FieldList;
@@ -22,7 +21,7 @@ class AddToCartForm extends Form
     /**
      * @var
      */
-    protected $foxy_setting;
+    protected $helper;
 
     /**
      * @var
@@ -30,29 +29,29 @@ class AddToCartForm extends Form
     private $product;
 
     /**
-     * @param $foxySetting
+     * @param $helper
      *
      * @return $this
      */
-    public function setFoxySetting($foxySetting)
+    public function setFoxyHelper($helper)
     {
-        $foxySetting = $foxySetting === null ? Setting::current_foxy_setting() : $foxySetting;
-        if ($foxySetting instanceof Setting) {
-            $this->foxy_setting = $foxySetting;
+        $helper = $helper === null ? FoxyHelper::create() : $helper;
+        if ($helper instanceof FoxyHelper) {
+            $this->helper = $helper;
             return $this;
         }
-        throw new \InvalidArgumentException('$foxySetting needs to be an instance of Foxy Setting.');
+        throw new \InvalidArgumentException('$helper needs to be an instance of FoxyHelper.');
     }
 
     /**
-     * @return FoxyStripeSetting
+     * @return FoxyHelper
      */
-    public function getFoxySetting()
+    public function getFoxyHelper()
     {
-        if (!$this->foxy_setting) {
-            $this->setFoxySetting(Setting::current_foxy_setting());
+        if (!$this->helper) {
+            $this->setFoxyHelper(FoxyHelper::create());
         }
-        return $this->foxy_setting;
+        return $this->helper;
     }
 
     /**
@@ -86,7 +85,7 @@ class AddToCartForm extends Form
      * @param FieldList|null $actions
      * @param null $validator
      * @param null $product
-     * @param null $foxySetting
+     * @param null $helper
      *
      */
     public function __construct(
@@ -96,10 +95,10 @@ class AddToCartForm extends Form
         FieldList $actions = null,
         $validator = null,
         $product = null,
-        $foxySetting = null
+        $helper = null
     ) {
         $this->setProduct($product);
-        $this->setFoxySetting($foxySetting);
+        $this->setFoxyHelper($helper);
 
         $fields = ($fields != null && $fields->exists()) ?
             $this->getProductFields($fields) :
@@ -215,7 +214,7 @@ class AddToCartForm extends Form
                 $unavailable = HeaderField::create('unavailableText', 'Selection unavailable', 4)
                     ->addExtraClass('unavailable-text')
             );
-            if (!empty(trim($this->foxy_setting->StoreDomain)) && $this->product->isAvailable()) {
+            if (!empty(trim($this->helper->getStoreCartURL())) && $this->product->isAvailable()) {
                 $unavailable->addExtraClass('hidden');
             }
         } else {
@@ -234,7 +233,7 @@ class AddToCartForm extends Form
      */
     protected function getProductActions(FieldList $actions)
     {
-        if (!empty(trim($this->foxy_setting->StoreDomain)) && $this->product->isAvailable()) {
+        if (!empty(trim($this->helper->getStoreCartURL())) && $this->product->isAvailable()) {
             $actions->push(
                 FormAction::create(
                     'x:submit',
