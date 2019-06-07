@@ -31,6 +31,10 @@ Page:
   
 ```
 
+## Templates
+
+To include the AddToCartForm on your page/object, use `<% include AddToCartForm %>`
+
 ## Maintainers
  * Dynamic <dev@dynamicagency.com>
  
