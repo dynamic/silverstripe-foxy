@@ -210,15 +210,6 @@ class AddToCartForm extends Form
                 HeaderField::create('submitPrice', '$' . $this->product->Price, 4)
                     ->addExtraClass('submit-price')
             );
-            $fields->push(
-                $unavailable = HeaderField::create('unavailableText', 'Selection unavailable', 4)
-                    ->addExtraClass('unavailable-text')
-            );
-            if (!empty(trim($this->helper->getStoreCartURL())) && $this->product->isAvailable()) {
-                $unavailable->addExtraClass('hidden');
-            }
-        } else {
-            $fields->push(HeaderField::create('unavailableText', 'currently unavaiable', 4));
         }
 
         $this->extend('updateProductFields', $fields);

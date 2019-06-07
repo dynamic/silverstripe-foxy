@@ -79,7 +79,6 @@ gulp.task('lint', ['scripts'], function() {
 gulp.task('scripts', function (cb) {
     pump([
         gulp.src(paths.jsany),
-        concat('scripts.min.js'),
         gulp.dest(paths.jsdist),
         uglify(),
         gulp.dest(paths.jsdist)

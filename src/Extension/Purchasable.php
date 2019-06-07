@@ -198,19 +198,20 @@ class Purchasable extends DataExtension
         if (!$this->owner->Available) {
             return false;
         }
-        /*
-        // TODO: hook up when product options are implemented
-        if (!$this->owner->ProductOptions()->exists()) {
+
+        if (!$this->owner->OptionTypes()->exists()) {
             return true;
         }
-        foreach ($this->owner->ProductOptions() as $option) {
-            if ($option->Available) {
-                return true;
+
+        foreach ($this->owner->OptionTypes() as $type) {
+            foreach ($type->Options() as $option) {
+                if ($option->Available) {
+                    return true;
+                }
             }
         }
-        */
-        return true;
-        //return false;
+        
+        return false;
     }
 
     /**

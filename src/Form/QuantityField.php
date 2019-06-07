@@ -27,7 +27,7 @@ class QuantityField extends NumericField
      */
     public function Field($properties = [])
     {
-        Requirements::javascript('dynamic/silverstripe-foxy: client/dist/javascript/scripts.min.js');
+        Requirements::javascript('dynamic/silverstripe-foxy: client/dist/javascript/quantity.js');
         Requirements::css('dynamic/silverstripe-foxy: client/dist/css/quantityfield.css');
 
 
