@@ -118,7 +118,7 @@ class PurchasableTest extends SapphireTest
 
         i18n::set_locale('en');
         $expected = [
-            'MANAGE_PRODUCTS' => [
+            'MANAGE_FOXY_PRODUCTS' => [
                 'name' => 'Manage products',
                 'category' => 'Foxy',
                 'help' => 'Manage products and related settings',
