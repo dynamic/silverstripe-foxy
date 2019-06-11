@@ -220,16 +220,16 @@ class Setting extends DataObject implements PermissionProvider, TemplateGlobalPr
         return [
             'EDIT_FOXY_SETTING' => [
                 'name' => _t(
-                    static::class . '.EDIT_FOXY_SETTING',
-                    'Manage FoxyStripe settings'
+                    __CLASS__ . '.PERMISSION_MANAGE_FOXY_DESCRIPTION',
+                    'Manage Foxy settings'
                 ),
                 'category' => _t(
-                    static::class . '.PERMISSIONS_FOXY_SETTING',
-                    'FoxyStripe'
+                    __CLASS__ . '.PERMISSIONS_CATEGORY',
+                    'Foxy'
                 ),
                 'help' => _t(
-                    static::class . '.EDIT_PERMISSION_FOXY_SETTING',
-                    'Ability to edit the settings of a FoxyStripe Store.'
+                    __CLASS__ . '.PERMISSION_MANAGE_FOXY_HELP',
+                    'Ability to edit the settings of a Foxy Store'
                 ),
                 'sort' => 400,
             ],

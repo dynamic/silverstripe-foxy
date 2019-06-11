@@ -16,6 +16,11 @@ en:
     FoxyCategoryDescription: 'Required. Must also exist in <a href="https://admin.foxycart.com/admin.php?ThisAction=ManageProductCategories" target="_blank">Foxy Categories</a>. Used to set category specific options like shipping and taxes. Managed in Foxy > Categories'
     FoxyCategoryLabel: 'Foxy Category'
     FoxyCategoryRequired: 'You must set a foxy category.'
+    PERMISSION_MANAGE_FOXY_DESCRIPTION: 'Manage Foxy settings'
+    PERMISSION_MANAGE_FOXY_HELP: 'Manage settings of a Foxy store'
+    PERMISSIONS_CATEGORY: 'Foxy'
+    PERMISSION_MANAGE_PRODUCTS_DESCRIPTION: 'Manage products'
+    PERMISSION_MANAGE_PRODUCTS_HELP: 'Manage products and related settings'
 
   Dynamic\Foxy\Extension\Shippable:
     WeightDescription: 'Base weight for this product in lbs. Can be modified using Product Options'
