@@ -55,7 +55,7 @@ class FoxyAdmin extends LeftAndMain
     /**
      * @var array
      */
-    private static $required_permission_codes = ['EDIT_GLOBAL_PERMISSION'];
+    private static $required_permission_codes = ['EDIT_FOXY_SETTING'];
 
     /**
      * Initialises the {@link TemplateConfigSetting} controller.
