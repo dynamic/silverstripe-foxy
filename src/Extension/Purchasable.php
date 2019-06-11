@@ -231,7 +231,7 @@ class Purchasable extends DataExtension implements PermissionProvider
     public function providePermissions()
     {
         return [
-            'MANAGE_PRODUCTS' => [
+            'MANAGE_FOXY_PRODUCTS' => [
                 'name' => _t(
                     __CLASS__ . '.PERMISSION_MANAGE_PRODUCTS_DESCRIPTION',
                     'Manage products'
@@ -259,7 +259,7 @@ class Purchasable extends DataExtension implements PermissionProvider
             $member = Security::getCurrentUser();
         }
 
-        return Permission::checkMember($member, 'MANAGE_PRODUCTS');
+        return Permission::checkMember($member, 'MANAGE_FOXY_PRODUCTS');
     }
 
     /**
@@ -272,7 +272,7 @@ class Purchasable extends DataExtension implements PermissionProvider
             $member = Security::getCurrentUser();
         }
 
-        return Permission::checkMember($member, 'MANAGE_PRODUCTS');
+        return Permission::checkMember($member, 'MANAGE_FOXY_PRODUCTS');
     }
 
     /**
@@ -285,7 +285,7 @@ class Purchasable extends DataExtension implements PermissionProvider
             $member = Security::getCurrentUser();
         }
 
-        return Permission::checkMember($member, 'MANAGE_PRODUCTS');
+        return Permission::checkMember($member, 'MANAGE_FOXY_PRODUCTS');
     }
 
     /**
@@ -298,7 +298,7 @@ class Purchasable extends DataExtension implements PermissionProvider
             $member = Security::getCurrentUser();
         }
 
-        return Permission::checkMember($member, 'MANAGE_PRODUCTS');
+        return Permission::checkMember($member, 'MANAGE_FOXY_PRODUCTS');
     }
 
     /**
@@ -311,6 +311,6 @@ class Purchasable extends DataExtension implements PermissionProvider
             $member = Security::getCurrentUser();
         }
 
-        return Permission::checkMember($member, 'MANAGE_PRODUCTS');
+        return Permission::checkMember($member, 'MANAGE_FOXY_PRODUCTS');
     }
 }

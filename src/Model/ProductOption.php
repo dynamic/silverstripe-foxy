@@ -10,6 +10,8 @@ use SilverStripe\Forms\HeaderField;
 use SilverStripe\Forms\TextField;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\FieldType\DBBoolean;
+use SilverStripe\Security\Permission;
+use SilverStripe\Security\Security;
 
 class ProductOption extends DataObject
 {
@@ -244,5 +246,44 @@ class ProductOption extends DataObject
         $available = DBBoolean::create();
         $available->setValue($this->getAvailability());
         return $available->Nice();
+    }
+
+    /**
+     * @param $member
+     * @return bool|int|void
+     */
+    public function canCreate($member = null, $context = [])
+    {
+        if (!$member) {
+            $member = Security::getCurrentUser();
+        }
+
+        return Permission::checkMember($member, 'MANAGE_FOXY_PRODUCTS');
+    }
+
+    /**
+     * @param $member
+     * @return bool|int|void|null
+     */
+    public function canEdit($member = null, $context = [])
+    {
+        if (!$member) {
+            $member = Security::getCurrentUser();
+        }
+
+        return Permission::checkMember($member, 'MANAGE_FOXY_PRODUCTS');
+    }
+
+    /**
+     * @param $member
+     * @return bool|int|void
+     */
+    public function canDelete($member = null, $context = [])
+    {
+        if (!$member) {
+            $member = Security::getCurrentUser();
+        }
+
+        return Permission::checkMember($member, 'MANAGE_FOXY_PRODUCTS');
     }
 }

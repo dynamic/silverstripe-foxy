@@ -5,6 +5,8 @@ namespace Dynamic\Foxy\Model;
 use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\ReadonlyField;
 use SilverStripe\ORM\DataObject;
+use SilverStripe\Security\Permission;
+use SilverStripe\Security\Security;
 
 class FoxyCategory extends DataObject
 {
@@ -111,5 +113,44 @@ class FoxyCategory extends DataObject
             $cat->Code = 'DEFAULT';
             $cat->write();
         }
+    }
+
+    /**
+     * @param $member
+     * @return bool|int|void
+     */
+    public function canCreate($member = null, $context = [])
+    {
+        if (!$member) {
+            $member = Security::getCurrentUser();
+        }
+
+        return Permission::checkMember($member, 'MANAGE_FOXY_PRODUCTS');
+    }
+
+    /**
+     * @param $member
+     * @return bool|int|void|null
+     */
+    public function canEdit($member = null, $context = [])
+    {
+        if (!$member) {
+            $member = Security::getCurrentUser();
+        }
+
+        return Permission::checkMember($member, 'MANAGE_FOXY_PRODUCTS');
+    }
+
+    /**
+     * @param $member
+     * @return bool|int|void
+     */
+    public function canDelete($member = null, $context = [])
+    {
+        if (!$member) {
+            $member = Security::getCurrentUser();
+        }
+
+        return Permission::checkMember($member, 'MANAGE_FOXY_PRODUCTS');
     }
 }

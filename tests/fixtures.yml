@@ -14,7 +14,7 @@ SilverStripe\Security\Permission:
     Type: 1
     Group: =>SilverStripe\Security\Group.site-owners
   product:
-    Code: MANAGE_PRODUCTS
+    Code: MANAGE_FOXY_PRODUCTS
     Type: 1
     Group: =>SilverStripe\Security\Group.site-owners
 

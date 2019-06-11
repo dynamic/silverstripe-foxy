@@ -8,6 +8,8 @@ use SilverStripe\Forms\GridField\GridField;
 use SilverStripe\Forms\GridField\GridFieldAddExistingAutocompleter;
 use SilverStripe\Forms\GridField\GridFieldConfig_RelationEditor;
 use SilverStripe\ORM\DataObject;
+use SilverStripe\Security\Permission;
+use SilverStripe\Security\Security;
 use Symbiote\GridFieldExtensions\GridFieldAddExistingSearchButton;
 use Symbiote\GridFieldExtensions\GridFieldOrderableRows;
 
@@ -79,5 +81,44 @@ class OptionType extends DataObject
         });
 
         return parent::getCMSFields();
+    }
+
+    /**
+     * @param $member
+     * @return bool|int|void
+     */
+    public function canCreate($member = null, $context = [])
+    {
+        if (!$member) {
+            $member = Security::getCurrentUser();
+        }
+
+        return Permission::checkMember($member, 'MANAGE_FOXY_PRODUCTS');
+    }
+
+    /**
+     * @param $member
+     * @return bool|int|void|null
+     */
+    public function canEdit($member = null, $context = [])
+    {
+        if (!$member) {
+            $member = Security::getCurrentUser();
+        }
+
+        return Permission::checkMember($member, 'MANAGE_FOXY_PRODUCTS');
+    }
+
+    /**
+     * @param $member
+     * @return bool|int|void
+     */
+    public function canDelete($member = null, $context = [])
+    {
+        if (!$member) {
+            $member = Security::getCurrentUser();
+        }
+
+        return Permission::checkMember($member, 'MANAGE_FOXY_PRODUCTS');
     }
 }
