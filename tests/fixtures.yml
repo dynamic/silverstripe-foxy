@@ -13,6 +13,10 @@ SilverStripe\Security\Permission:
     Code: EDIT_FOXY_SETTING
     Type: 1
     Group: =>SilverStripe\Security\Group.site-owners
+  product:
+    Code: MANAGE_PRODUCTS
+    Type: 1
+    Group: =>SilverStripe\Security\Group.site-owners
 
 SilverStripe\Security\Member:
   admin:

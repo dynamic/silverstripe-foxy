@@ -18,10 +18,13 @@ use SilverStripe\Forms\NumericField;
 use SilverStripe\Forms\TextField;
 use SilverStripe\ORM\DataExtension;
 use SilverStripe\ORM\ValidationResult;
+use SilverStripe\Security\Permission;
+use SilverStripe\Security\PermissionProvider;
+use SilverStripe\Security\Security;
 use Symbiote\GridFieldExtensions\GridFieldAddExistingSearchButton;
 use Symbiote\GridFieldExtensions\GridFieldOrderableRows;
 
-class Purchasable extends DataExtension
+class Purchasable extends DataExtension implements PermissionProvider
 {
     /**
      * @var array
@@ -220,5 +223,94 @@ class Purchasable extends DataExtension
     public function isProduct()
     {
         return true;
+    }
+
+    /**
+     * @return array
+     */
+    public function providePermissions()
+    {
+        return [
+            'MANAGE_PRODUCTS' => [
+                'name' => _t(
+                    __CLASS__ . '.PERMISSION_MANAGE_PRODUCTS_DESCRIPTION',
+                    'Manage products'
+                ),
+                'category' => _t(
+                    __CLASS__ . '.PERMISSIONS_CATEGORY',
+                    'Foxy'
+                ),
+                'help' => _t(
+                    __CLASS__ . '.PERMISSION_MANAGE_PRODUCTS_HELP',
+                    'Manage products and related settings'
+                ),
+                'sort' => 400,
+            ],
+        ];
+    }
+
+    /**
+     * @param $member
+     * @return bool|int|void
+     */
+    public function canCreate($member)
+    {
+        if (!$member) {
+            $member = Security::getCurrentUser();
+        }
+
+        return Permission::checkMember($member, 'MANAGE_PRODUCTS');
+    }
+
+    /**
+     * @param $member
+     * @return bool|int|void|null
+     */
+    public function canEdit($member)
+    {
+        if (!$member) {
+            $member = Security::getCurrentUser();
+        }
+
+        return Permission::checkMember($member, 'MANAGE_PRODUCTS');
+    }
+
+    /**
+     * @param $member
+     * @return bool|int|void
+     */
+    public function canDelete($member)
+    {
+        if (!$member) {
+            $member = Security::getCurrentUser();
+        }
+
+        return Permission::checkMember($member, 'MANAGE_PRODUCTS');
+    }
+
+    /**
+     * @param null $member
+     * @return bool|int
+     */
+    public function canUnpublish($member = null)
+    {
+        if (!$member) {
+            $member = Security::getCurrentUser();
+        }
+
+        return Permission::checkMember($member, 'MANAGE_PRODUCTS');
+    }
+
+    /**
+     * @param $member
+     * @return bool|int
+     */
+    public function canArchive($member = null)
+    {
+        if (!$member) {
+            $member = Security::getCurrentUser();
+        }
+
+        return Permission::checkMember($member, 'MANAGE_PRODUCTS');
     }
 }

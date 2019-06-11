@@ -18,15 +18,17 @@ class PurchasableExtension extends Extension
 
     public function onAfterInit()
     {
-        if ($this->owner->data()->isAvailable()) {
-            if ($this->owner->data()->OptionTypes()->exists()) {
-                Requirements::javascript('silverstripe/admin: thirdparty/jquery/jquery.js');
-                Requirements::javascript('dynamic/silverstripe-foxy: client/dist/javascript/product_options.js');
-            }
-            Requirements::customScript(<<<JS
+        if ($this->owner->hasMethod('isAvailable')) {
+            if ($this->owner->data()->isAvailable()) {
+                if ($this->owner->data()->OptionTypes()->exists()) {
+                    Requirements::javascript('silverstripe/admin: thirdparty/jquery/jquery.js');
+                    Requirements::javascript('dynamic/silverstripe-foxy: client/dist/javascript/product_options.js');
+                }
+                Requirements::customScript(<<<JS
 		        var productID = {$this->owner->data()->ID};
 JS
-            );
+                );
+            }
         }
     }
 
