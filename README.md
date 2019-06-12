@@ -36,7 +36,7 @@ Page:
 To include the AddToCartForm on your page/object, use `<% include AddToCartForm %>`
 
 ## Maintainers
- * Dynamic <dev@dynamicagency.com>
+ *  [Dynamic](http://www.dynamicagency.com) (<dev@dynamicagency.com>)
  
 ## Bugtracker
 Bugs are tracked in the issues section of this repository. Before submitting an issue please read over 
