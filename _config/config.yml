@@ -1,3 +1,11 @@
 ---
 name: foxy-config
 ---
+
+---
+Only:
+  environment: 'dev'
+---
+SilverStripe\Control\Director:
+  rules:
+    'foxytest//$Action/$ID/$Name': Dynamic\FoxyStripe\Controller\DataTestController
