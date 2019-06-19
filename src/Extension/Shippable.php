@@ -19,7 +19,7 @@ class Shippable extends Purchasable
      * @var array
      */
     private static $defaults = [
-        'Weight' => '0.0',
+        'Weight' => '1.0',
     ];
 
     /**
