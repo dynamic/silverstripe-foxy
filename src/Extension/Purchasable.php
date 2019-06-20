@@ -66,7 +66,6 @@ class Purchasable extends DataExtension implements PermissionProvider
     private static $defaults = [
         'ShowInMenus' => false,
         'Available' => true,
-        'Weight' => '0.0',
     ];
 
     /**

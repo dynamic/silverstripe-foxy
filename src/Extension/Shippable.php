@@ -59,7 +59,7 @@ class Shippable extends Purchasable
      */
     public function validate(ValidationResult $validationResult)
     {
-        if (!$this->owner->Weight) {
+        if ($this->owner->Weight <= 0) {
             $validationResult->addError(
                 _t(__CLASS__ . '.WeightRequired', 'You must set a product weight in the Foxy tab.')
             );
