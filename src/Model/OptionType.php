@@ -20,30 +20,6 @@ class OptionType extends DataObject
      */
     private static $db = [
         'Title' => 'Varchar(255)',
-        'SortOrder' => 'Int',
-    ];
-
-    /**
-     * @var array
-     */
-    private static $many_many = [
-        'Options' => ProductOption::class,
-    ];
-
-    /**
-     * @var array
-     */
-    private static $many_many_extraFields = [
-        'Options' => [
-            'WeightModifier' => 'Decimal',
-            'CodeModifier' => 'Text',
-            'PriceModifier' => 'Currency',
-            'WeightModifierAction' => "Enum('Add,Subtract,Set', null)",
-            'CodeModifierAction' => "Enum('Add,Subtract,Set', null)",
-            'PriceModifierAction' => "Enum('Add,Subtract,Set', null)",
-            'Available' => 'Boolean',
-            'SortOrder' => 'Int',
-        ],
     ];
 
     /**
@@ -51,6 +27,14 @@ class OptionType extends DataObject
      */
     private static $table_name = 'OptionType';
 
+    /**
+     * @var string
+     */
+    private static $default_sort = 'Title';
+
+    /**
+     * @return FieldList
+     */
     public function getCMSFields()
     {
         $this->beforeUpdateCMSFields(function (FieldList $fields) {
@@ -59,25 +43,6 @@ class OptionType extends DataObject
                 'ProductID',
                 'Options',
             ]);
-
-            if ($this->ID) {
-                $config = GridFieldConfig_RelationEditor::create();
-                $config
-                    ->addComponents([
-                        new GridFieldAddExistingSearchButton(),
-                        new GridFieldOrderableRows('SortOrder'),
-                    ])
-                    ->removeComponentsByType([
-                        GridFieldAddExistingAutocompleter::class,
-                    ]);
-                $options = GridField::create(
-                    'Options',
-                    'Options',
-                    $this->owner->Options()->sort('SortOrder'),
-                    $config
-                );
-                $fields->addFieldToTab('Root.Main', $options);
-            }
         });
 
         return parent::getCMSFields();
