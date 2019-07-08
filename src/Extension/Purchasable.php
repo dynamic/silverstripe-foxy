@@ -229,7 +229,7 @@ class Purchasable extends DataExtension implements PermissionProvider
             return false;
         }
 
-        if (!$this->owner->OptionTypes()->exists()) {
+        if (!$this->owner->Options()->exists()) {
             return true;
         }
 
