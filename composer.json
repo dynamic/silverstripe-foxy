@@ -10,6 +10,13 @@
         "shop"
     ],
     "license": "BSD-3-Clause",
+    "authors": [
+        {
+            "name": "Dynamic",
+            "email": "dev@dynamicagency.com",
+            "homepage": "http://www.dynamicagency.com"
+        }
+    ],
     "require": {
         "silverstripe/recipe-cms": "^4.0",
         "symbiote/silverstripe-gridfieldextensions": "^3.0"
