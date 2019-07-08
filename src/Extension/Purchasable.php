@@ -4,6 +4,7 @@ namespace Dynamic\Foxy\Extension;
 
 use Dynamic\Foxy\Model\Foxy;
 use Dynamic\Foxy\Model\FoxyCategory;
+use Dynamic\Foxy\Model\ProductOption;
 use Dynamic\Foxy\Model\Setting;
 use Dynamic\Foxy\Model\OptionType;
 use SilverStripe\Forms\CheckboxField;
@@ -46,8 +47,28 @@ class Purchasable extends DataExtension implements PermissionProvider
     /**
      * @var array
      */
-    private static $has_many = [
-        'OptionTypes' => OptionType::class,
+    private static $many_many = [
+        'Options' => ProductOption::class,
+    ];
+
+    /**
+     * @var array
+     */
+    private static $many_many_extraFields = [
+        'Options' => [
+            'WeightModifier' => 'Decimal',
+            'CodeModifier' => 'Text',
+            'PriceModifier' => 'Currency',
+            'WeightModifierAction' => "Enum('Add,Subtract,Set', null)",
+            'CodeModifierAction' => "Enum('Add,Subtract,Set', null)",
+            'PriceModifierAction' => "Enum('Add,Subtract,Set', null)",
+            'Available' => 'Boolean',
+            'Type' => 'Int',
+            'SortOrder' => 'Int',
+        ],
+        'OptionTypes' => [
+            'SortOrder' => 'Int',
+        ]
     ];
 
     /**
@@ -111,7 +132,7 @@ class Purchasable extends DataExtension implements PermissionProvider
     public function updateCMSFields(FieldList $fields)
     {
         $fields->addFieldsToTab(
-            'Root.Foxy',
+            'Root.Foxy.Main',
             [
                 CurrencyField::create('Price')
                     ->setDescription(_t(
@@ -154,17 +175,24 @@ class Purchasable extends DataExtension implements PermissionProvider
             $config
                 ->addComponents([
                     new GridFieldOrderableRows('SortOrder'),
+                    new GridFieldAddExistingSearchButton(),
                 ])
                 ->removeComponentsByType([
                     GridFieldAddExistingAutocompleter::class,
                 ]);
             $options = GridField::create(
-                'OptionTypes',
                 'Options',
-                $this->owner->OptionTypes()->sort('SortOrder'),
+                'Options',
+                $this->owner->Options()->sort('SortOrder'),
                 $config
             );
-            $fields->addFieldToTab('Root.Foxy', $options);
+
+            $fields->addFieldsToTab(
+                'Root.Foxy.Options',
+                [
+                    $options,
+                ]
+            );
         }
     }
 
@@ -205,11 +233,9 @@ class Purchasable extends DataExtension implements PermissionProvider
             return true;
         }
 
-        foreach ($this->owner->OptionTypes() as $type) {
-            foreach ($type->Options() as $option) {
-                if ($option->Available) {
-                    return true;
-                }
+        foreach ($this->owner->Options() as $option) {
+            if ($option->Available) {
+                return true;
             }
         }
         

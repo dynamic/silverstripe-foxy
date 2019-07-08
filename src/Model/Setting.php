@@ -6,6 +6,8 @@ use Dynamic\Foxy\Admin\FoxyAdmin;
 use SilverStripe\Forms\CheckboxField;
 use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\FormAction;
+use SilverStripe\Forms\GridField\GridField;
+use SilverStripe\Forms\GridField\GridFieldConfig_RecordEditor;
 use SilverStripe\Forms\LiteralField;
 use SilverStripe\Forms\ReadonlyField;
 use SilverStripe\Forms\TextField;
@@ -105,6 +107,22 @@ class Setting extends DataObject implements PermissionProvider, TemplateGlobalPr
                         <a href="/admin/foxy/">Foxy settings</a></p>'
                 )), 'StoreDomain');
             }
+
+            $fields->addFieldsToTab(
+                'Root.Options',
+                [
+                    LiteralField::create('OptionGroupsDescrip', _t(
+                        __CLASS__ . '.OptionGroupsDescrip',
+                        '<p>Product Option Types allow you to group a set of product options by type.</p>'
+                    )),
+                    GridField::create(
+                        'OptionType',
+                        _t(__CLASS__ . '.OptionTypeLabel', 'Option Types'),
+                        OptionType::get(),
+                        GridFieldConfig_RecordEditor::create()
+                    ),
+                ]
+            );
         });
 
         return parent::getCMSFields();

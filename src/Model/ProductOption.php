@@ -2,6 +2,7 @@
 
 namespace Dynamic\Foxy\Model;
 
+use SilverStripe\CMS\Model\SiteTree;
 use SilverStripe\Forms\CheckboxField;
 use SilverStripe\Forms\CurrencyField;
 use SilverStripe\Forms\DropdownField;
@@ -21,13 +22,6 @@ class ProductOption extends DataObject
     private static $db = array(
         'Title' => 'Varchar(255)',
     );
-
-    /**
-     * @var array
-     */
-    private static $belongs_many_many = [
-        'Types' => OptionType::class,
-    ];
 
     /**
      * @var string
@@ -57,6 +51,7 @@ class ProductOption extends DataObject
     private static $summary_fields = [
         'Title' => 'Title',
         'IsAvailable' => 'Available',
+        'OptionType' => 'Type',
     ];
 
     /**
@@ -66,13 +61,11 @@ class ProductOption extends DataObject
     {
         $this->beforeUpdateCMSFields(function (FieldList $fields) {
 
-            $fields->removeByName([
-                'Types',
-
-            ]);
-
             $fields->addFieldsToTab('Root.Main', array(
                 CheckboxField::create('ManyMany[Available]', 'Available for purchase'),
+
+                DropdownField::create('ManyMany[Type]', 'Option Type', OptionType::get()->map())
+                    ->setEmptyString(''),
 
                 // Weight Modifier Fields
                 HeaderField::create('WeightHD', _t('OptionItem.WeightHD', 'Modify Weight'), 4),
@@ -246,6 +239,19 @@ class ProductOption extends DataObject
         $available = DBBoolean::create();
         $available->setValue($this->getAvailability());
         return $available->Nice();
+    }
+
+    /**
+     * @return string
+     */
+    public function getOptionType()
+    {
+        if ($this->Type) {
+            $type = OptionType::get()->byID($this->Type);
+            if ($type) {
+                return $type->Title;
+            }
+        }
     }
 
     /**

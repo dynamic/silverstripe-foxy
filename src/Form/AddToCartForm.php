@@ -6,6 +6,7 @@ use Dynamic\Foxy\Extension\Purchasable;
 use Dynamic\Foxy\Extension\Shippable;
 use Dynamic\Foxy\Model\Foxy;
 use Dynamic\Foxy\Model\FoxyHelper;
+use Dynamic\Foxy\Model\OptionType;
 use Dynamic\Foxy\Model\ProductOption;
 use SilverStripe\Forms\CompositeField;
 use SilverStripe\Forms\DropdownField;
@@ -15,6 +16,7 @@ use SilverStripe\Forms\FormAction;
 use SilverStripe\Forms\HeaderField;
 use SilverStripe\Forms\HiddenField;
 use SilverStripe\Forms\RequiredFields;
+use SilverStripe\ORM\GroupedList;
 
 class AddToCartForm extends Form
 {
@@ -270,28 +272,32 @@ class AddToCartForm extends Form
      */
     protected function getProductOptionSet()
     {
+        $options = $this->product->Options()->sort('SortOrder');
+        $groupedOptions = new GroupedList($options);
+        $groupedBy = $groupedOptions->groupBy('Type');
+
         /** @var CompositeField $optionsSet */
         $optionsSet = CompositeField::create();
 
-        $types = $this->product->OptionTypes();
-
-        foreach ($types as $type) {
-            $title = $type->Title;
+        /** @var DataList $set */
+        foreach ($groupedBy as $id => $set) {
+            $group = OptionType::get()->byID($id);
+            $title = $group->Title;
             $fieldName = preg_replace('/\s/', '_', $title);
             $disabled = [];
             $fullOptions = [];
 
-            foreach ($type->Options() as $option) {
-                $option = $this->setAvailability($option);
+            foreach ($set as $item) {
+                $item = $this->setAvailability($item);
                 $name = self::getGeneratedValue(
                     $this->product->Code,
-                    $type->Title,
-                    $option->getGeneratedValue(),
+                    $group->Title,
+                    $item->getGeneratedValue(),
                     'value'
                 );
 
-                $fullOptions[$name] = $option->getGeneratedTitle();
-                if (!$option->Availability) {
+                $fullOptions[$name] = $item->getGeneratedTitle();
+                if (!$item->Availability) {
                     array_push($disabled, $name);
                 }
             }
