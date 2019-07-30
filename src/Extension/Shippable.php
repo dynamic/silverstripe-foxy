@@ -29,7 +29,10 @@ class Shippable extends Purchasable
      */
     public function updateFieldLabels(&$labels)
     {
+        $labels['Title'] = _t(__CLASS__ . '.TitleLabel', 'Product Name');
         $labels['Weight'] = _t(__CLASS__ . '.WeightLabel', 'Weight');
+        $labels['Image.CMSThumbnail'] = _t(__CLASS__ . '.ImageThumbnailLabel', 'Image');
+        $labels['Price.Nice'] = _t(__CLASS__ . '.PriceLabel', 'Price');
     }
 
     /**
