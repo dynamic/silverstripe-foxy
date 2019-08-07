@@ -201,6 +201,7 @@ class Purchasable extends DataExtension implements PermissionProvider
      */
     public function validate(ValidationResult $validationResult)
     {
+        /*
         if (!$this->owner->Price) {
             $validationResult->addError(
                 _t(__CLASS__ . '.PriceRequired', 'You must set a product price in the Foxy tab')
@@ -218,6 +219,7 @@ class Purchasable extends DataExtension implements PermissionProvider
                 _t(__CLASS__ . '.FoxyCategoryRequired', 'You must set a foxy category in the Foxy tab.')
             );
         }
+        */
     }
 
     /**
@@ -238,7 +240,7 @@ class Purchasable extends DataExtension implements PermissionProvider
                 return true;
             }
         }
-        
+
         return false;
     }
 

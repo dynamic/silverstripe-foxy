@@ -62,6 +62,7 @@ class PurchasableTest extends SapphireTest
     /**
      *
      */
+    /*
     public function testValidate()
     {
         $object = Injector::inst()->create(TestProduct::class);
@@ -79,6 +80,7 @@ class PurchasableTest extends SapphireTest
         $this->setExpectedException(ValidationException::class);
         $object->write();
     }
+    */
 
     /**
      *
