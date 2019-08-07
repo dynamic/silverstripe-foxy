@@ -2,6 +2,7 @@
 
 namespace Dynamic\Foxy\Test\TestOnly;
 
+use Dynamic\Foxy\Extension\Purchasable;
 use Dynamic\Foxy\Extension\Shippable;
 use Intervention\Image\Image;
 use SilverStripe\Core\Injector\Injector;
@@ -12,6 +13,7 @@ class TestShippableProduct extends \Page implements TestOnly
     private static $table_name = 'TestShippableProduct';
 
     private static $extensions = [
+        Purchasable::class,
         Shippable::class,
     ];
 
