@@ -4,9 +4,10 @@ namespace Dynamic\Foxy\Extension;
 
 use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\NumericField;
+use SilverStripe\ORM\DataExtension;
 use SilverStripe\ORM\ValidationResult;
 
-class Shippable extends Purchasable
+class Shippable extends DataExtension
 {
     /**
      * @var array
