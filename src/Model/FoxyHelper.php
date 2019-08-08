@@ -2,10 +2,15 @@
 
 namespace Dynamic\Foxy\Model;
 
+use SilverStripe\CMS\Model\SiteTree;
 use SilverStripe\Core\Config\Configurable;
 use SilverStripe\Core\Extensible;
 use SilverStripe\Core\Injector\Injectable;
 
+/**
+ * Class FoxyHelper
+ * @package Dynamic\Foxy\Model
+ */
 class FoxyHelper extends \FoxyCart_Helper
 {
     use Configurable;
