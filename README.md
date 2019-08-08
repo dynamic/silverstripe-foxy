@@ -13,22 +13,57 @@ composer require dynamic/silverstripe-foxy
 ```
 
 ## License
+
 See [License](license.md)
 
-## Example configuration (optional)
-If your module makes use of the config API in SilverStripe it's a good idea to provide an example config
- here that will get the module working out of the box and expose the user to the possible configuration options.
+## Example configuration
 
-Provide a yaml code example where possible.
+Add the following extensions and configuration options to `foxy.yml`:
 
 ```yaml
 
-Page:
-  config_option: true
-  another_config:
-    - item1
-    - item2
+PageController:
+  extensions:
+    - Dynamic\Foxy\Extension\PurchasableExtension
+
+Dynamic\Products\Page\Product:
+  extensions:
+    - Dynamic\Foxy\Extension\Purchasable
+
+Dynamic\Foxy\Model\FoxyHelper:
+  cart_url: ''      # from Foxy store settings
+  secret: ''        # from Foxy store advanced settings
+  custom_ssl: 0     # (optional) enable custom ssl setting from Foxy store advanced settings
+  max_quantity: 10  # maximum number of the same product that can be added to the cart
+  product_classes:
+    - Dynamic\Products\Page\Product
+  include_product_subclasses: 0   # (optional) include subclasses of product_classes in queries
   
+```
+
+Create a DataExtension `ProductOptionDataExtension`:
+```php
+<?
+
+namespace {
+
+    use Dynamic\Products\Page\Product;
+    use SilverStripe\ORM\DataExtension;
+    
+    class ProductOptionDataExtension extends DataExtension
+    {
+        private static $belongs_many_many = [
+            'Products' => Product::class,
+        ];
+    }
+}
+```
+
+And add to `foxy.yml`:
+```yaml
+Dynamic\Foxy\Model\ProductOption:
+  extensions:
+    - ProductOptionDataExtension
 ```
 
 ## Templates
