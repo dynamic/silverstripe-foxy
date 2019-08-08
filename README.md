@@ -41,6 +41,31 @@ Dynamic\Foxy\Model\FoxyHelper:
   
 ```
 
+Create a DataExtension `ProductOptionDataExtension`:
+```php
+<?
+
+namespace {
+
+    use Dynamic\Products\Page\Product;
+    use SilverStripe\ORM\DataExtension;
+    
+    class ProductOptionDataExtension extends DataExtension
+    {
+        private static $belongs_many_many = [
+            'Products' => Product::class,
+        ];
+    }
+}
+```
+
+And add to `foxy.yml`:
+```yaml
+Dynamic\Foxy\Model\ProductOption:
+  extensions:
+    - ProductOptionDataExtension
+```
+
 ## Templates
 
 To include the AddToCartForm on your page/object, use `<% include AddToCartForm %>`
