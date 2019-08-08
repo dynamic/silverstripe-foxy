@@ -33,6 +33,11 @@ class FoxyHelper extends \FoxyCart_Helper
     private static $max_quantity = 10;
 
     /**
+     * @var array
+     */
+    private static $product_classes = [];
+
+    /**
      * @var
      */
     private $foxy_secret;
@@ -51,6 +56,11 @@ class FoxyHelper extends \FoxyCart_Helper
      * @var
      */
     private $foxy_max_quantity;
+
+    /**
+     * @var
+     */
+    private $foxy_product_classes;
 
     /**
      * @return mixed
@@ -138,6 +148,63 @@ class FoxyHelper extends \FoxyCart_Helper
         $this->foxy_max_quantity = $this->config()->get('max_quantity');
 
         return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getProuductClasses()
+    {
+        if (!$this->foxy_product_classes) {
+            $this->setProductClasses();
+        }
+
+        return $this->foxy_product_classes;
+    }
+
+    /**
+     * @return $this
+     */
+    public function setProductClasses()
+    {
+        $productClasses = $this->config()->get('product_classes');
+
+        if (empty($productClasses)) {
+            $this->foxy_product_classes = [];
+            return $this;
+        } elseif (!is_array($productClasses)) {
+            $productClasses = [$productClasses];
+        }
+
+        if ($this->config()->get('include_product_subclasses')) {
+            $productClasses = array_reduce($productClasses, function (array $list, $productClass) {
+                foreach (ClassInfo::subclassesFor($productClass) as $key => $class) {
+                    $list[$key] = $class;
+                }
+                $this->foxy_product_classes =  $list;
+                return $this;
+            }, []);
+        }
+
+        $this->foxy_product_classes = $productClasses;
+        return $this;
+    }
+
+    /**
+     * @return |null
+     */
+    public function getProducts()
+    {
+        $productClasses = $this->getProuductClasses();
+        $products = null;
+
+        if (!empty($productClasses)) {
+            $products = SiteTree::get()->filter('ClassName', $productClasses);
+        }
+
+        $this->owner->extend('updateProducts', $products);
+
+        return $products;
     }
 
     /**
