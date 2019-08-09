@@ -37,7 +37,7 @@ Dynamic\Foxy\Model\FoxyHelper:
   max_quantity: 10  # maximum number of the same product that can be added to the cart
   product_classes:
     - Dynamic\Products\Page\Product
-  include_product_subclasses: 0   # (optional) include subclasses of product_classes in queries
+  include_product_subclasses: 1   # (optional) include subclasses of product_classes in queries
   
 ```
 
