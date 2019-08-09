@@ -3,6 +3,7 @@
 namespace Dynamic\Foxy\Model;
 
 use SilverStripe\CMS\Model\SiteTree;
+use SilverStripe\Core\ClassInfo;
 use SilverStripe\Core\Config\Configurable;
 use SilverStripe\Core\Extensible;
 use SilverStripe\Core\Injector\Injectable;
@@ -160,7 +161,7 @@ class FoxyHelper extends \FoxyCart_Helper
      */
     public function getProuductClasses()
     {
-        if (!$this->foxy_product_classes) {
+        if (!$this->foxy_product_classes || !is_array($this->foxy_product_classes)) {
             $this->setProductClasses();
         }
 
@@ -176,6 +177,7 @@ class FoxyHelper extends \FoxyCart_Helper
 
         if (empty($productClasses)) {
             $this->foxy_product_classes = [];
+
             return $this;
         } elseif (!is_array($productClasses)) {
             $productClasses = [$productClasses];
@@ -186,12 +188,13 @@ class FoxyHelper extends \FoxyCart_Helper
                 foreach (ClassInfo::subclassesFor($productClass) as $key => $class) {
                     $list[$key] = $class;
                 }
-                $this->foxy_product_classes =  $list;
-                return $this;
+
+                return $list;
             }, []);
         }
 
         $this->foxy_product_classes = $productClasses;
+
         return $this;
     }
 
@@ -204,10 +207,10 @@ class FoxyHelper extends \FoxyCart_Helper
         $products = null;
 
         if (!empty($productClasses)) {
-            $products = SiteTree::get()->filter('ClassName', $productClasses);
+            $products = SiteTree::get()->filter('ClassName', array_values($productClasses));
         }
 
-        $this->owner->extend('updateProducts', $products);
+        $this->extend('updateProducts', $products);
 
         return $products;
     }
