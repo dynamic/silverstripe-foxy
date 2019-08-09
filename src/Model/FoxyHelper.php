@@ -7,6 +7,7 @@ use SilverStripe\Core\ClassInfo;
 use SilverStripe\Core\Config\Configurable;
 use SilverStripe\Core\Extensible;
 use SilverStripe\Core\Injector\Injectable;
+use SilverStripe\ORM\ArrayList;
 
 /**
  * Class FoxyHelper
@@ -199,12 +200,12 @@ class FoxyHelper extends \FoxyCart_Helper
     }
 
     /**
-     * @return |null
+     * @return ArrayList|\SilverStripe\ORM\DataList
      */
     public function getProducts()
     {
         $productClasses = $this->getProuductClasses();
-        $products = null;
+        $products = ArrayList::create();
 
         if (!empty($productClasses)) {
             $products = SiteTree::get()->filter('ClassName', array_values($productClasses));
