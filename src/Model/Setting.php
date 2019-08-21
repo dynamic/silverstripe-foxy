@@ -59,6 +59,14 @@ class Setting extends DataObject implements PermissionProvider, TemplateGlobalPr
      */
     private static $db = [
         'StoreKey' => 'Varchar(60)',
+        'EnableSidecart' => 'Boolean',
+    ];
+
+    /**
+     * @var array
+     */
+    private static $defaults = [
+        'EnableSidecart' => 1,
     ];
 
     /**
@@ -109,7 +117,15 @@ class Setting extends DataObject implements PermissionProvider, TemplateGlobalPr
             }
 
             $fields->addFieldsToTab(
-                'Root.Options',
+                'Root.Options.Settings',
+                [
+                    CheckboxField::create('EnableSidecart', 'Enable Sidecart')
+                        ->setDescription('Cart slides in from right side when product added to cart')
+                ]
+            );
+
+            $fields->addFieldsToTab(
+                'Root.Options.Types',
                 [
                     LiteralField::create('OptionGroupsDescrip', _t(
                         __CLASS__ . '.OptionGroupsDescrip',

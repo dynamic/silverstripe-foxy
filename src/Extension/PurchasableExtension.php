@@ -4,6 +4,7 @@ namespace Dynamic\Foxy\Extension;
 
 use Dynamic\Foxy\Form\AddToCartForm;
 use Dynamic\Foxy\Model\FoxyHelper;
+use Dynamic\Foxy\Model\Setting;
 use SilverStripe\Core\Extension;
 use SilverStripe\View\Requirements;
 
@@ -29,6 +30,19 @@ class PurchasableExtension extends Extension
 JS
                 );
             }
+        }
+
+        $config = Setting::current_foxy_setting();
+        $helper = FoxyHelper::create();
+
+        if ($config->EnableSidecart) {
+            Requirements::javascript(
+                "https://cdn.foxycart.com/" . $helper->getStoreCartURL() . "/loader.js",
+                [
+                    "async" => true,
+                    "defer" => true,
+                ]
+            );
         }
     }
 
