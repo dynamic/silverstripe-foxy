@@ -145,6 +145,7 @@ class Purchasable extends DataExtension implements PermissionProvider
                         'Required, must be unique. Product identifier used by FoxyCart in transactions'
                     )),
                 DropdownField::create('FoxyCategoryID')
+                    ->setTitle($this->owner->fieldLabel('FoxyCategoryID'))
                     ->setSource(FoxyCategory::get()->map())
                     ->setDescription(_t(
                         __CLASS__ . '.FoxyCategoryDescription',
