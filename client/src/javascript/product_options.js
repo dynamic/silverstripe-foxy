@@ -1,48 +1,56 @@
 ;(function ($) {
-	var shownPrice = $('[id*="submitPrice"]'),
-		trigger = $('.product-options'),
-		isAvailable = $('[name="x:submit"]').length ? true : false,
-		unavailable = trigger.closest('form').find('[id*="_unavailableText"]');
+  var shownPrice = $('[id*="submitPrice"]'),
+    basePrice = $('input[name="price"]').val().split('||')[0],
+    trigger = $('select.product-options');
 
-	$('option:disabled').each(function () {
-		if ($(this).prop('disabled')) {
-			$(this).addClass('outOfStock').append(document.createTextNode(" (out of stock)"));
-		}
-	});
+  $('.foxycartOptionsContainer option:disabled').each(function () {
+    if ($(this).prop('disabled')) {
+      $(this).addClass('outOfStock').append(document.createTextNode(" (out of stock)"));
+    }
+  });
 
-	trigger.on('change', function () {
-		var options = [],
-			selected = $(this).val();
+  trigger.on('change', function () {
+    var selected = $(this).val(),
+      modifiers = $(this).val().substring(selected.lastIndexOf('{') + 1, selected.lastIndexOf('}')),
+      alteredPrice = undefined;
 
-		if (selected.length > 0) {
-			selected = selected.substring(selected.lastIndexOf('{') + 1, selected.lastIndexOf('}')).split('|')[0].split(':')[1];
-		}
+    if (getAddition(modifiers) !== undefined) {
+      alteredPrice = getAddition(modifiers) + basePrice;
+    } else if (getSubtraction(modifiers) !== undefined) {
+      alteredPrice = basePrice - getSubtraction(modifiers);
+    } else if (getNewPrice(modifiers)) {
+      alteredPrice = getNewPrice(modifiers);
+    }
 
-		$(this).each(function () {
-			var currentOption = $(this).val();
-			currentOption = currentOption.substring(currentOption.lastIndexOf('{') + 1, currentOption.lastIndexOf('}')).split('|');
+    if (alteredPrice !== undefined) {
+      shownPrice.html('$' + Number.parseFloat(alteredPrice).toFixed(2));
+    } else {
+      shownPrice.html(basePrice);
+    }
+  });
 
-			if (currentOption.length) {
-				$.each(currentOption, function (k, v) {
-					if (v !== '') {
-						options[v.split(':')[1]] = v.split(':')[1];
-					}
-				});
-			}
-		});
+  if (trigger.length > 0) {
+    trigger.change();
+  }
 
-		if (selected in options && options[selected] !== undefined) {
-			shownPrice.html('$' + Number.parseFloat(options[selected]).toFixed(2));
-		}
-	});
+  function getAddition(variants) {
+    priceModifier = variants.split('|')[0];
+    priceModifier = (priceModifier.split('+').length === 2) ? priceModifier.split('+')[1] : undefined;
 
-	if (isAvailable === false) {
-		shownPrice.addClass('hidden');
-		unavailable.removeClass('hidden');
-	} else {
-		if (trigger.length > 0) {
-			trigger.change();
-		}
+    return priceModifier;
+  }
 
-	}
+  function getSubtraction(variants) {
+    priceModifier = variants.split('|')[0];
+    priceModifier = (priceModifier.split('-').length === 2) ? priceModifier.split('-')[1] : undefined;
+
+    return priceModifier;
+  }
+
+  function getNewPrice(variants) {
+    priceModifier = variants.split('|')[0];
+    priceModifier = (priceModifier.split(':').length === 2) ? priceModifier.split(':')[1] : undefined;
+
+    return priceModifier;
+  }
 })(jQuery);
