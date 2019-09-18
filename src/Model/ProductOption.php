@@ -8,6 +8,7 @@ use SilverStripe\Forms\CurrencyField;
 use SilverStripe\Forms\DropdownField;
 use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\HeaderField;
+use SilverStripe\Forms\ReadonlyField;
 use SilverStripe\Forms\TextField;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\FieldType\DBBoolean;
@@ -19,9 +20,9 @@ class ProductOption extends DataObject
     /**
      * @var array
      */
-    private static $db = array(
+    private static $db = [
         'Title' => 'Varchar(255)',
-    );
+    ];
 
     /**
      * @var string
@@ -60,8 +61,15 @@ class ProductOption extends DataObject
     public function getCMSFields()
     {
         $this->beforeUpdateCMSFields(function (FieldList $fields) {
+            if ($this->exists()) {
+                $fields->addFieldToTab(
+                    'Root.Main',
+                    ReadonlyField::create('ManyMany[OptionModifierKey]')
+                        ->setTitle(_t('OptionItem.ModifierKey', 'Modifier Key'))
+                );
+            }
 
-            $fields->addFieldsToTab('Root.Main', array(
+            $fields->addFieldsToTab('Root.Main', [
                 CheckboxField::create('ManyMany[Available]', 'Available for purchase'),
 
                 DropdownField::create('ManyMany[Type]', 'Option Type', OptionType::get()->map())
@@ -74,7 +82,7 @@ class ProductOption extends DataObject
                 DropdownField::create(
                     'ManyMany[WeightModifierAction]',
                     _t('OptionItem.WeightModifierAction', 'Weight Modification'),
-                    array(
+                    [
                         'Add' => _t(
                             'OptionItem.WeightAdd',
                             'Add to Base Weight',
@@ -86,7 +94,7 @@ class ProductOption extends DataObject
                             'Subtract from weight'
                         ),
                         'Set' => _t('OptionItem.WeightSet', 'Set as a new Weight'),
-                    )
+                    ]
                 )
                     ->setEmptyString('')
                     ->setDescription(_t(
@@ -101,7 +109,7 @@ class ProductOption extends DataObject
                 DropdownField::create(
                     'ManyMany[PriceModifierAction]',
                     _t('OptionItem.PriceModifierAction', 'Price Modification'),
-                    array(
+                    [
                         'Add' => _t(
                             'OptionItem.PriceAdd',
                             'Add to Base Price',
@@ -113,7 +121,7 @@ class ProductOption extends DataObject
                             'Subtract from price'
                         ),
                         'Set' => _t('OptionItem.PriceSet', 'Set as a new Price'),
-                    )
+                    ]
                 )
                     ->setEmptyString('')
                     ->setDescription(_t('OptionItem.PriceDescription', 'Does price modify or replace base price?')),
@@ -125,7 +133,7 @@ class ProductOption extends DataObject
                 DropdownField::create(
                     'ManyMany[CodeModifierAction]',
                     _t('OptionItem.CodeModifierAction', 'Code Modification'),
-                    array(
+                    [
                         'Add' => _t(
                             'OptionItem.CodeAdd',
                             'Add to Base Code',
@@ -137,14 +145,25 @@ class ProductOption extends DataObject
                             'Subtract from code'
                         ),
                         'Set' => _t('OptionItem.CodeSet', 'Set as a new Code'),
-                    )
+                    ]
                 )
                     ->setEmptyString('')
                     ->setDescription(_t('OptionItem.CodeDescription', 'Does code modify or replace base code?')),
-            ));
+            ]);
         });
 
         return parent::getCMSFields();
+    }
+
+    /**
+     *
+     */
+    public function onBeforeWrite()
+    {
+        parent::onBeforeWrite();
+
+        $field = 'ManyMany[OptionModifierKey]';
+        $this->{$field} = $this->getGeneratedValue();
     }
 
     /**
@@ -165,6 +184,7 @@ class ProductOption extends DataObject
             default:
                 $symbol = '+';
         }
+
         return $symbol;
     }
 
@@ -197,11 +217,12 @@ class ProductOption extends DataObject
      */
     public function getGeneratedValue()
     {
-        $modPrice = ($this->PriceModifier) ? (string) $this->PriceModifier : '0';
+        $modPrice = ($this->PriceModifier) ? (string)$this->PriceModifier : '0';
         $modPriceWithSymbol = self::getOptionModifierActionSymbol($this->PriceModifierAction) . $modPrice;
-        $modWeight = ($this->WeightModifier) ? (string) $this->WeightModifier : '0';
+        $modWeight = ($this->WeightModifier) ? (string)$this->WeightModifier : '0';
         $modWeight = self::getOptionModifierActionSymbol($this->WeightModifierAction) . $modWeight;
         $modCode = self::getOptionModifierActionSymbol($this->CodeModifierAction) . $this->CodeModifier;
+
         return $this->Title . '{p' . $modPriceWithSymbol . '|w' . $modWeight . '|c' . $modCode . '}';
     }
 
@@ -210,7 +231,7 @@ class ProductOption extends DataObject
      */
     public function getGeneratedTitle()
     {
-        $modPrice = ($this->PriceModifier) ? (string) $this->PriceModifier : '0';
+        $modPrice = ($this->PriceModifier) ? (string)$this->PriceModifier : '0';
         $title = $this->Title;
         $title .= ($this->PriceModifier != 0) ?
             ': (' . self::getOptionModifierActionSymbol(
@@ -218,6 +239,7 @@ class ProductOption extends DataObject
                 $returnWithOnlyPlusMinus = true
             ) . '$' . $modPrice . ')' :
             '';
+
         return $title;
     }
 
@@ -228,6 +250,7 @@ class ProductOption extends DataObject
     {
         $available = ($this->Available == 1) ? true : false;
         $this->extend('updateOptionAvailability', $available);
+
         return $available;
     }
 
@@ -238,6 +261,7 @@ class ProductOption extends DataObject
     {
         $available = DBBoolean::create();
         $available->setValue($this->getAvailability());
+
         return $available->Nice();
     }
 

@@ -9,10 +9,9 @@
     }
   });
 
-  trigger.on('change', function () {
+  trigger.bind('change', function () {
     var selected = $(this).val(),
-      modifiers = $(this).val().substring(selected.lastIndexOf('{') + 1, selected.lastIndexOf('}')),
-      alteredPrice = undefined;
+      modifiers = $(this).val().substring(selected.lastIndexOf('{') + 1, selected.lastIndexOf('}'));
 
     if (getAddition(modifiers) !== undefined) {
       alteredPrice = getAddition(modifiers) + basePrice;
@@ -30,7 +29,9 @@
   });
 
   if (trigger.length > 0) {
-    trigger.change();
+    $(window).on('load', function () {
+      trigger.change();
+    });
   }
 
   function getAddition(variants) {

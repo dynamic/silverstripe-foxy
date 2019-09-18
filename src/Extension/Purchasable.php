@@ -2,20 +2,15 @@
 
 namespace Dynamic\Foxy\Extension;
 
-use Dynamic\Foxy\Model\Foxy;
 use Dynamic\Foxy\Model\FoxyCategory;
 use Dynamic\Foxy\Model\ProductOption;
-use Dynamic\Foxy\Model\Setting;
-use Dynamic\Foxy\Model\OptionType;
 use SilverStripe\Forms\CheckboxField;
 use SilverStripe\Forms\CurrencyField;
 use SilverStripe\Forms\DropdownField;
 use SilverStripe\Forms\FieldList;
-use SilverStripe\Forms\LiteralField;
 use SilverStripe\Forms\GridField\GridField;
 use SilverStripe\Forms\GridField\GridFieldAddExistingAutocompleter;
 use SilverStripe\Forms\GridField\GridFieldConfig_RelationEditor;
-use SilverStripe\Forms\NumericField;
 use SilverStripe\Forms\TextField;
 use SilverStripe\ORM\DataExtension;
 use SilverStripe\ORM\ValidationResult;
@@ -25,6 +20,10 @@ use SilverStripe\Security\Security;
 use Symbiote\GridFieldExtensions\GridFieldAddExistingSearchButton;
 use Symbiote\GridFieldExtensions\GridFieldOrderableRows;
 
+/**
+ * Class Purchasable
+ * @package Dynamic\Foxy\Extension
+ */
 class Purchasable extends DataExtension implements PermissionProvider
 {
     /**
@@ -64,11 +63,12 @@ class Purchasable extends DataExtension implements PermissionProvider
             'PriceModifierAction' => "Enum('Add,Subtract,Set', null)",
             'Available' => 'Boolean',
             'Type' => 'Int',
+            'OptionModifierKey' => 'Varchar(255)',
             'SortOrder' => 'Int',
         ],
         'OptionTypes' => [
             'SortOrder' => 'Int',
-        ]
+        ],
     ];
 
     /**
