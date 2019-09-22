@@ -3,6 +3,7 @@
 namespace Dynamic\Foxy\Form;
 
 use Dynamic\Foxy\Model\Setting;
+use Dynamic\Products\Page\Product;
 use SilverStripe\Control\Controller;
 use SilverStripe\Control\HTTPRequest;
 use SilverStripe\Forms\NumericField;
@@ -30,16 +31,16 @@ class QuantityField extends NumericField
         Requirements::javascript('dynamic/silverstripe-foxy: client/dist/javascript/quantity.js');
         Requirements::css('dynamic/silverstripe-foxy: client/dist/css/quantityfield.css');
 
-
         $this->setAttribute('data-link', $this->Link('newvalue'));
         $this->setAttribute('data-code', $this->getProduct()->Code);
         $this->setAttribute('data-id', $this->getProduct()->ID);
+        $this->setAttribute('id', 'quantity-toggle-field');
 
         return parent::Field($properties);
     }
 
     /**
-     * @return ProductPage
+     * @return Product
      */
     public function getProduct()
     {
@@ -47,7 +48,7 @@ class QuantityField extends NumericField
     }
 
     /**
-     * @param SS_HTTPRequest $request
+     * @param HTTPRequest $request
      * @return bool|string
      */
     public function newvalue(HTTPRequest $request)
@@ -62,12 +63,13 @@ class QuantityField extends NumericField
 
         $this->extend('updateQuantity', $value);
 
-        $data = array(
+        $data = [
             'quantity' => $value,
             'quantityGenerated' => AddToCartForm::getGeneratedValue($code, 'quantity', $value, 'value'),
-        );
+        ];
 
         $this->extend('updateData', $data);
+
         return json_encode($data);
     }
 }

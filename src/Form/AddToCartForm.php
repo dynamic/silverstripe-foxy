@@ -2,12 +2,11 @@
 
 namespace Dynamic\Foxy\Form;
 
-use Dynamic\Foxy\Extension\Purchasable;
 use Dynamic\Foxy\Extension\Shippable;
-use Dynamic\Foxy\Model\Foxy;
 use Dynamic\Foxy\Model\FoxyHelper;
 use Dynamic\Foxy\Model\OptionType;
 use Dynamic\Foxy\Model\ProductOption;
+use Dynamic\Products\Page\Product;
 use SilverStripe\Forms\CompositeField;
 use SilverStripe\Forms\DropdownField;
 use SilverStripe\Forms\FieldList;
@@ -16,8 +15,13 @@ use SilverStripe\Forms\FormAction;
 use SilverStripe\Forms\HeaderField;
 use SilverStripe\Forms\HiddenField;
 use SilverStripe\Forms\RequiredFields;
+use SilverStripe\ORM\DataList;
 use SilverStripe\ORM\GroupedList;
 
+/**
+ * Class AddToCartForm
+ * @package Dynamic\Foxy\Form
+ */
 class AddToCartForm extends Form
 {
     /**
@@ -40,6 +44,7 @@ class AddToCartForm extends Form
         $helper = $helper === null ? FoxyHelper::create() : $helper;
         if ($helper instanceof FoxyHelper) {
             $this->helper = $helper;
+
             return $this;
         }
         throw new \InvalidArgumentException('$helper needs to be an instance of FoxyHelper.');
@@ -53,6 +58,7 @@ class AddToCartForm extends Form
         if (!$this->helper) {
             $this->setFoxyHelper(FoxyHelper::create());
         }
+
         return $this->helper;
     }
 
@@ -65,13 +71,14 @@ class AddToCartForm extends Form
     {
         if ($product->isProduct()) {
             $this->product = $product;
+
             return $this;
         }
         throw new \InvalidArgumentException('$product needs to implement a Foxy DataExtension.');
     }
 
     /**
-     * @return ProductPage
+     * @return Product
      */
     public function getProduct()
     {
@@ -80,15 +87,14 @@ class AddToCartForm extends Form
 
     /**
      * AddToCartForm constructor.
-     *
-     * @param ContentController $controller
-     * @param string $name
+     * @param $controller
+     * @param $name
      * @param FieldList|null $fields
      * @param FieldList|null $actions
      * @param null $validator
      * @param null $product
      * @param null $helper
-     *
+     * @throws \SilverStripe\ORM\ValidationException
      */
     public function __construct(
         $controller,
@@ -319,12 +325,13 @@ class AddToCartForm extends Form
     }
 
     /**
-     * @param OptionItem $option
-     * @return OptionItem
+     * @param ProductOption $option
+     * @return ProductOption
      */
     protected function setAvailability(ProductOption $option)
     {
         $option->Available = ($option->getAvailability()) ? true : false;
+
         return $option;
     }
 }
