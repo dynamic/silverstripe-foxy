@@ -14,11 +14,11 @@
       modifiers = $(this).val().substring(selected.lastIndexOf('{') + 1, selected.lastIndexOf('}'));
 
     if (getAddition(modifiers) !== undefined) {
-      alteredPrice = getAddition(modifiers) + basePrice;
+      alteredPrice = parseInt(getAddition(modifiers)) + parseInt(basePrice);
     } else if (getSubtraction(modifiers) !== undefined) {
-      alteredPrice = basePrice - getSubtraction(modifiers);
+      alteredPrice = parseInt(basePrice) - parseInt(getSubtraction(modifiers));
     } else if (getNewPrice(modifiers)) {
-      alteredPrice = getNewPrice(modifiers);
+      alteredPrice = parseInt(getNewPrice(modifiers));
     }
 
     if (alteredPrice !== undefined) {
