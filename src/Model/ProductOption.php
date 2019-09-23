@@ -316,4 +316,25 @@ class ProductOption extends DataObject
 
         return Permission::checkMember($member, 'MANAGE_FOXY_PRODUCTS');
     }
+
+    /**
+     * @param $product
+     * @return mixed
+     */
+    public function getPrice($product)
+    {
+        switch ($this->PriceModifierAction) {
+            case 'Subtract':
+                return $product->Price - $this->PriceModifier;
+                break;
+            case 'Set':
+                return $this->PriceModifier;
+                break;
+            case 'Add':
+                return $product->Price + $this->PriceModifier;
+                break;
+        }
+
+        return $product->Price;
+    }
 }
