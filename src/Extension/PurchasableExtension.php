@@ -8,15 +8,22 @@ use Dynamic\Foxy\Model\Setting;
 use SilverStripe\Core\Extension;
 use SilverStripe\View\Requirements;
 
+/**
+ * Class PurchasableExtension
+ * @package Dynamic\Foxy\Extension
+ */
 class PurchasableExtension extends Extension
 {
     /**
      * @var array
      */
-    private static $allowed_actions = array(
+    private static $allowed_actions = [
         'AddToCartForm',
-    );
+    ];
 
+    /**
+     *
+     */
     public function onAfterInit()
     {
         if ($this->owner->hasMethod('isAvailable')) {
@@ -25,10 +32,6 @@ class PurchasableExtension extends Extension
                     Requirements::javascript('silverstripe/admin: thirdparty/jquery/jquery.js');
                     Requirements::javascript('dynamic/silverstripe-foxy: client/dist/javascript/product_options.js');
                 }
-                Requirements::customScript(<<<JS
-		        var productID = {$this->owner->data()->ID};
-JS
-                );
             }
         }
 
@@ -47,7 +50,7 @@ JS
     }
 
     /**
-     * @return FoxyStripePurchaseForm
+     * @return AddToCartForm
      */
     public function AddToCartForm()
     {
@@ -57,6 +60,7 @@ JS
             $form = false;
         }
         $this->owner->extend('updateAddToCartForm', $form);
+
         return $form;
     }
 
@@ -66,6 +70,7 @@ JS
     public function StoreURL()
     {
         $helper = FoxyHelper::create();
+
         return $helper::StoreURL();
     }
 }
