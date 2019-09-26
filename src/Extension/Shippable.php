@@ -13,7 +13,7 @@ class Shippable extends DataExtension
      * @var array
      */
     private static $db = [
-        'Weight' => 'Decimal',
+        'Weight' => 'Decimal(9,6)',
     ];
 
     /**
@@ -52,7 +52,7 @@ class Shippable extends DataExtension
                         __CLASS__ . '.WeightDescription',
                         'Base weight for this product in lbs. Can be modified using Product Options'
                     ))
-                    ->setScale(2),
+                    ->setScale(6),
             ],
             'FoxyCategoryID'
         );
