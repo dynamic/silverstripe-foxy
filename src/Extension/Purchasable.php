@@ -55,7 +55,7 @@ class Purchasable extends DataExtension implements PermissionProvider
      */
     private static $many_many_extraFields = [
         'Options' => [
-            'WeightModifier' => 'Decimal',
+            'WeightModifier' => 'Decimal(9,3)',
             'CodeModifier' => 'Text',
             'PriceModifier' => 'Currency',
             'WeightModifierAction' => "Enum('Add,Subtract,Set', null)",
