@@ -8,6 +8,7 @@ use SilverStripe\Forms\CurrencyField;
 use SilverStripe\Forms\DropdownField;
 use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\HeaderField;
+use SilverStripe\Forms\NumericField;
 use SilverStripe\Forms\ReadonlyField;
 use SilverStripe\Forms\TextField;
 use SilverStripe\ORM\DataObject;
@@ -77,8 +78,13 @@ class ProductOption extends DataObject
 
                 // Weight Modifier Fields
                 HeaderField::create('WeightHD', _t('OptionItem.WeightHD', 'Modify Weight'), 4),
-                TextField::create("ManyMany[WeightModifier]")
-                    ->setTitle(_t('OptionItem.WeightModifier', 'Weight')),
+                NumericField::create("ManyMany[WeightModifier]")
+                    ->setTitle(_t('OptionItem.WeightModifier', 'Weight'))
+                    ->setScale(3)
+                    ->setDescription(_t(
+                        'OptionItem.WeightDescription',
+                        'Only supports up to 3 decimal places'
+                    )),
                 DropdownField::create(
                     'ManyMany[WeightModifierAction]',
                     _t('OptionItem.WeightModifierAction', 'Weight Modification'),

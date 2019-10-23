@@ -23,7 +23,7 @@ en:
     PERMISSION_MANAGE_PRODUCTS_HELP: 'Manage products and related settings'
 
   Dynamic\Foxy\Extension\Shippable:
-    WeightDescription: 'Base weight for this product in lbs. Can be modified using Product Options'
+    WeightDescription: 'Base weight for this product in lbs. Can be modified using Product Options. Only supports up to 3 decimal places'
     WeightLabel: 'Weight'
     WeightRequired: 'You must set a product weight'
 
