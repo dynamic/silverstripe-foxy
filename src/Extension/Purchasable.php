@@ -131,8 +131,12 @@ class Purchasable extends DataExtension implements PermissionProvider
      */
     public function updateCMSFields(FieldList $fields)
     {
+        $fields->removeByName([
+            'SKU',
+        ]);
+
         $fields->addFieldsToTab(
-            'Root.Foxy.Main',
+            'Root.Ecommerce',
             [
                 CurrencyField::create('Price')
                     ->setDescription(_t(
@@ -162,11 +166,6 @@ class Purchasable extends DataExtension implements PermissionProvider
                         __CLASS__ . '.ReceiptTitleDescription',
                         'Optional. Alternate title to display on order receipt'
                     )),
-                CheckboxField::create('Available')
-                    ->setDescription(_t(
-                        __CLASS__ . '.AvailableDescription',
-                        'If unchecked, will remove "Add to Cart" form and instead display "Currently unavailable"'
-                    )),
             ],
             'Content'
         );
@@ -189,12 +188,23 @@ class Purchasable extends DataExtension implements PermissionProvider
             );
 
             $fields->addFieldsToTab(
-                'Root.Foxy.Options',
+                'Root.Options',
                 [
                     $options,
                 ]
             );
         }
+
+        $fields->addFieldsToTab(
+            'Root.Inventory',
+            [
+                CheckboxField::create('Available')
+                    ->setDescription(_t(
+                        __CLASS__ . '.AvailableDescription',
+                        'If unchecked, will remove "Add to Cart" form and instead display "Currently unavailable"'
+                    )),
+            ]
+        );
     }
 
     /**
