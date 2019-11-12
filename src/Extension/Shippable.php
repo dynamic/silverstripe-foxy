@@ -44,7 +44,7 @@ class Shippable extends DataExtension
         parent::updateCMSFields($fields);
 
         $fields->addFieldsToTab(
-            'Root.Foxy',
+            'Root.Ecommerce',
             [
                 NumericField::create('Weight')
                     ->setTitle($this->owner->fieldLabel('Weight'))
