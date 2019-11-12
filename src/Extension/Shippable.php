@@ -4,6 +4,7 @@ namespace Dynamic\Foxy\Extension;
 
 use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\NumericField;
+use SilverStripe\Forms\RequiredFields;
 use SilverStripe\ORM\DataExtension;
 use SilverStripe\ORM\ValidationResult;
 
@@ -56,6 +57,16 @@ class Shippable extends DataExtension
             ],
             'FoxyCategoryID'
         );
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getCMSValidator()
+    {
+        return new RequiredFields([
+            'Weight',
+        ]);
     }
 
     /**
