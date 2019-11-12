@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.0.1](https://github.com/dynamic/silverstripe-foxy/tree/1.0.1) (2019-11-11)
+
+[Full Changelog](https://github.com/dynamic/silverstripe-foxy/compare/1.0.0...1.0.1)
+
+**Merged pull requests:**
+
+- CMS Product CMS design [\#81](https://github.com/dynamic/silverstripe-foxy/pull/81) ([jsirish](https://github.com/jsirish))
+- BUGFIX Travis PHPCS tests [\#80](https://github.com/dynamic/silverstripe-foxy/pull/80) ([jsirish](https://github.com/jsirish))
+
 ## [1.0.0](https://github.com/dynamic/silverstripe-foxy/tree/1.0.0) (2019-10-30)
 
 [Full Changelog](https://github.com/dynamic/silverstripe-foxy/compare/ec5d269858b4774277fd21c60e5ce76023730e6f...1.0.0)
@@ -18,9 +27,9 @@
 - REQUIRE foxycart.cart\_validation.php [\#9](https://github.com/dynamic/silverstripe-foxy/issues/9)
 - NEW FoxyAdmin [\#8](https://github.com/dynamic/silverstripe-foxy/issues/8)
 - NEW FoxySettings [\#7](https://github.com/dynamic/silverstripe-foxy/issues/7)
-- NEW AddToCartForm [\#5](https://github.com/dynamic/silverstripe-foxy/issues/5)
 - NEW Shippable DataExtension [\#2](https://github.com/dynamic/silverstripe-foxy/issues/2)
 - NEW Purchasable DataExtension [\#1](https://github.com/dynamic/silverstripe-foxy/issues/1)
+- NEW AddToCartForm [\#5](https://github.com/dynamic/silverstripe-foxy/issues/5)
 
 **Fixed bugs:**
 
@@ -34,12 +43,12 @@
 
 **Closed issues:**
 
-- REFACTOR weight field to 3 decimal place [\#75](https://github.com/dynamic/silverstripe-foxy/issues/75)
 - REFACTOR Shippable to no longer extends Purchasable [\#60](https://github.com/dynamic/silverstripe-foxy/issues/60)
 - NEW implement PermissionProvider [\#27](https://github.com/dynamic/silverstripe-foxy/issues/27)
 - ProductOption - set Available to true on record create [\#23](https://github.com/dynamic/silverstripe-foxy/issues/23)
 - QuantityField - implement css/js [\#22](https://github.com/dynamic/silverstripe-foxy/issues/22)
 - NEW FoxyCategory [\#16](https://github.com/dynamic/silverstripe-foxy/issues/16)
+- REFACTOR weight field to 3 decimal place [\#75](https://github.com/dynamic/silverstripe-foxy/issues/75)
 
 **Merged pull requests:**
 
