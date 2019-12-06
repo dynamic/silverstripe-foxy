@@ -139,6 +139,27 @@ class Setting extends DataObject implements PermissionProvider, TemplateGlobalPr
                     ),
                 ]
             );
+
+            $fields->addFieldsToTab('Root.Categories', [
+                LiteralField::create('CategoryDescrip', _t(
+                    __CLASS__ . '.CategoryDescrip',
+                    '<p>FoxyCart Categories offer a way to give products additional behaviors that cannot be 
+                        accomplished by product options alone, including category specific coupon codes, 
+                        shipping and handling fees, and email receipts. 
+                        <a href="https://wiki.foxycart.com/v/2.0/categories" target="_blank">
+                            Learn More
+                        </a></p>
+                        <p>Categories you\'ve created in FoxyStripe must also be created in your 
+                            <a href="https://admin.foxycart.com/admin.php?ThisAction=ManageProductCategories" 
+                                target="_blank">FoxyCart Categories</a> admin panel.</p>'
+                )),
+                GridField::create(
+                    'FoxyCategory',
+                    _t(__CLASS__ . '.FoxyCategory', 'FoxyCart Categories'),
+                    FoxyCategory::get(),
+                    GridFieldConfig_RecordEditor::create()
+                ),
+            ]);
         });
 
         return parent::getCMSFields();
