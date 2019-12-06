@@ -1,6 +1,14 @@
 # Changelog
 
-## [1.0.1](https://github.com/dynamic/silverstripe-foxy/tree/1.0.1) (2019-11-11)
+## [1.0.2](https://github.com/dynamic/silverstripe-foxy/tree/1.0.2) (2019-12-06)
+
+[Full Changelog](https://github.com/dynamic/silverstripe-foxy/compare/1.0.1...1.0.2)
+
+**Merged pull requests:**
+
+- BUGFIX Add fields for FoxyCategory management [\#84](https://github.com/dynamic/silverstripe-foxy/pull/84) ([jsirish](https://github.com/jsirish))
+
+## [1.0.1](https://github.com/dynamic/silverstripe-foxy/tree/1.0.1) (2019-11-12)
 
 [Full Changelog](https://github.com/dynamic/silverstripe-foxy/compare/1.0.0...1.0.1)
 
