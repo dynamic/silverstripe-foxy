@@ -175,6 +175,15 @@ class AddToCartForm extends Form
                     )
             );
 
+            if ($this->product->hasMethod('AbsoluteLink')) {
+                $fields->push(
+                    HiddenField::create('url')
+                        ->setValue(
+                            self::getGeneratedValue($code, 'url', $this->product->AbsoluteLink(), 'value')
+                        )
+                );
+            }
+
             if ($this->product->hasExtension(Shippable::class)) {
                 if ($this->product->Weight > 0) {
                     $fields->push(
