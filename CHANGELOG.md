@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.0.3](https://github.com/dynamic/silverstripe-foxy/tree/1.0.3) (2019-12-11)
+
+[Full Changelog](https://github.com/dynamic/silverstripe-foxy/compare/1.0.2...1.0.3)
+
+**Merged pull requests:**
+
+- quantity field in cart now pings for quantity checks [\#85](https://github.com/dynamic/silverstripe-foxy/pull/85) ([mak001](https://github.com/mak001))
+
 ## [1.0.2](https://github.com/dynamic/silverstripe-foxy/tree/1.0.2) (2019-12-06)
 
 [Full Changelog](https://github.com/dynamic/silverstripe-foxy/compare/1.0.1...1.0.2)
