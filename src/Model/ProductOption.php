@@ -16,6 +16,22 @@ use SilverStripe\ORM\FieldType\DBBoolean;
 use SilverStripe\Security\Permission;
 use SilverStripe\Security\Security;
 
+/**
+ * Class ProductOption
+ * @package Dynamic\Foxy\Model
+ *
+ * @property string Title
+ *
+ * @property string Type
+ * @property bool Available
+ * @property string OptionModifierKey
+ * @property double WeightModifier
+ * @property string WeightModifierAction
+ * @property double PriceModifier
+ * @property string PriceModifierAction
+ * @property string CodeModifier
+ * @property string CodeModifierAction
+ */
 class ProductOption extends DataObject
 {
     /**

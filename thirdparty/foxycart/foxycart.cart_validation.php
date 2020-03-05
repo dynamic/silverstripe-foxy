@@ -156,18 +156,25 @@ class FoxyCart_Helper {
     /**
      * "Form Method": Generate HMAC SHA256 for form elements or individual <input />s
      *
-     * @return string
+     * @param string $product_code The product code
+     * @param string $option_name The field name to encode
+     * @param string|double $option_value The field value to encode
+     * @param string $method Choose to encode for the name or the value. Defaults to name.
+     * @param bool $output Will echo when true and return when false.
+     * @param bool $urlencode Output will be url encoded if true. Defaults to false.
+     * @param bool $open Should be false if the field is not user editable. (e.g. price should be false, order notes should be true)
+     *
+     * @return string|null
      **/
-    public static function fc_hash_value($product_code, $option_name, $option_value = '', $method = 'name', $output = TRUE, $urlencode = false) {
+    public static function fc_hash_value($product_code, $option_name, $option_value = '', $method = 'name', $output = TRUE, $urlencode = false, $open = true) {
         if (!$product_code || !$option_name) {
             return FALSE;
         }
         $option_name = str_replace(' ', '_', $option_name);
-        if ($option_value == '--OPEN--') {
-            $hash = hash_hmac('sha256', $product_code.$option_name.$option_value, self::$secret);
+        $hash = hash_hmac('sha256', $product_code.$option_name.$option_value, self::$secret);
+        if ($option_value == '--OPEN--' && $open) {
             $value = ($urlencode) ? urlencode($option_name).'||'.$hash.'||open' : $option_name.'||'.$hash.'||open';
         } else {
-            $hash = hash_hmac('sha256', $product_code.$option_name.$option_value, self::$secret);
             self::$log[] = '<strong>Challenge: </strong><span style="font-family:monospace; color:blue"><code>'.$product_code.$option_name.$option_value.'</code></span>';
             if ($method == 'name') {
                 $value = ($urlencode) ? urlencode($option_name).'||'.$hash : $option_name.'||'.$hash;
