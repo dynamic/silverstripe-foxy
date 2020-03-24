@@ -15,7 +15,7 @@ class FoxyLinkGeneratorController extends Controller
     /**
      *
      */
-    const URLSEGMENT = 'foxylinkgenerator';
+    public const URLSEGMENT = 'foxylinkgenerator';
 
     /**
      * @var array
@@ -59,7 +59,7 @@ class FoxyLinkGeneratorController extends Controller
         }
 
         $post_url = '';
-        foreach ($props AS $key=>$value) {
+        foreach ($props as $key => $value) {
             $post_url .= $key . '=' . $value . '&';
         }
         $post_url = rtrim($post_url, '&');
