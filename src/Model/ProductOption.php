@@ -201,6 +201,7 @@ class ProductOption extends DataObject
                     $this->{$codeModifierField} = preg_replace('/\s+/', ' ', $trimmed);
                     break;
                 }
+                /* falls through */
             case 'Set':
                 $trimmed = trim($this->{$codeModifierField});
                 $this->{$codeModifierField} = preg_replace('/\s+/', ' ', $trimmed);
