@@ -5,7 +5,6 @@ namespace Dynamic\Foxy\Extension;
 use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\NumericField;
 use SilverStripe\ORM\DataExtension;
-use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\ValidationResult;
 
 /**
@@ -14,7 +13,7 @@ use SilverStripe\ORM\ValidationResult;
  *
  * @property double Weight
  *
- * @property-read DataObject|Shippable $owner
+ * @property-read \SilverStripe\ORM\DataObject|Shippable $owner
  */
 class Shippable extends DataExtension
 {
