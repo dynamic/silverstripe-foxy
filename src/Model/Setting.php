@@ -23,9 +23,10 @@ use SilverStripe\View\TemplateGlobalProvider;
  * Class Setting
  * @package Dynamic\Foxy\Model
  *
- * @property string $StoreKey
- * @property string $StoreTitle
- * @property string $StoreDomain
+ * @property string StoreKey
+ * @property bool EnableSidecart
+ * @property string StoreTitle
+ * @property string StoreDomain
  */
 class Setting extends DataObject implements PermissionProvider, TemplateGlobalProvider
 {
@@ -111,7 +112,7 @@ class Setting extends DataObject implements PermissionProvider, TemplateGlobalPr
             if (self::store_name_warning() !== null) {
                 $fields->addFieldToTab('Root.Main', LiteralField::create('StoreSubDomainHeaderWarning', _t(
                     'ProductPage.StoreSubDomainHeaderWarning',
-                    '<p class="message error">Store domain must be entered in the 
+                    '<p class="message error">Store domain must be entered in the
                         <a href="/admin/foxy/">Foxy settings</a></p>'
                 )), 'StoreDomain');
             }

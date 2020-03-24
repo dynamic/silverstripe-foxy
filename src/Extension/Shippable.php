@@ -7,6 +7,12 @@ use SilverStripe\Forms\NumericField;
 use SilverStripe\ORM\DataExtension;
 use SilverStripe\ORM\ValidationResult;
 
+/**
+ * Class Shippable
+ * @package Dynamic\Foxy\Extension
+ *
+ * @property double Weight
+ */
 class Shippable extends DataExtension
 {
     /**

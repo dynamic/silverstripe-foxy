@@ -7,7 +7,7 @@ en:
     AvailableLabelNice: 'Available'
     ImageLabel: 'Image'
     ReceiptTitleLabel: 'Product title for receipt'
-    CodeDescription: 'Required, must be unique. Product identifier used by FoxyCart in transactions'
+    CodeDescription: 'Required, must be unique. Product identifier used by FoxyCart in transactions. All leading and trailing spaces are removed on save.'
     PriceDescription: 'Base price for this product. Can be modified using Product Options'
     PriceRequired: 'You must set a product price'
     ReceiptTitleDescription: 'Optional. Alternate title to display on order receipt'
