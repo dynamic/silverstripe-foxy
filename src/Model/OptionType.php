@@ -16,7 +16,7 @@ use Symbiote\GridFieldExtensions\GridFieldOrderableRows;
 /**
  * Class OptionType
  * @package Dynamic\Foxy\Model
- * 
+ *
  * @property string Title
  */
 class OptionType extends DataObject

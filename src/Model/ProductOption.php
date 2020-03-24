@@ -2,6 +2,7 @@
 
 namespace Dynamic\Foxy\Model;
 
+use Dynamic\Foxy\Extension\Purchasable;
 use SilverStripe\CMS\Model\SiteTree;
 use SilverStripe\Forms\CheckboxField;
 use SilverStripe\Forms\CurrencyField;
@@ -22,15 +23,17 @@ use SilverStripe\Security\Security;
  *
  * @property string Title
  *
- * @property string Type
- * @property bool Available
- * @property string OptionModifierKey
- * @property double WeightModifier
- * @property string WeightModifierAction
- * @property double PriceModifier
- * @property string PriceModifierAction
- * @property string CodeModifier
- * @property string CodeModifierAction
+ * The following are from many_many_extraFields
+ * @property-read double WeightModifier
+ * @property-read string CodeModifier
+ * @property-read double PriceModifier
+ * @property-read string WeightModifierAction
+ * @property-read string CodeModifierAction
+ * @property-read string PriceModifierAction
+ * @property-read bool Available
+ * @property-read int Type
+ * @property-read string OptionModifierKey
+ * @property-read int SortOrder
  */
 class ProductOption extends DataObject
 {
@@ -124,7 +127,7 @@ class ProductOption extends DataObject
                         'Does weight modify or replace base weight?'
                     )),
 
-                // Price Modifier FIelds
+                // Price Modifier Fields
                 HeaderField::create('PriceHD', _t('OptionItem.PriceHD', 'Modify Price'), 4),
                 CurrencyField::create('ManyMany[PriceModifier]')
                     ->setTitle(_t('OptionItem.PriceModifier', 'Price')),
@@ -184,8 +187,26 @@ class ProductOption extends DataObject
     {
         parent::onBeforeWrite();
 
-        $field = 'ManyMany[OptionModifierKey]';
-        $this->{$field} = $this->getGeneratedValue();
+        $modifierKeyField = 'ManyMany[OptionModifierKey]';
+        $this->{$modifierKeyField} = $this->getGeneratedValue();
+
+        $codeModifierField = 'ManyMany[CodeModifier]';
+        switch ($this->CodeModifierAction) {
+            case 'Subtract':
+            case 'Add':
+                if ($this->config()->get('trimAllWhitespace') == false) {
+                    // trim the right of the code - some companies use spaces to denote options
+                    $trimmed = rtrim($this->{$codeModifierField});
+                    // replace duplicate spaces
+                    $this->{$codeModifierField} = preg_replace('/\s+/', ' ', $trimmed);
+                    break;
+                }
+                /* falls through */
+            case 'Set':
+                $trimmed = trim($this->{$codeModifierField});
+                $this->{$codeModifierField} = preg_replace('/\s+/', ' ', $trimmed);
+                break;
+        }
     }
 
     /**
@@ -340,7 +361,7 @@ class ProductOption extends DataObject
     }
 
     /**
-     * @param $product
+     * @param Purchasable $product
      * @return mixed
      */
     public function getPrice($product)
@@ -348,15 +369,30 @@ class ProductOption extends DataObject
         switch ($this->PriceModifierAction) {
             case 'Subtract':
                 return $product->Price - $this->PriceModifier;
-                break;
             case 'Set':
                 return $this->PriceModifier;
-                break;
             case 'Add':
                 return $product->Price + $this->PriceModifier;
-                break;
         }
 
         return $product->Price;
+    }
+
+    /**
+     * @param Purchasable $product
+     * @return string
+     */
+    public function getCode($product)
+    {
+        switch ($this->CodeModifierAction) {
+            case 'Subtract':
+                return rtrim($product->Code, $this->CodeModifier);
+            case 'Set':
+                return $this->CodeModifier;
+            case 'Add':
+                return $product->Code . $this->CodeModifier;
+        }
+
+        return $product->Code;
     }
 }
