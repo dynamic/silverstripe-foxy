@@ -15,7 +15,7 @@ class FoxyLinkGeneratorController extends Controller
     /**
      *
      */
-    public const URLSEGMENT = 'foxylinkgenerator';
+    const URLSEGMENT = 'foxylinkgenerator'; // phpcs:ignore PSR12.Properties.ConstantVisibility.NotFound
 
     /**
      * @var array
