@@ -23,6 +23,18 @@ use Symbiote\GridFieldExtensions\GridFieldOrderableRows;
 /**
  * Class Purchasable
  * @package Dynamic\Foxy\Extension
+ *
+ * @property double Price
+ * @property string Code
+ * @property string ReceiptTitle
+ * @property bool Available
+ *
+ * @property int FoxyCategoryID
+ * @method FoxyCategory FoxyCategory()
+ *
+ * @method \SilverStripe\ORM\ManyManyList Options()
+ *
+ * @property-read \SilverStripe\ORM\DataObject|Purchasable $owner
  */
 class Purchasable extends DataExtension implements PermissionProvider
 {
@@ -142,15 +154,15 @@ class Purchasable extends DataExtension implements PermissionProvider
                 TextField::create('Code')
                     ->setDescription(_t(
                         __CLASS__ . '.CodeDescription',
-                        'Required, must be unique. Product identifier used by FoxyCart in transactions'
+                        'Required, must be unique. Product identifier used by FoxyCart in transactions. All leading and trailing spaces are removed on save.'
                     )),
                 DropdownField::create('FoxyCategoryID')
                     ->setTitle($this->owner->fieldLabel('FoxyCategoryID'))
                     ->setSource(FoxyCategory::get()->map())
                     ->setDescription(_t(
                         __CLASS__ . '.FoxyCategoryDescription',
-                        'Required. Must also exist in 
-                        <a href="https://admin.foxycart.com/admin.php?ThisAction=ManageProductCategories" 
+                        'Required. Must also exist in
+                        <a href="https://admin.foxycart.com/admin.php?ThisAction=ManageProductCategories"
                             target="_blank">
                             Foxy Categories
                         </a>.
@@ -340,5 +352,15 @@ class Purchasable extends DataExtension implements PermissionProvider
         }
 
         return Permission::checkMember($member, 'MANAGE_FOXY_PRODUCTS');
+    }
+
+    /**
+     *
+     */
+    public function onBeforeWrite()
+    {
+        // trim spaces and replace duplicate spaces
+        $trimmed = trim($this->owner->Code);
+        $this->owner->Code = preg_replace('/\s+/', ' ', $trimmed);
     }
 }

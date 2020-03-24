@@ -8,6 +8,13 @@ use SilverStripe\ORM\DataObject;
 use SilverStripe\Security\Permission;
 use SilverStripe\Security\Security;
 
+/**
+ * Class FoxyCategory
+ * @package Dynamic\Foxy\Model
+ *
+ * @property string Title
+ * @property string Code
+ */
 class FoxyCategory extends DataObject
 {
     /**

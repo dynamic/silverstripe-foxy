@@ -49,7 +49,6 @@ Dynamic\Foxy\Model\FoxyHelper:
   product_classes:
     - Dynamic\Products\Page\Product
   include_product_subclasses: 1   # (optional) include subclasses of product_classes in queries
-  
 ```
 
 Create a DataExtension `ProductOptionDataExtension`:
@@ -60,7 +59,7 @@ namespace {
 
     use Dynamic\Products\Page\Product;
     use SilverStripe\ORM\DataExtension;
-    
+
     class ProductOptionDataExtension extends DataExtension
     {
         private static $belongs_many_many = [
@@ -76,6 +75,15 @@ Dynamic\Foxy\Model\ProductOption:
   extensions:
     - ProductOptionDataExtension
 ```
+## Product option configuration
+Product options can be set to trim whitespace off code modifications.
+By default it will only trim spaces after the code and remove duplicate spaces.
+Setting `trimAllWhitespace` to true will trim all excess whitespace.
+
+```yaml
+Dynamic\Foxy\Model\ProductOption:
+  trimAllWhitespace: true
+```
 
 ## Templates
 
@@ -83,20 +91,20 @@ To include the AddToCartForm on your page/object, use `<% include AddToCartForm 
 
 ## Maintainers
  *  [Dynamic](http://www.dynamicagency.com) (<dev@dynamicagency.com>)
- 
+
 ## Bugtracker
-Bugs are tracked in the issues section of this repository. Before submitting an issue please read over 
-existing issues to ensure yours is unique. 
- 
+Bugs are tracked in the issues section of this repository. Before submitting an issue please read over
+existing issues to ensure yours is unique.
+
 If the issue does look like a new bug:
- 
+
  - Create a new issue
- - Describe the steps required to reproduce your issue, and the expected outcome. Unit tests, screenshots 
+ - Describe the steps required to reproduce your issue, and the expected outcome. Unit tests, screenshots
  and screencasts can help here.
- - Describe your environment as detailed as possible: SilverStripe version, Browser, PHP version, 
+ - Describe your environment as detailed as possible: SilverStripe version, Browser, PHP version,
  Operating System, any installed SilverStripe modules.
- 
+
 Please report security issues to the module maintainers directly. Please don't file security issues in the bugtracker.
- 
+
 ## Development and contribution
 If you would like to make contributions to the module please ensure you raise a pull request and discuss with the module maintainers.
