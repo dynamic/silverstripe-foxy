@@ -1,5 +1,24 @@
 # Changelog
 
+## [1.0.4](https://github.com/dynamic/silverstripe-foxy/tree/1.0.4) (2020-03-30)
+
+[Full Changelog](https://github.com/dynamic/silverstripe-foxy/compare/1.0.3...1.0.4)
+
+**Fixed bugs:**
+
+- BUG AddtoCartForm has issues when displaying on VirtualPage [\#91](https://github.com/dynamic/silverstripe-foxy/issues/91)
+
+**Closed issues:**
+
+- BUG - product codes should be trimmed on save [\#89](https://github.com/dynamic/silverstripe-foxy/issues/89)
+- FEATURE - Add db and relation fields to class doc blocks [\#86](https://github.com/dynamic/silverstripe-foxy/issues/86)
+- purchasable items should trim codes and title before saving [\#77](https://github.com/dynamic/silverstripe-foxy/issues/77)
+
+**Merged pull requests:**
+
+- BUGFIX reset $product to VirtualPage’s page it’s based on [\#92](https://github.com/dynamic/silverstripe-foxy/pull/92) ([muskie9](https://github.com/muskie9))
+- Added code trimming for product and option codes [\#90](https://github.com/dynamic/silverstripe-foxy/pull/90) ([mak001](https://github.com/mak001))
+
 ## [1.0.3](https://github.com/dynamic/silverstripe-foxy/tree/1.0.3) (2019-12-11)
 
 [Full Changelog](https://github.com/dynamic/silverstripe-foxy/compare/1.0.2...1.0.3)
