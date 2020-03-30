@@ -7,6 +7,7 @@ use Dynamic\Foxy\Model\FoxyHelper;
 use Dynamic\Foxy\Model\OptionType;
 use Dynamic\Foxy\Model\ProductOption;
 use Dynamic\Products\Page\Product;
+use SilverStripe\CMS\Model\VirtualPage;
 use SilverStripe\Forms\CompositeField;
 use SilverStripe\Forms\DropdownField;
 use SilverStripe\Forms\FieldList;
@@ -69,6 +70,10 @@ class AddToCartForm extends Form
      */
     public function setProduct($product)
     {
+        if ($product instanceof VirtualPage) {
+            $product = $this->getFoxyHelper()->getProducts()->filter('ID', $product->CopyContentFromID)->first();
+        }
+
         if ($product->isProduct()) {
             $this->product = $product;
 
