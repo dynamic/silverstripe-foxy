@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.1.0](https://github.com/dynamic/silverstripe-foxy/tree/1.1.0) (2020-04-09)
+
+[Full Changelog](https://github.com/dynamic/silverstripe-foxy/compare/1.0.4...1.1.0)
+
+**Merged pull requests:**
+
+- ENHANCEMENT QuantityMax to restrict quantity of product in cart [\#93](https://github.com/dynamic/silverstripe-foxy/pull/93) ([muskie9](https://github.com/muskie9))
+
 ## [1.0.4](https://github.com/dynamic/silverstripe-foxy/tree/1.0.4) (2020-03-30)
 
 [Full Changelog](https://github.com/dynamic/silverstripe-foxy/compare/1.0.3...1.0.4)
@@ -10,9 +18,9 @@
 
 **Closed issues:**
 
-- BUG - product codes should be trimmed on save [\#89](https://github.com/dynamic/silverstripe-foxy/issues/89)
 - FEATURE - Add db and relation fields to class doc blocks [\#86](https://github.com/dynamic/silverstripe-foxy/issues/86)
 - purchasable items should trim codes and title before saving [\#77](https://github.com/dynamic/silverstripe-foxy/issues/77)
+- BUG - product codes should be trimmed on save [\#89](https://github.com/dynamic/silverstripe-foxy/issues/89)
 
 **Merged pull requests:**
 
