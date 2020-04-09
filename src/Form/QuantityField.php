@@ -71,6 +71,10 @@ class QuantityField extends NumericField
             'quantityGenerated' => AddToCartForm::getGeneratedValue($code, 'quantity', $value, 'value'),
         ];
 
+        if ($this->getProduct()->QuantityMax > 0) {
+            $data['limit'] = $this->getProduct()->QuantityMax;
+        }
+
         $this->extend('updateData', $data);
 
         return json_encode($data);
