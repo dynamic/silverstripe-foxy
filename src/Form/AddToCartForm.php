@@ -225,10 +225,10 @@ class AddToCartForm extends Form
 
             $optionsSet = $this->getProductOptionSet();
             $fields->push($optionsSet);
-            $quantityMax = (FoxyHelper::config()->get('max_quantity' != null)) ?
-                FoxyHelper::config()->get('MaxQuantity') :
-                10;
-            $fields->push(QuantityField::create('x:visibleQuantity')->setTitle('Quantity')->setValue(1));
+
+            if ($this->product->QuantityMax != 1) {
+                $fields->push(QuantityField::create('x:visibleQuantity')->setTitle('Quantity')->setValue(1));
+            }
             $fields->push(
                 HiddenField::create('quantity')
                     ->setValue(

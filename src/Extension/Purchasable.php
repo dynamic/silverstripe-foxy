@@ -29,6 +29,7 @@ use Symbiote\GridFieldExtensions\GridFieldOrderableRows;
  * @property string Code
  * @property string ReceiptTitle
  * @property bool Available
+ * @property int $QuantityMax
  *
  * @property int FoxyCategoryID
  * @method FoxyCategory FoxyCategory()

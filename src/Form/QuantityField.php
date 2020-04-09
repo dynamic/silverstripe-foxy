@@ -35,6 +35,9 @@ class QuantityField extends NumericField
         $this->setAttribute('data-code', $this->getProduct()->Code);
         $this->setAttribute('data-id', $this->getProduct()->ID);
         $this->setAttribute('id', 'quantity-toggle-field');
+        if ($this->getProduct()->QuantityMax > 0) {
+            $this->setAttribute('data-limit', $this->getProduct()->QuantityMax);
+        }
 
         return parent::Field($properties);
     }
