@@ -34,8 +34,7 @@ var uglify = require('gulp-uglify');
 var pump = require('pump');
 var concat = require('gulp-concat');
 var browserSync = require('browser-sync').create();
-var favicons = require("gulp-favicons"),
-    gutil = require("gulp-util");
+var gutil = require("gulp-util");
 
 
 var paths = {

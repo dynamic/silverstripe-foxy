@@ -11,6 +11,7 @@ use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\GridField\GridField;
 use SilverStripe\Forms\GridField\GridFieldAddExistingAutocompleter;
 use SilverStripe\Forms\GridField\GridFieldConfig_RelationEditor;
+use SilverStripe\Forms\NumericField;
 use SilverStripe\Forms\TextField;
 use SilverStripe\ORM\DataExtension;
 use SilverStripe\ORM\ValidationResult;
@@ -28,6 +29,7 @@ use Symbiote\GridFieldExtensions\GridFieldOrderableRows;
  * @property string Code
  * @property string ReceiptTitle
  * @property bool Available
+ * @property int $QuantityMax
  *
  * @property int FoxyCategoryID
  * @method FoxyCategory FoxyCategory()
@@ -46,6 +48,7 @@ class Purchasable extends DataExtension implements PermissionProvider
         'Code' => 'Varchar(100)',
         'ReceiptTitle' => 'HTMLVarchar(255)',
         'Available' => 'Boolean',
+        'QuantityMax' => 'Int',
     ];
 
     /**
@@ -210,6 +213,10 @@ class Purchasable extends DataExtension implements PermissionProvider
         $fields->addFieldsToTab(
             'Root.Inventory',
             [
+                NumericField::create('QuantityMax')
+                    ->setTitle('Maximum quantity allowed in the cart')
+                    ->setDescription('For unlimited enter 0')
+                    ->addExtraClass('stacked'),
                 CheckboxField::create('Available')
                     ->setDescription(_t(
                         __CLASS__ . '.AvailableDescription',

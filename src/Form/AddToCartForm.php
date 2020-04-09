@@ -109,7 +109,8 @@ class AddToCartForm extends Form
         $validator = null,
         $product = null,
         $helper = null
-    ) {
+    )
+    {
         $this->setProduct($product);
         $this->setFoxyHelper($helper);
 
@@ -215,12 +216,19 @@ class AddToCartForm extends Form
                 }
             }
 
+            if ($this->product->QuantityMax > 0) {
+                $fields->push(
+                    HiddenField::create('quantity_max')
+                        ->setValue(self::getGeneratedValue($code, 'quantity_max', $this->product->QuantityMax, 'value'))
+                );
+            }
+
             $optionsSet = $this->getProductOptionSet();
             $fields->push($optionsSet);
-            $quantityMax = (FoxyHelper::config()->get('max_quantity' != null)) ?
-                FoxyHelper::config()->get('MaxQuantity') :
-                10;
-            $fields->push(QuantityField::create('x:visibleQuantity')->setTitle('Quantity')->setValue(1));
+
+            if ($this->product->QuantityMax != 1) {
+                $fields->push(QuantityField::create('x:visibleQuantity')->setTitle('Quantity')->setValue(1));
+            }
             $fields->push(
                 HiddenField::create('quantity')
                     ->setValue(
@@ -280,7 +288,8 @@ class AddToCartForm extends Form
         $method = 'name',
         $output = false,
         $urlEncode = false
-    ) {
+    )
+    {
         $optionName = ($optionName !== null) ? preg_replace('/\s/', '_', $optionName) : $optionName;
         $helper = FoxyHelper::create();
 
