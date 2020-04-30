@@ -4,6 +4,7 @@ namespace Dynamic\Foxy\Extension;
 
 use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\NumericField;
+use SilverStripe\Forms\RequiredFields;
 use SilverStripe\ORM\DataExtension;
 use SilverStripe\ORM\ValidationResult;
 
@@ -65,17 +66,15 @@ class Shippable extends DataExtension
     }
 
     /**
-     * @return \SilverStripe\ORM\ValidationResult
+     * @return RequiredFields
      */
-    public function validate(ValidationResult $validationResult)
+    public function getCMSValidator()
     {
-        // todo: validation fails even if positive value is entered
-        /*
-        if ($this->owner->Weight <= 0) {
-            $validationResult->addError(
-                _t(__CLASS__ . '.WeightRequired', 'You must set a product weight in the Foxy tab.')
-            );
-        }
-        */
+        return new RequiredFields([
+            "Price",
+            "Code",
+            "FoxyCategoryID",
+            'Weight',
+        ]);
     }
 }
