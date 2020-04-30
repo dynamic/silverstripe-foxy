@@ -220,29 +220,15 @@ class Purchasable extends DataExtension implements PermissionProvider
     }
 
     /**
-     * @return \SilverStripe\ORM\ValidationResult
+     * @return RequiredFields
      */
-    public function validate(ValidationResult $validationResult)
+    public function getCMSValidator()
     {
-        /*
-        if (!$this->owner->Price) {
-            $validationResult->addError(
-                _t(__CLASS__ . '.PriceRequired', 'You must set a product price in the Foxy tab')
-            );
-        }
-
-        if (!$this->owner->Code) {
-            $validationResult->addError(
-                _t(__CLASS__ . '.CodeRequired', 'You must set a product code in the Foxy tab')
-            );
-        }
-
-        if (!$this->owner->FoxyCategoryID) {
-            $validationResult->addError(
-                _t(__CLASS__ . '.FoxyCategoryRequired', 'You must set a foxy category in the Foxy tab.')
-            );
-        }
-        */
+        return new RequiredFields([
+            "Price",
+            "Code",
+            "FoxyCategoryID",
+        ]);
     }
 
     /**
