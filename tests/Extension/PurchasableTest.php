@@ -17,6 +17,10 @@ use SilverStripe\i18n\i18n;
 use SilverStripe\ORM\ValidationException;
 use SilverStripe\Security\Member;
 
+/**
+ * Class PurchasableTest
+ * @package Dynamic\Foxy\Test\Extension
+ */
 class PurchasableTest extends SapphireTest
 {
     /**
@@ -29,6 +33,15 @@ class PurchasableTest extends SapphireTest
      */
     protected static $extra_dataobjects = [
         TestProduct::class,
+    ];
+
+    /**
+     * @var \string[][]
+     */
+    protected static $required_extensions = [
+        TestProduct::class => [
+            Purchasable::class,
+        ]
     ];
 
     /**

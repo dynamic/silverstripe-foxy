@@ -9,10 +9,20 @@ use SilverStripe\Dev\Debug;
 use SilverStripe\Dev\SapphireTest;
 use SilverStripe\Forms\FieldList;
 
+/**
+ * Class ShippableTest
+ * @package Dynamic\Foxy\Test\Extension
+ */
 class ShippableTest extends SapphireTest
 {
+    /**
+     * @var string
+     */
     protected static $fixture_file = '../fixtures.yml';
 
+    /**
+     * 
+     */
     public function testUpdateCMSFields()
     {
         $object = Injector::inst()->create(TestShippableProduct::class);
