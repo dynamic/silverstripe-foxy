@@ -4,6 +4,7 @@ namespace Dynamic\Foxy\Extension;
 
 use Dynamic\Foxy\Model\FoxyCategory;
 use Dynamic\Foxy\Model\ProductOption;
+use Dynamic\Foxy\Model\VariationSet;
 use SilverStripe\Forms\CheckboxField;
 use SilverStripe\Forms\CurrencyField;
 use SilverStripe\Forms\DropdownField;
@@ -63,6 +64,11 @@ class Purchasable extends DataExtension implements PermissionProvider
      */
     private static $many_many = [
         'Options' => ProductOption::class,
+        'Variations' => [
+            'through' => VariationSet::class,
+            'from' => 'Product',
+            'to' => 'Variation',
+        ],
     ];
 
     /**
@@ -185,7 +191,7 @@ class Purchasable extends DataExtension implements PermissionProvider
             'Content'
         );
 
-        if ($this->owner->ID) {
+        if ($this->owner->exists()) {
             $config = GridFieldConfig_RelationEditor::create();
             $config
                 ->addComponents([
@@ -207,6 +213,25 @@ class Purchasable extends DataExtension implements PermissionProvider
                 [
                     $options,
                 ]
+            );
+
+            $variationsConfig = GridFieldConfig_RelationEditor::create()
+                ->addComponents([
+                    new GridFieldOrderableRows('SortOrder'),
+                    new GridFieldAddExistingSearchButton(),
+                ])
+                ->removeComponentsByType([
+                    GridFieldAddExistingAutocompleter::class,
+                ]);
+
+            $fields->addFieldToTab(
+                'Root.Variations',
+                GridField::create(
+                    'Variations',
+                    'Variations',
+                    $this->owner->Variations(),
+                    $variationsConfig
+                )
             );
         }
 
