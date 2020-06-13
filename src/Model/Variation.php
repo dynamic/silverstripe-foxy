@@ -7,6 +7,7 @@ use SilverStripe\Assets\File;
 use SilverStripe\Forms\CheckboxField;
 use SilverStripe\Forms\CurrencyField;
 use SilverStripe\Forms\DropdownField;
+use SilverStripe\Forms\FieldGroup;
 use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\NumericField;
 use SilverStripe\Forms\ReadonlyField;
@@ -101,8 +102,123 @@ class Variation extends DataObject
         $this->beforeUpdateCMSFields(function (FieldList $fields) {
             $fields->removeByName([
                 'Images',
+                'WeightModifier',
+                'CodeModifier',
+                'PriceModifier',
+                'WeightModifierAction',
+                'CodeModifierAction',
+                'PriceModifierAction',
+                'Available',
+                'Type',
                 'OptionModifierKey',
+                'SortOrder',
+                'VariationsOf',
             ]);
+
+            $fields->insertBefore(
+                'Content',
+                CheckboxField::create('Available')
+                    ->setTitle('Available for purchase')
+            );
+
+            if ($this->exists()) {
+                $fields->addFieldToTab(
+                    'Root.ProductModifications',
+                    ReadonlyField::create('OptionModifierKey')
+                        ->setTitle(_t('Variation.ModifierKey', 'Modifier Key'))
+                );
+            }
+
+            $fields->addFieldsToTab(
+                'Root.ProductModifications',
+                [
+                    FieldGroup::create(
+                        DropdownField::create(
+                            'WeightModifierAction',
+                            _t('Variation.WeightModifierAction', 'Weight Modification Type'),
+                            [
+                                'Add' => _t(
+                                    'Variation.WeightAdd',
+                                    'Add to Base Weight',
+                                    'Add to weight'
+                                ),
+                                'Subtract' => _t(
+                                    'Variation.WeightSubtract',
+                                    'Subtract from Base Weight',
+                                    'Subtract from weight'
+                                ),
+                                'Set' => _t('Variation.WeightSet', 'Set as a new Weight'),
+                            ]
+                        )
+                            ->setEmptyString('')
+                            ->setDescription(_t(
+                                'Variation.WeightDescription',
+                                'Does weight modify or replace base weight?'
+                            )),
+                        NumericField::create("WeightModifier")
+                            ->setTitle(_t('Variation.WeightModifier', 'Weight'))
+                            ->setScale(3)
+                            ->setDescription(_t(
+                                'Variation.WeightDescription',
+                                'Only supports up to 3 decimal places'
+                            ))->displayIf('WeightModifierAction')->isNotEmpty()->end()
+                    )->setTitle('Weight Modification'),
+
+                    // Price Modifier Fields
+                    //HeaderField::create('PriceHD', _t('Variation.PriceHD', 'Modify Price'), 4),
+                    FieldGroup::create(
+                        DropdownField::create(
+                            'PriceModifierAction',
+                            _t('Variation.PriceModifierAction', 'Price Modification Type'),
+                            [
+                                'Add' => _t(
+                                    'Variation.PriceAdd',
+                                    'Add to Base Price',
+                                    'Add to price'
+                                ),
+                                'Subtract' => _t(
+                                    'Variation.PriceSubtract',
+                                    'Subtract from Base Price',
+                                    'Subtract from price'
+                                ),
+                                'Set' => _t('Variation.PriceSet', 'Set as a new Price'),
+                            ]
+                        )
+                            ->setEmptyString('')
+                            ->setDescription(_t('Variation.PriceDescription', 'Does price modify or replace base price?')),
+                        CurrencyField::create('PriceModifier')
+                            ->setTitle(_t('Variation.PriceModifier', 'Price'))
+                            ->displayIf('PriceModifierAction')->isNotEmpty()->end()
+                    )->setTitle('Price Modifications'),
+
+                    // Code Modifier Fields
+                    //HeaderField::create('CodeHD', _t('Variation.CodeHD', 'Modify Code'), 4),
+                    FieldGroup::create(
+                        DropdownField::create(
+                            'CodeModifierAction',
+                            _t('Variation.CodeModifierAction', 'Code Modification Type'),
+                            [
+                                'Add' => _t(
+                                    'Variation.CodeAdd',
+                                    'Add to Base Code',
+                                    'Add to code'
+                                ),
+                                'Subtract' => _t(
+                                    'Variation.CodeSubtract',
+                                    'Subtract from Base Code',
+                                    'Subtract from code'
+                                ),
+                                'Set' => _t('Variation.CodeSet', 'Set as a new Code'),
+                            ]
+                        )
+                            ->setEmptyString('')
+                            ->setDescription(_t('Variation.CodeDescription', 'Does code modify or replace base code?')),
+                        TextField::create('CodeModifier')
+                            ->setTitle(_t('Variation.CodeModifier', 'Code'))
+                            ->displayIf('CodeModifierAction')->isNotEmpty()->end()
+                    )->setTitle('Code Modification'),
+                ]
+            );
 
             // Images tab
             $images = SortableUploadField::create('Images')
@@ -114,101 +230,6 @@ class Variation extends DataObject
             $fields->addFieldsToTab('Root.Images', [
                 $images,
             ]);
-
-            if ($this->exists()) {
-                $fields->addFieldToTab(
-                    'Root.Main',
-                    ReadonlyField::create('OptionModifierKey')
-                        ->setTitle(_t('Variation.ModifierKey', 'Modifier Key'))
-                );
-            }
-
-            $fields->addFieldsToTab(
-                'Root.Main',
-                [
-                    CheckboxField::create('Available', 'Available for purchase'),
-
-                    // Weight Modifier Fields
-                    //HeaderField::create('WeightHD', _t('Variation.WeightHD', 'Modify Weight'), 4),
-                    NumericField::create("WeightModifier")
-                        ->setTitle(_t('Variation.WeightModifier', 'Weight'))
-                        ->setScale(3)
-                        ->setDescription(_t(
-                            'Variation.WeightDescription',
-                            'Only supports up to 3 decimal places'
-                        )),
-                    DropdownField::create(
-                        'WeightModifierAction',
-                        _t('Variation.WeightModifierAction', 'Weight Modification'),
-                        [
-                            'Add' => _t(
-                                'Variation.WeightAdd',
-                                'Add to Base Weight',
-                                'Add to weight'
-                            ),
-                            'Subtract' => _t(
-                                'Variation.WeightSubtract',
-                                'Subtract from Base Weight',
-                                'Subtract from weight'
-                            ),
-                            'Set' => _t('Variation.WeightSet', 'Set as a new Weight'),
-                        ]
-                    )
-                        ->setEmptyString('')
-                        ->setDescription(_t(
-                            'Variation.WeightDescription',
-                            'Does weight modify or replace base weight?'
-                        )),
-
-                    // Price Modifier Fields
-                    //HeaderField::create('PriceHD', _t('Variation.PriceHD', 'Modify Price'), 4),
-                    CurrencyField::create('PriceModifier')
-                        ->setTitle(_t('Variation.PriceModifier', 'Price')),
-                    DropdownField::create(
-                        'PriceModifierAction',
-                        _t('Variation.PriceModifierAction', 'Price Modification'),
-                        [
-                            'Add' => _t(
-                                'Variation.PriceAdd',
-                                'Add to Base Price',
-                                'Add to price'
-                            ),
-                            'Subtract' => _t(
-                                'Variation.PriceSubtract',
-                                'Subtract from Base Price',
-                                'Subtract from price'
-                            ),
-                            'Set' => _t('Variation.PriceSet', 'Set as a new Price'),
-                        ]
-                    )
-                        ->setEmptyString('')
-                        ->setDescription(_t('Variation.PriceDescription', 'Does price modify or replace base price?')),
-
-                    // Code Modifier Fields
-                    //HeaderField::create('CodeHD', _t('Variation.CodeHD', 'Modify Code'), 4),
-                    TextField::create('CodeModifier')
-                        ->setTitle(_t('Variation.CodeModifier', 'Code')),
-                    DropdownField::create(
-                        'CodeModifierAction',
-                        _t('Variation.CodeModifierAction', 'Code Modification'),
-                        [
-                            'Add' => _t(
-                                'Variation.CodeAdd',
-                                'Add to Base Code',
-                                'Add to code'
-                            ),
-                            'Subtract' => _t(
-                                'Variation.CodeSubtract',
-                                'Subtract from Base Code',
-                                'Subtract from code'
-                            ),
-                            'Set' => _t('Variation.CodeSet', 'Set as a new Code'),
-                        ]
-                    )
-                        ->setEmptyString('')
-                        ->setDescription(_t('Variation.CodeDescription', 'Does code modify or replace base code?')),
-                ]
-            );
         });
 
         return parent::getCMSFields();
