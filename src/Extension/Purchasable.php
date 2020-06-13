@@ -217,7 +217,6 @@ class Purchasable extends DataExtension implements PermissionProvider
 
             $variationsConfig = GridFieldConfig_RelationEditor::create()
                 ->addComponents([
-                    new GridFieldOrderableRows('SortOrder'),
                     new GridFieldAddExistingSearchButton(),
                 ])
                 ->removeComponentsByType([

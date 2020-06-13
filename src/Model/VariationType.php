@@ -2,6 +2,7 @@
 
 namespace Dynamic\Foxy\Model;
 
+use SilverStripe\Forms\FieldList;
 use SilverStripe\ORM\DataObject;
 
 /**
@@ -38,4 +39,18 @@ class VariationType extends DataObject
     private static $has_many = [
         'VariationSets' => VariationSet::class,
     ];
+
+    /**
+     * @return FieldList
+     */
+    public function getCMSFields()
+    {
+        $this->beforeUpdateCMSFields(function (FieldList $fields) {
+            $fields->removeByName([
+                'VariationSets',
+            ]);
+        });
+
+        return parent::getCMSFields();
+    }
 }
