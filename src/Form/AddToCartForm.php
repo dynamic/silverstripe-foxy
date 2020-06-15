@@ -227,8 +227,6 @@ class AddToCartForm extends Form
                 );
             }
 
-            //$optionsSet = $this->getProductOptionSet();
-            //$fields->push($optionsSet);
             $fields->push($this->getProductVariations());
 
 
@@ -304,6 +302,8 @@ class AddToCartForm extends Form
 
     /**
      * @return CompositeField
+     *
+     * @deprecated
      */
     protected function getProductOptionSet()
     {
@@ -414,6 +414,8 @@ class AddToCartForm extends Form
     /**
      * @param ProductOption $option
      * @return ProductOption
+     *
+     * @deprecated
      */
     protected function setAvailability(ProductOption $option)
     {
