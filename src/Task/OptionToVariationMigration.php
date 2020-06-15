@@ -6,9 +6,14 @@ use Dynamic\Foxy\Model\FoxyHelper;
 use Dynamic\Foxy\Model\OptionType;
 use Dynamic\Foxy\Model\Variation;
 use Dynamic\Foxy\Model\VariationType;
+use SilverStripe\Control\HTTPRequest;
 use SilverStripe\Dev\BuildTask;
 use SilverStripe\ORM\ValidationException;
 
+/**
+ * Class OptionToVariationMigration
+ * @package Dynamic\Foxy\Task
+ */
 class OptionToVariationMigration extends BuildTask
 {
     /**
@@ -42,6 +47,10 @@ class OptionToVariationMigration extends BuildTask
      */
     private $type_map = [];
 
+    /**
+     * @param HTTPRequest $request
+     * @throws ValidationException
+     */
     public function run($request)
     {
         foreach ($this->yieldSingle(FoxyHelper::singleton()->getProducts()) as $product) {
