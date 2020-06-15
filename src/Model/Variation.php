@@ -121,6 +121,14 @@ class Variation extends DataObject
     ];
 
     /**
+     * @var string[]
+     */
+    private static $default_sort = [
+        'VariationType.SortOrder' => 'ASC',
+        'SortOrder' => 'ASC',
+    ];
+
+    /**
      * The relation name was established before requests for videos.
      * The relation has subsequently been updated from Image::class to File::class
      * to allow for additional file types such as mp4
