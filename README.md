@@ -78,34 +78,9 @@ Dynamic\Foxy\Model\ProductOption:
 
 ## Product Variation Configuration
 
-Product variations are similar to the old Product Options, however they leverage the newer many many through relation. This allows a more robust offering for product variations such as enhanced versioning, ownership, and relations.
+Product variations are similar to the old Product Options, however they have been reworked to use the has many relation. This allows a more robust offering for product variations such as images per variation as well as inventory control (currently roadmapped).
 
-You will need to implement two DataExtensions for the new relation type to work:
-
-**VariationSetDataExtension.php**
-
-```php
-<?php
-
-namespace {
-
-    use Dynamic\Products\Page\Product;
-    use SilverStripe\ORM\DataExtension;
-
-    /**
-     * Class VariationSetDataExtension
-     */
-    class VariationSetDataExtension extends DataExtension
-    {
-        /**
-         * @var string[]
-         */
-        private static $has_one = [
-            'Product' => Product::class,
-        ];
-    }
-}
-```
+You will need to implement a DataExtension for the new relation type to work:
 
 **VariationDataExtension.php**
 
@@ -125,8 +100,8 @@ namespace {
         /**
          * @var string[]
          */
-        private static $belongs_many_many = [
-            'VariationsOf' => Product::class,
+        private static $has_one = [
+            'Product' => Product::class,
         ];
     }
 }
