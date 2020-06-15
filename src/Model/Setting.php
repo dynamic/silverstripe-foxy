@@ -142,10 +142,10 @@ class Setting extends DataObject implements PermissionProvider, TemplateGlobalPr
             );
 
             $fields->addFieldsToTab(
-                'Root.Options.VariantTypes',
+                'Root.Options.VariationTypes',
                 [
-                    LiteralField::create('OptionGroupsDescrip', _t(
-                        __CLASS__ . '.OptionGroupsDescrip',
+                    LiteralField::create('VariationDescrip', _t(
+                        __CLASS__ . '.VariationDescrip',
                         '<p>Product Variation Types allow you to group a set of product variants by type.</p>'
                     )),
                     GridField::create(

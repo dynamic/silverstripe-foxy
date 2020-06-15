@@ -4,7 +4,7 @@ namespace Dynamic\Foxy\Extension;
 
 use Dynamic\Foxy\Model\FoxyCategory;
 use Dynamic\Foxy\Model\ProductOption;
-use Dynamic\Foxy\Model\VariationSet;
+use Dynamic\Foxy\Model\Variation;
 use SilverStripe\Forms\CheckboxField;
 use SilverStripe\Forms\CurrencyField;
 use SilverStripe\Forms\DropdownField;
@@ -15,6 +15,9 @@ use SilverStripe\Forms\GridField\GridFieldConfig_RelationEditor;
 use SilverStripe\Forms\NumericField;
 use SilverStripe\Forms\TextField;
 use SilverStripe\ORM\DataExtension;
+use SilverStripe\ORM\DataObject;
+use SilverStripe\ORM\HasManyList;
+use SilverStripe\ORM\ManyManyList;
 use SilverStripe\ORM\ValidationResult;
 use SilverStripe\Security\Permission;
 use SilverStripe\Security\PermissionProvider;
@@ -35,9 +38,10 @@ use Symbiote\GridFieldExtensions\GridFieldOrderableRows;
  * @property int FoxyCategoryID
  * @method FoxyCategory FoxyCategory()
  *
- * @method \SilverStripe\ORM\ManyManyList Options()
+ * @method HasManyList Variations()
+ * @method ManyManyList Options()
  *
- * @property-read \SilverStripe\ORM\DataObject|Purchasable $owner
+ * @property-read DataObject|Purchasable $owner
  */
 class Purchasable extends DataExtension implements PermissionProvider
 {
@@ -60,15 +64,17 @@ class Purchasable extends DataExtension implements PermissionProvider
     ];
 
     /**
+     * @var string[]
+     */
+    private static $has_many = [
+        'Variations' => Variation::class,
+    ];
+
+    /**
      * @var array
      */
     private static $many_many = [
         'Options' => ProductOption::class,
-        'Variations' => [
-            'through' => VariationSet::class,
-            'from' => 'Product',
-            'to' => 'Variation',
-        ],
     ];
 
     /**
@@ -130,9 +136,7 @@ class Purchasable extends DataExtension implements PermissionProvider
     ];
 
     /**
-     * @param bool $includerelations
-     *
-     * @return array
+     * @param array $labels
      */
     public function updateFieldLabels(&$labels)
     {
@@ -216,9 +220,6 @@ class Purchasable extends DataExtension implements PermissionProvider
             );
 
             $variationsConfig = GridFieldConfig_RelationEditor::create()
-                ->addComponents([
-                    new GridFieldAddExistingSearchButton(),
-                ])
                 ->removeComponentsByType([
                     GridFieldAddExistingAutocompleter::class,
                 ]);
@@ -251,7 +252,7 @@ class Purchasable extends DataExtension implements PermissionProvider
     }
 
     /**
-     * @return \SilverStripe\ORM\ValidationResult
+     * @param ValidationResult $validationResult
      */
     public function validate(ValidationResult $validationResult)
     {

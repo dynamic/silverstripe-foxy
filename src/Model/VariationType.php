@@ -37,7 +37,7 @@ class VariationType extends DataObject
      * @var string[]
      */
     private static $has_many = [
-        'VariationSets' => VariationSet::class,
+        'Variations' => Variation::class,
     ];
 
     /**

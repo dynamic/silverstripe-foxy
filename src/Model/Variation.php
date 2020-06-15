@@ -13,6 +13,7 @@ use SilverStripe\Forms\NumericField;
 use SilverStripe\Forms\ReadonlyField;
 use SilverStripe\Forms\TextField;
 use SilverStripe\ORM\DataObject;
+use SilverStripe\ORM\ValidationResult;
 
 /**
  * Class Variation
@@ -40,6 +41,7 @@ class Variation extends DataObject
      */
     private static $db = [
         'Title' => 'Varchar(255)',
+        'UseProductContent' => 'Boolean',
         'Content' => 'HTMLText',
         'WeightModifier' => 'Decimal(9,3)',
         'CodeModifier' => 'Text',
@@ -51,6 +53,13 @@ class Variation extends DataObject
         'Type' => 'Int',
         'OptionModifierKey' => 'Varchar(255)',
         'SortOrder' => 'Int',
+    ];
+
+    /**
+     * @var string[]
+     */
+    private static $has_one = [
+        'VariationType' => VariationType::class,
     ];
 
     /**
@@ -93,7 +102,6 @@ class Variation extends DataObject
         'mp4',
     ];
 
-
     /**
      * @return FieldList
      */
@@ -112,7 +120,7 @@ class Variation extends DataObject
                 'Type',
                 'OptionModifierKey',
                 'SortOrder',
-                'VariationsOf',
+                'ProductID',
             ]);
 
             $fields->insertBefore(
@@ -120,6 +128,20 @@ class Variation extends DataObject
                 CheckboxField::create('Available')
                     ->setTitle('Available for purchase')
             );
+
+            $fields->insertBefore(
+                'Content',
+                $fields->dataFieldByName('VariationTypeID')
+            );
+
+            $fields->insertBefore(
+                'Content',
+                $fields->dataFieldByName('UseProductContent')
+            );
+
+            $content = $fields->dataFieldByName('Content');
+
+            $content->hideUnless('UseProductContent')->isNotChecked()->end();
 
             if ($this->exists()) {
                 $fields->addFieldToTab(
@@ -262,6 +284,24 @@ class Variation extends DataObject
                 $this->{$codeModifierField} = preg_replace('/\s+/', ' ', $trimmed);
                 break;
         }
+    }
+
+    /**
+     * @return ValidationResult
+     */
+    public function validate()
+    {
+        $validate = parent::validate();
+
+        if (!$this->Title) {
+            $validate->addFieldError('Title', 'A title is required');
+        }
+
+        if (!$this->VariationTypeID) {
+            $validate->addFieldError('VariationTypeID', 'A variation type is required');
+        }
+
+        return $validate;
     }
 
     /**
