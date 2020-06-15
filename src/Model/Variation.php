@@ -13,11 +13,34 @@ use SilverStripe\Forms\NumericField;
 use SilverStripe\Forms\ReadonlyField;
 use SilverStripe\Forms\TextField;
 use SilverStripe\ORM\DataObject;
+use SilverStripe\ORM\ManyManyList;
 use SilverStripe\ORM\ValidationResult;
 
 /**
  * Class Variation
  * @package Dynamic\Foxy\Model
+ *
+ * @property string $Title
+ * @property bool $UseProductContent
+ * @property string Content
+ * @property float $WeightModifier
+ * @property string $CodeModifier
+ * @property float $PriceModifier
+ * @property string $WeightModifierAction
+ * @property string $CodeModifierAction
+ * @property string $PriceModifierAction
+ * @property bool $Available
+ * @property int $Type
+ * @property string $OptionModifierKey
+ * @property int $SortOrder
+ * @property float $FinalPrice
+ * @property float $FinalWeight
+ * @property string $FinalCode
+ * @property int $VariationTypeID
+ *
+ * @method VariationType VariationType()
+ *
+ * @method ManyManyList Images()
  */
 class Variation extends DataObject
 {
@@ -53,6 +76,18 @@ class Variation extends DataObject
         'Type' => 'Int',
         'OptionModifierKey' => 'Varchar(255)',
         'SortOrder' => 'Int',
+        'FinalPrice' => 'Currency',
+        'FinalWeight' => 'Decimal(9,3)',
+        'FinalCode' => 'Text',
+    ];
+
+    /**
+     * @var string[]
+     */
+    private static $indexes = [
+        'FinalPrice' => true,
+        'FinalWeight' => true,
+        'FinalCode' => true,
     ];
 
     /**
@@ -121,6 +156,9 @@ class Variation extends DataObject
                 'OptionModifierKey',
                 'SortOrder',
                 'ProductID',
+                'FinalPrice',
+                'FinalWeight',
+                'FinalCode',
             ]);
 
             $fields->insertBefore(
@@ -151,9 +189,9 @@ class Variation extends DataObject
                 );
             }
 
-            $fields->addFieldsToTab(
-                'Root.ProductModifications',
-                [
+            if ($this->Product()->hasDatabaseField('Weight')) {
+                $fields->addFieldtoTab(
+                    'Root.ProductModifications',
                     FieldGroup::create(
                         DropdownField::create(
                             'WeightModifierAction',
@@ -183,9 +221,18 @@ class Variation extends DataObject
                             ->setDescription(_t(
                                 'Variation.WeightDescription',
                                 'Only supports up to 3 decimal places'
-                            ))->displayIf('WeightModifierAction')->isNotEmpty()->end()
-                    )->setTitle('Weight Modification'),
+                            ))->displayIf('WeightModifierAction')->isNotEmpty()->end(),
+                        NumericField::create('FinalWeight')
+                            ->setTitle('Final Modified Weight')
+                            ->setDescription("Product's weight is {$this->Product()->Weight}")
+                            ->performDisabledTransformation()
+                    )->setTitle('Weight Modification')
+                );
+            }
 
+            $fields->addFieldsToTab(
+                'Root.ProductModifications',
+                [
                     // Price Modifier Fields
                     //HeaderField::create('PriceHD', _t('Variation.PriceHD', 'Modify Price'), 4),
                     FieldGroup::create(
@@ -210,7 +257,11 @@ class Variation extends DataObject
                             ->setDescription(_t('Variation.PriceDescription', 'Does price modify or replace base price?')),
                         CurrencyField::create('PriceModifier')
                             ->setTitle(_t('Variation.PriceModifier', 'Price'))
-                            ->displayIf('PriceModifierAction')->isNotEmpty()->end()
+                            ->displayIf('PriceModifierAction')->isNotEmpty()->end(),
+                        CurrencyField::create('FinalPrice')
+                            ->setTitle('Final Modified Price')
+                            ->setDescription("Product's price is {$this->Product()->Price}")
+                            ->performDisabledTransformation()
                     )->setTitle('Price Modifications'),
 
                     // Code Modifier Fields
@@ -237,7 +288,11 @@ class Variation extends DataObject
                             ->setDescription(_t('Variation.CodeDescription', 'Does code modify or replace base code?')),
                         TextField::create('CodeModifier')
                             ->setTitle(_t('Variation.CodeModifier', 'Code'))
-                            ->displayIf('CodeModifierAction')->isNotEmpty()->end()
+                            ->displayIf('CodeModifierAction')->isNotEmpty()->end(),
+                        TextField::create('FinalCode')
+                            ->setTitle('Final Modified Code')
+                            ->setDescription("Product's code is {$this->Product()->Code}")
+                            ->performDisabledTransformation()
                     )->setTitle('Code Modification'),
                 ]
             );
@@ -284,6 +339,13 @@ class Variation extends DataObject
                 $this->{$codeModifierField} = preg_replace('/\s+/', ' ', $trimmed);
                 break;
         }
+
+        $this->FinalPrice = $this->calculateFinalPrice();
+        $this->FinalCode = $this->calculateFinalCode();
+
+        if ($this->Product()->hasDatabaseField('Weight')) {
+            $this->FinalWeight = $this->calculateFinalWeight();
+        }
     }
 
     /**
@@ -292,6 +354,7 @@ class Variation extends DataObject
     public function validate()
     {
         $validate = parent::validate();
+        $product = $this->Product();
 
         if (!$this->Title) {
             $validate->addFieldError('Title', 'A title is required');
@@ -299,6 +362,14 @@ class Variation extends DataObject
 
         if (!$this->VariationTypeID) {
             $validate->addFieldError('VariationTypeID', 'A variation type is required');
+        }
+
+        if ($this->PriceModifierAction == 'Subtract' && $this->PriceModifier > $product->Price) {
+            $validate->addFieldError('PriceModifier', "You can't subtract more than the price of the product ({$product->Price})");
+        }
+
+        if ($this->WeightModifierAction == 'Subtract' && $this->WeightModifier > $product->Weight) {
+            $validate->addFieldError('WeightModifier', "You can't subtract more than the weight of the product ({$product->Weight})");
         }
 
         return $validate;
@@ -362,5 +433,59 @@ class Variation extends DataObject
     protected function getCodeModifierWithSymbol()
     {
         return $this->getOptionModifierActionSymbol($this->CodeModifierAction) . $this->CodeModifier;
+    }
+
+    /**
+     * @return float
+     */
+    protected function calculateFinalPrice()
+    {
+        $product = $this->Product();// this relation is set by a developer's data extension
+
+        if ($this->PriceModifierAction == 'Add') {
+            return $this->PriceModifier + $product->Price;
+        } elseif ($this->PriceModifierAction == 'Subtract') {
+            return $product->Price - $this->PriceModifier;
+        } elseif ($this->PriceModifierAction == 'Set') {
+            return $this->PriceModifier;
+        }
+
+        return $product->Price;
+    }
+
+    /**
+     * @return float
+     */
+    protected function calculateFinalWeight()
+    {
+        $product = $this->Product();// this relation is set by a developer's data extension
+
+        if ($this->WeightModifierAction == 'Add') {
+            return $this->WeightModifier + $product->Weight;
+        } elseif ($this->WeightModifierAction == 'Subtract') {
+            return $product->Weight - $this->WeightModifier;
+        } elseif ($this->WeightModifierAction == 'Set') {
+            return $this->WeightModifier;
+        }
+
+        return $product->Weight;
+    }
+
+    /**
+     * @return string
+     */
+    protected function calculateFinalCode()
+    {
+        $product = $this->Product();// this relation is set by a developer's data extension
+
+        if ($this->CodeModifierAction == 'Add') {
+            return "{$product->Code}{$this->CodeModifier}";
+        } elseif ($this->CodeModifierAction == 'Subtract') {
+            return rtrim($product->Code, $this->CodeModifier);
+        } elseif ($this->CodeModifierAction == 'Set') {
+            return $this->CodeModifier;
+        }
+
+        return $product->Code;
     }
 }
