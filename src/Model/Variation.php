@@ -123,10 +123,7 @@ class Variation extends DataObject
     /**
      * @var string[]
      */
-    private static $default_sort = [
-        'VariationType.SortOrder' => 'ASC',
-        'SortOrder' => 'ASC',
-    ];
+    private static $default_sort = 'SortOrder';
 
     /**
      * The relation name was established before requests for videos.
@@ -495,5 +492,34 @@ class Variation extends DataObject
         }
 
         return $product->Code;
+    }
+
+    /**
+     * @return mixed|string
+     */
+    public function getGeneratedTitle()
+    {
+        $modPrice = ($this->PriceModifier) ? (string)$this->PriceModifier : '0';
+        $title = $this->Title;
+        $title .= ($this->PriceModifier != 0) ?
+            ': (' . self::getOptionModifierActionSymbol(
+                $this->PriceModifierAction,
+                $returnWithOnlyPlusMinus = true
+            ) . '$' . $modPrice . ')' :
+            '';
+
+        return $title;
+    }
+
+    /**
+     * @return bool
+     */
+    public function getAvailability()
+    {
+        $available = $this->Available;
+
+        $this->extend('updateAvailability', $available);
+
+        return $available;
     }
 }
