@@ -302,59 +302,6 @@ class AddToCartForm extends Form
 
     /**
      * @return CompositeField
-     *
-     * @deprecated
-     */
-    protected function getProductOptionSet()
-    {
-        $options = $this->product->Options()->sort('SortOrder');
-        $groupedOptions = new GroupedList($options);
-        $groupedBy = $groupedOptions->groupBy('Type');
-
-        /** @var CompositeField $optionsSet */
-        $optionsSet = CompositeField::create();
-
-        /** @var DataList $set */
-        foreach ($groupedBy as $id => $set) {
-            $group = OptionType::get()->byID($id);
-            $title = $group->Title;
-            $fieldName = preg_replace('/\s/', '_', $title);
-            $disabled = [];
-            $fullOptions = [];
-
-            foreach ($set as $item) {
-                $item = $this->setAvailability($item);
-                $name = self::getGeneratedValue(
-                    $this->product->Code,
-                    $group->Title,
-                    $item->getGeneratedValue(),
-                    'value'
-                );
-
-                $fullOptions[$name] = $item->getGeneratedTitle();
-                if (!$item->Availability) {
-                    array_push($disabled, $name);
-                }
-            }
-
-            $optionsSet->push(
-                $dropdown = DropdownField::create($fieldName, $title, $fullOptions)->setTitle($title)
-            );
-
-            if (!empty($disabled)) {
-                $dropdown->setDisabledItems($disabled);
-            }
-
-            $dropdown->addExtraClass("product-options");
-        }
-
-        $optionsSet->addExtraClass('foxycartOptionsContainer');
-
-        return $optionsSet;
-    }
-
-    /**
-     * @return CompositeField
      */
     protected function getProductVariations()
     {
@@ -409,18 +356,5 @@ class AddToCartForm extends Form
         }
 
         return $variationField;
-    }
-
-    /**
-     * @param ProductOption $option
-     * @return ProductOption
-     *
-     * @deprecated
-     */
-    protected function setAvailability(ProductOption $option)
-    {
-        $option->Available = ($option->getAvailability()) ? true : false;
-
-        return $option;
     }
 }
