@@ -365,9 +365,9 @@ class Variation extends DataObject
             $validate->addFieldError('Title', 'A title is required');
         }
 
-        if (!$this->VariationTypeID) {
+        /*if (!$this->VariationTypeID) {
             $validate->addFieldError('VariationTypeID', 'A variation type is required');
-        }
+        }//*/
 
         if ($this->PriceModifierAction == 'Subtract' && $this->PriceModifier > $product->Price) {
             $validate->addFieldError('PriceModifier', "You can't subtract more than the price of the product ({$product->Price})");
