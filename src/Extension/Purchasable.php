@@ -5,6 +5,8 @@ namespace Dynamic\Foxy\Extension;
 use Dynamic\Foxy\Model\FoxyCategory;
 use Dynamic\Foxy\Model\ProductOption;
 use Dynamic\Foxy\Model\Variation;
+use Dynamic\Foxy\Model\VariationType;
+use micschk\GroupableGridfield\GridFieldGroupable;
 use SilverStripe\Forms\CheckboxField;
 use SilverStripe\Forms\CurrencyField;
 use SilverStripe\Forms\DropdownField;
@@ -12,6 +14,9 @@ use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\GridField\GridField;
 use SilverStripe\Forms\GridField\GridFieldAddExistingAutocompleter;
 use SilverStripe\Forms\GridField\GridFieldConfig_RelationEditor;
+use SilverStripe\Forms\GridField\GridFieldPageCount;
+use SilverStripe\Forms\GridField\GridFieldPaginator;
+use SilverStripe\Forms\GridField\GridFieldSortableHeader;
 use SilverStripe\Forms\NumericField;
 use SilverStripe\Forms\TextField;
 use SilverStripe\ORM\DataExtension;
@@ -24,6 +29,7 @@ use SilverStripe\Security\PermissionProvider;
 use SilverStripe\Security\Security;
 use Symbiote\GridFieldExtensions\GridFieldAddExistingSearchButton;
 use Symbiote\GridFieldExtensions\GridFieldOrderableRows;
+use Symbiote\GridFieldExtensions\GridFieldTitleHeader;
 
 /**
  * Class Purchasable
@@ -222,6 +228,19 @@ class Purchasable extends DataExtension implements PermissionProvider
             $variationsConfig = GridFieldConfig_RelationEditor::create()
                 ->removeComponentsByType([
                     GridFieldAddExistingAutocompleter::class,
+                    GridFieldPaginator::class,
+                    GridFieldPageCount::class,
+                    GridFieldSortableHeader::class,
+                ])
+                ->addComponents([
+                    new GridFieldOrderableRows('SortOrder'),
+                    new GridFieldTitleHeader(),
+                    new GridFieldGroupable(
+                        'VariationTypeID',    // The fieldname to set the Group
+                        'Variation Type',   // A description of the function of the group
+                        'none',         // A title/header for items without a group/unassigned
+                        VariationType::get()->sort('SortOrder')->map()->toArray()
+                    )
                 ]);
 
             $fields->addFieldToTab(

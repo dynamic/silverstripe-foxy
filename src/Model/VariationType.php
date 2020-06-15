@@ -31,6 +31,7 @@ class VariationType extends DataObject
      */
     private static $db = [
         'Title' => 'Varchar',
+        'SortOrder' => 'Int',
     ];
 
     /**
@@ -39,6 +40,11 @@ class VariationType extends DataObject
     private static $has_many = [
         'Variations' => Variation::class,
     ];
+
+    /**
+     * @var string
+     */
+    private static $default_sort = 'SortOrder';
 
     /**
      * @return FieldList

@@ -18,6 +18,7 @@ use SilverStripe\Security\Permission;
 use SilverStripe\Security\PermissionProvider;
 use SilverStripe\Security\Security;
 use SilverStripe\View\TemplateGlobalProvider;
+use Symbiote\GridFieldExtensions\GridFieldOrderableRows;
 
 /**
  * Class Setting
@@ -153,6 +154,9 @@ class Setting extends DataObject implements PermissionProvider, TemplateGlobalPr
                         _t(__CLASS__ . '.VariationTypeLabel', 'Variation Types'),
                         VariationType::get(),
                         GridFieldConfig_RecordEditor::create()
+                            ->addComponents([
+                                new GridFieldOrderableRows('SortOrder')
+                            ])
                     ),
                 ]
             );
