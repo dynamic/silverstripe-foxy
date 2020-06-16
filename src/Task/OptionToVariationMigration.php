@@ -103,9 +103,21 @@ class OptionToVariationMigration extends BuildTask
             $variationType->Title = $optionType->Title;
             $variationType->write();
 
-            $this->type_map[$optionType->ID] = $variationType->ID;
+            $this->assignKey($option->Type, $variationType->ID);
         }
 
-        return $this->type_map[$optionType->ID];
+        return $this->type_map[$option->Type];
+    }
+
+    /**
+     * @param $optionTypeID
+     * @param $variationTypeID
+     * @return $this
+     */
+    protected function assignKey($optionTypeID, $variationTypeID)
+    {
+        $this->type_map[$optionTypeID] = $variationTypeID;
+
+        return $this;
     }
 }
