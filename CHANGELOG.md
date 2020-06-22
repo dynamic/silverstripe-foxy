@@ -1,8 +1,34 @@
 # Changelog
 
+## [1.2.0](https://github.com/dynamic/silverstripe-foxy/tree/1.2.0) (2020-06-22)
+
+[Full Changelog](https://github.com/dynamic/silverstripe-foxy/compare/1.1.0...1.2.0)
+
+**Implemented enhancements:**
+
+- FEATURE Product Variations using has\_many relation type [\#97](https://github.com/dynamic/silverstripe-foxy/issues/97)
+
+**Fixed bugs:**
+
+- BUG Product validation is not working [\#66](https://github.com/dynamic/silverstripe-foxy/issues/66)
+- BUG Shippable - validation for weight fails even if value \> 0 [\#58](https://github.com/dynamic/silverstripe-foxy/issues/58)
+
+**Closed issues:**
+
+- FEATURE CMSRequiredFIelds\(\) - implement until Validation bug is fixed [\#82](https://github.com/dynamic/silverstripe-foxy/issues/82)
+
+**Merged pull requests:**
+
+- BUGFIX tests - $required\_extensions [\#96](https://github.com/dynamic/silverstripe-foxy/pull/96) ([jsirish](https://github.com/jsirish))
+- BUGFIX Purchasable validation fix [\#95](https://github.com/dynamic/silverstripe-foxy/pull/95) ([jsirish](https://github.com/jsirish))
+
 ## [1.1.0](https://github.com/dynamic/silverstripe-foxy/tree/1.1.0) (2020-04-09)
 
 [Full Changelog](https://github.com/dynamic/silverstripe-foxy/compare/1.0.4...1.1.0)
+
+**Closed issues:**
+
+- purchasable items should trim codes and title before saving [\#77](https://github.com/dynamic/silverstripe-foxy/issues/77)
 
 **Merged pull requests:**
 
@@ -19,7 +45,6 @@
 **Closed issues:**
 
 - FEATURE - Add db and relation fields to class doc blocks [\#86](https://github.com/dynamic/silverstripe-foxy/issues/86)
-- purchasable items should trim codes and title before saving [\#77](https://github.com/dynamic/silverstripe-foxy/issues/77)
 - BUG - product codes should be trimmed on save [\#89](https://github.com/dynamic/silverstripe-foxy/issues/89)
 
 **Merged pull requests:**
