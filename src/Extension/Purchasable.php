@@ -18,6 +18,7 @@ use SilverStripe\Forms\GridField\GridFieldPageCount;
 use SilverStripe\Forms\GridField\GridFieldPaginator;
 use SilverStripe\Forms\GridField\GridFieldSortableHeader;
 use SilverStripe\Forms\NumericField;
+use SilverStripe\Forms\RequiredFields;
 use SilverStripe\Forms\TextField;
 use SilverStripe\ORM\DataExtension;
 use SilverStripe\ORM\DataObject;
@@ -271,29 +272,15 @@ class Purchasable extends DataExtension implements PermissionProvider
     }
 
     /**
-     * @param ValidationResult $validationResult
+     * @return RequiredFields
      */
-    public function validate(ValidationResult $validationResult)
+    public function getCMSValidator()
     {
-        /*
-        if (!$this->owner->Price) {
-            $validationResult->addError(
-                _t(__CLASS__ . '.PriceRequired', 'You must set a product price in the Foxy tab')
-            );
-        }
-
-        if (!$this->owner->Code) {
-            $validationResult->addError(
-                _t(__CLASS__ . '.CodeRequired', 'You must set a product code in the Foxy tab')
-            );
-        }
-
-        if (!$this->owner->FoxyCategoryID) {
-            $validationResult->addError(
-                _t(__CLASS__ . '.FoxyCategoryRequired', 'You must set a foxy category in the Foxy tab.')
-            );
-        }
-        */
+        return new RequiredFields([
+            "Price",
+            "Code",
+            "FoxyCategoryID",
+        ]);
     }
 
     /**
