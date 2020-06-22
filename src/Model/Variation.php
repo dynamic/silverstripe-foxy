@@ -78,7 +78,7 @@ class Variation extends DataObject
         'SortOrder' => 'Int',
         'FinalPrice' => 'Currency',
         'FinalWeight' => 'Decimal(9,3)',
-        'FinalCode' => 'Text',
+        'FinalCode' => 'Varchar(255)',
     ];
 
     /**
