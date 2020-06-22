@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.2.1](https://github.com/dynamic/silverstripe-foxy/tree/1.2.1) (2020-06-22)
+
+[Full Changelog](https://github.com/dynamic/silverstripe-foxy/compare/1.2.0...1.2.1)
+
+**Merged pull requests:**
+
+- BUGFIX use Varchar for index field [\#100](https://github.com/dynamic/silverstripe-foxy/pull/100) ([muskie9](https://github.com/muskie9))
+
 ## [1.2.0](https://github.com/dynamic/silverstripe-foxy/tree/1.2.0) (2020-06-22)
 
 [Full Changelog](https://github.com/dynamic/silverstripe-foxy/compare/1.1.0...1.2.0)
@@ -19,6 +27,7 @@
 
 **Merged pull requests:**
 
+- ENHANCEMENT Product Variations by HasMany [\#99](https://github.com/dynamic/silverstripe-foxy/pull/99) ([muskie9](https://github.com/muskie9))
 - BUGFIX tests - $required\_extensions [\#96](https://github.com/dynamic/silverstripe-foxy/pull/96) ([jsirish](https://github.com/jsirish))
 - BUGFIX Purchasable validation fix [\#95](https://github.com/dynamic/silverstripe-foxy/pull/95) ([jsirish](https://github.com/jsirish))
 
@@ -50,7 +59,6 @@
 **Merged pull requests:**
 
 - BUGFIX reset $product to VirtualPage’s page it’s based on [\#92](https://github.com/dynamic/silverstripe-foxy/pull/92) ([muskie9](https://github.com/muskie9))
-- Added code trimming for product and option codes [\#90](https://github.com/dynamic/silverstripe-foxy/pull/90) ([mak001](https://github.com/mak001))
 
 ## [1.0.3](https://github.com/dynamic/silverstripe-foxy/tree/1.0.3) (2019-12-11)
 
@@ -58,6 +66,7 @@
 
 **Merged pull requests:**
 
+- Added code trimming for product and option codes [\#90](https://github.com/dynamic/silverstripe-foxy/pull/90) ([mak001](https://github.com/mak001))
 - quantity field in cart now pings for quantity checks [\#85](https://github.com/dynamic/silverstripe-foxy/pull/85) ([mak001](https://github.com/mak001))
 
 ## [1.0.2](https://github.com/dynamic/silverstripe-foxy/tree/1.0.2) (2019-12-06)
