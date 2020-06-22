@@ -18,6 +18,7 @@ use SilverStripe\Security\Permission;
 use SilverStripe\Security\PermissionProvider;
 use SilverStripe\Security\Security;
 use SilverStripe\View\TemplateGlobalProvider;
+use Symbiote\GridFieldExtensions\GridFieldOrderableRows;
 
 /**
  * Class Setting
@@ -121,7 +122,7 @@ class Setting extends DataObject implements PermissionProvider, TemplateGlobalPr
                 'Root.Options.Settings',
                 [
                     CheckboxField::create('EnableSidecart', 'Enable Sidecart')
-                        ->setDescription('Cart slides in from right side when product added to cart')
+                        ->setDescription('Cart slides in from right side when product added to cart'),
                 ]
             );
 
@@ -141,17 +142,36 @@ class Setting extends DataObject implements PermissionProvider, TemplateGlobalPr
                 ]
             );
 
+            $fields->addFieldsToTab(
+                'Root.Options.VariationTypes',
+                [
+                    LiteralField::create('VariationDescrip', _t(
+                        __CLASS__ . '.VariationDescrip',
+                        '<p>Product Variation Types allow you to group a set of product variants by type.</p>'
+                    )),
+                    GridField::create(
+                        'VariationType',
+                        _t(__CLASS__ . '.VariationTypeLabel', 'Variation Types'),
+                        VariationType::get(),
+                        GridFieldConfig_RecordEditor::create()
+                            ->addComponents([
+                                new GridFieldOrderableRows('SortOrder')
+                            ])
+                    ),
+                ]
+            );
+
             $fields->addFieldsToTab('Root.Categories', [
                 LiteralField::create('CategoryDescrip', _t(
                     __CLASS__ . '.CategoryDescrip',
-                    '<p>FoxyCart Categories offer a way to give products additional behaviors that cannot be 
-                        accomplished by product options alone, including category specific coupon codes, 
-                        shipping and handling fees, and email receipts. 
+                    '<p>FoxyCart Categories offer a way to give products additional behaviors that cannot be
+                        accomplished by product options alone, including category specific coupon codes,
+                        shipping and handling fees, and email receipts.
                         <a href="https://wiki.foxycart.com/v/2.0/categories" target="_blank">
                             Learn More
                         </a></p>
-                        <p>Categories you\'ve created in FoxyStripe must also be created in your 
-                            <a href="https://admin.foxycart.com/admin.php?ThisAction=ManageProductCategories" 
+                        <p>Categories you\'ve created in FoxyStripe must also be created in your
+                            <a href="https://admin.foxycart.com/admin.php?ThisAction=ManageProductCategories"
                                 target="_blank">FoxyCart Categories</a> admin panel.</p>'
                 )),
                 GridField::create(

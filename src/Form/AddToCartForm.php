@@ -6,6 +6,8 @@ use Dynamic\Foxy\Extension\Shippable;
 use Dynamic\Foxy\Model\FoxyHelper;
 use Dynamic\Foxy\Model\OptionType;
 use Dynamic\Foxy\Model\ProductOption;
+use Dynamic\Foxy\Model\Variation;
+use Dynamic\Foxy\Model\VariationType;
 use Dynamic\Products\Page\Product;
 use SilverStripe\CMS\Model\VirtualPage;
 use SilverStripe\Forms\CompositeField;
@@ -16,8 +18,10 @@ use SilverStripe\Forms\FormAction;
 use SilverStripe\Forms\HeaderField;
 use SilverStripe\Forms\HiddenField;
 use SilverStripe\Forms\RequiredFields;
+use SilverStripe\ORM\ArrayList;
 use SilverStripe\ORM\DataList;
 use SilverStripe\ORM\GroupedList;
+use SilverStripe\ORM\HasManyList;
 
 /**
  * Class AddToCartForm
@@ -223,8 +227,8 @@ class AddToCartForm extends Form
                 );
             }
 
-            $optionsSet = $this->getProductOptionSet();
-            $fields->push($optionsSet);
+            $fields->push($this->getProductVariations());
+
 
             if ($this->product->QuantityMax != 1) {
                 $fields->push(QuantityField::create('x:visibleQuantity')->setTitle('Quantity')->setValue(1));
@@ -299,62 +303,58 @@ class AddToCartForm extends Form
     /**
      * @return CompositeField
      */
-    protected function getProductOptionSet()
+    protected function getProductVariations()
     {
-        $options = $this->product->Options()->sort('SortOrder');
-        $groupedOptions = new GroupedList($options);
-        $groupedBy = $groupedOptions->groupBy('Type');
+        $types = VariationType::get();
 
-        /** @var CompositeField $optionsSet */
-        $optionsSet = CompositeField::create();
+        $variationsField = CompositeField::create();
 
-        /** @var DataList $set */
-        foreach ($groupedBy as $id => $set) {
-            $group = OptionType::get()->byID($id);
-            $title = $group->Title;
-            $fieldName = preg_replace('/\s/', '_', $title);
-            $disabled = [];
-            $fullOptions = [];
-
-            foreach ($set as $item) {
-                $item = $this->setAvailability($item);
-                $name = self::getGeneratedValue(
-                    $this->product->Code,
-                    $group->Title,
-                    $item->getGeneratedValue(),
-                    'value'
-                );
-
-                $fullOptions[$name] = $item->getGeneratedTitle();
-                if (!$item->Availability) {
-                    array_push($disabled, $name);
-                }
+        foreach ($types as $type) {
+            if (($variations = $type->Variations()->filter('ProductID', $this->product->ID)) && $variations->count()) {
+                $variationsField->push($this->createVariationField($type, $variations));
             }
-
-            $optionsSet->push(
-                $dropdown = DropdownField::create($fieldName, $title, $fullOptions)->setTitle($title)
-            );
-
-            if (!empty($disabled)) {
-                $dropdown->setDisabledItems($disabled);
-            }
-
-            $dropdown->addExtraClass("product-options");
         }
 
-        $optionsSet->addExtraClass('foxycartOptionsContainer');
+        $variationsField->addExtraClass('foxycartOptionsContainer');
 
-        return $optionsSet;
+        return $variationsField;
     }
 
     /**
-     * @param ProductOption $option
-     * @return ProductOption
+     * @param VariationType $type
+     * @param HasManyList $variations
+     * @return DropdownField
      */
-    protected function setAvailability(ProductOption $option)
+    protected function createVariationField(VariationType $type, HasManyList $variations)
     {
-        $option->Available = ($option->getAvailability()) ? true : false;
+        $disabled = [];
+        $list = [];
+        $variationField = DropdownField::create(preg_replace('/\s/', '_', $type->Title));
 
-        return $option;
+        /** @var Variation $variation */
+        foreach ($variations as $variation) {
+            $name = self::getGeneratedValue(
+                $this->product->Code,
+                $type->Title,
+                $variation->getGeneratedValue(),
+                'value'
+            );
+
+            $list[$name] = $variation->getGeneratedTitle();
+
+            if (!$variation->getAvailability()) {
+                array_push($disabled, $name);
+            }
+        }
+
+        $variationField->setSource($list)
+            ->setTitle($type->Title)
+            ->addExtraClass("product-options");
+
+        if (!empty($disabled)) {
+            $variationField->setDisabledItems($disabled);
+        }
+
+        return $variationField;
     }
 }

@@ -75,6 +75,38 @@ Dynamic\Foxy\Model\ProductOption:
   extensions:
     - ProductOptionDataExtension
 ```
+
+## Product Variation Configuration
+
+Product variations are similar to the old Product Options, however they have been reworked to use the has many relation. This allows a more robust offering for product variations such as images per variation as well as inventory control (currently roadmapped).
+
+You will need to implement a DataExtension for the new relation type to work:
+
+**VariationDataExtension.php**
+
+```php
+<?php
+
+namespace {
+
+    use Dynamic\Products\Page\Product;
+    use SilverStripe\ORM\DataExtension;
+
+    /**
+     * Class VariationDataExtension
+     */
+    class VariationDataExtension extends DataExtension
+    {
+        /**
+         * @var string[]
+         */
+        private static $has_one = [
+            'Product' => Product::class,
+        ];
+    }
+}
+```
+
 ## Product option configuration
 Product options can be set to trim whitespace off code modifications.
 By default it will only trim spaces after the code and remove duplicate spaces.

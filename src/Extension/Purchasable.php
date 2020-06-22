@@ -4,6 +4,9 @@ namespace Dynamic\Foxy\Extension;
 
 use Dynamic\Foxy\Model\FoxyCategory;
 use Dynamic\Foxy\Model\ProductOption;
+use Dynamic\Foxy\Model\Variation;
+use Dynamic\Foxy\Model\VariationType;
+use micschk\GroupableGridfield\GridFieldGroupable;
 use SilverStripe\Forms\CheckboxField;
 use SilverStripe\Forms\CurrencyField;
 use SilverStripe\Forms\DropdownField;
@@ -11,15 +14,22 @@ use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\GridField\GridField;
 use SilverStripe\Forms\GridField\GridFieldAddExistingAutocompleter;
 use SilverStripe\Forms\GridField\GridFieldConfig_RelationEditor;
+use SilverStripe\Forms\GridField\GridFieldPageCount;
+use SilverStripe\Forms\GridField\GridFieldPaginator;
+use SilverStripe\Forms\GridField\GridFieldSortableHeader;
 use SilverStripe\Forms\NumericField;
 use SilverStripe\Forms\TextField;
 use SilverStripe\ORM\DataExtension;
+use SilverStripe\ORM\DataObject;
+use SilverStripe\ORM\HasManyList;
+use SilverStripe\ORM\ManyManyList;
 use SilverStripe\ORM\ValidationResult;
 use SilverStripe\Security\Permission;
 use SilverStripe\Security\PermissionProvider;
 use SilverStripe\Security\Security;
 use Symbiote\GridFieldExtensions\GridFieldAddExistingSearchButton;
 use Symbiote\GridFieldExtensions\GridFieldOrderableRows;
+use Symbiote\GridFieldExtensions\GridFieldTitleHeader;
 
 /**
  * Class Purchasable
@@ -34,9 +44,10 @@ use Symbiote\GridFieldExtensions\GridFieldOrderableRows;
  * @property int FoxyCategoryID
  * @method FoxyCategory FoxyCategory()
  *
- * @method \SilverStripe\ORM\ManyManyList Options()
+ * @method HasManyList Variations()
+ * @method ManyManyList Options()
  *
- * @property-read \SilverStripe\ORM\DataObject|Purchasable $owner
+ * @property-read DataObject|Purchasable $owner
  */
 class Purchasable extends DataExtension implements PermissionProvider
 {
@@ -56,6 +67,13 @@ class Purchasable extends DataExtension implements PermissionProvider
      */
     private static $has_one = [
         'FoxyCategory' => FoxyCategory::class,
+    ];
+
+    /**
+     * @var string[]
+     */
+    private static $has_many = [
+        'Variations' => Variation::class,
     ];
 
     /**
@@ -124,9 +142,7 @@ class Purchasable extends DataExtension implements PermissionProvider
     ];
 
     /**
-     * @param bool $includerelations
-     *
-     * @return array
+     * @param array $labels
      */
     public function updateFieldLabels(&$labels)
     {
@@ -185,7 +201,7 @@ class Purchasable extends DataExtension implements PermissionProvider
             'Content'
         );
 
-        if ($this->owner->ID) {
+        if ($this->owner->exists()) {
             $config = GridFieldConfig_RelationEditor::create();
             $config
                 ->addComponents([
@@ -208,6 +224,34 @@ class Purchasable extends DataExtension implements PermissionProvider
                     $options,
                 ]
             );
+
+            $variationsConfig = GridFieldConfig_RelationEditor::create()
+                ->removeComponentsByType([
+                    GridFieldAddExistingAutocompleter::class,
+                    GridFieldPaginator::class,
+                    GridFieldPageCount::class,
+                    GridFieldSortableHeader::class,
+                ])
+                ->addComponents([
+                    new GridFieldOrderableRows('SortOrder'),
+                    new GridFieldTitleHeader(),
+                    new GridFieldGroupable(
+                        'VariationTypeID',    // The fieldname to set the Group
+                        'Variation Type',   // A description of the function of the group
+                        'none',         // A title/header for items without a group/unassigned
+                        VariationType::get()->sort('SortOrder')->map()->toArray()
+                    )
+                ]);
+
+            $fields->addFieldToTab(
+                'Root.Variations',
+                GridField::create(
+                    'Variations',
+                    'Variations',
+                    $this->owner->Variations(),
+                    $variationsConfig
+                )
+            );
         }
 
         $fields->addFieldsToTab(
@@ -227,7 +271,7 @@ class Purchasable extends DataExtension implements PermissionProvider
     }
 
     /**
-     * @return \SilverStripe\ORM\ValidationResult
+     * @param ValidationResult $validationResult
      */
     public function validate(ValidationResult $validationResult)
     {

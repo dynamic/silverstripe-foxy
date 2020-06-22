@@ -18,8 +18,11 @@
         }
     ],
     "require": {
+        "bummzack/sortablefile": "^2.0",
         "silverstripe/recipe-cms": "^4.0",
-        "symbiote/silverstripe-gridfieldextensions": "^3.0"
+        "symbiote/silverstripe-gridfieldextensions": "^3.0",
+        "silverstripe/display-logic": "^2.0",
+        "micschk/silverstripe-groupable-gridfield": "dev-SilverStripe-4"
     },
     "require-dev": {
         "phpunit/phpunit": "^5.7",
@@ -30,6 +33,12 @@
         "pdepend/pdepend": "^2.5",
         "theseer/phpdox": "^0.11.0"
     },
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "git@github.com:mak001/silverstripe-groupable-gridfield.git"
+        }
+    ],
     "autoload": {
         "psr-4": {
             "Dynamic\\Foxy\\": "src/",
