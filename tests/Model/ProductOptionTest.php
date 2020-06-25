@@ -12,6 +12,10 @@ use SilverStripe\Forms\FieldList;
 use SilverStripe\Security\Member;
 use SilverStripe\Versioned\Versioned;
 
+/**
+ * Class ProductOptionTest
+ * @package Dynamic\Foxy\Test\Model
+ */
 class ProductOptionTest extends SapphireTest
 {
     /**
@@ -26,6 +30,9 @@ class ProductOptionTest extends SapphireTest
         TestProduct::class,
     ];
 
+    /**
+     * @var \string[][]
+     */
     protected static $required_extensions = [
         TestProduct::class => [
             Purchasable::class,

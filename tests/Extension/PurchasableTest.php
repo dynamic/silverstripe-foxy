@@ -7,6 +7,7 @@ use Dynamic\Foxy\Model\FoxyCategory;
 use Dynamic\Foxy\Model\OptionType;
 use Dynamic\Foxy\Model\ProductOption;
 use Dynamic\Foxy\Model\Setting;
+use Dynamic\Foxy\Model\Variation;
 use Dynamic\Foxy\Test\TestOnly\TestProduct;
 use SilverStripe\Core\Config\Config;
 use SilverStripe\Core\Injector\Injector;
@@ -41,7 +42,7 @@ class PurchasableTest extends SapphireTest
     protected static $required_extensions = [
         TestProduct::class => [
             Purchasable::class,
-        ]
+        ],
     ];
 
     /**
@@ -49,6 +50,7 @@ class PurchasableTest extends SapphireTest
      */
     public function setUp()
     {
+        Config::modify()->set(Variation::class, 'has_one', ['TestProduct' => TestProduct::class]);
         Config::modify()->set(OptionType::class, 'has_one', ['TestProduct' => TestProduct::class]);
 
         return parent::setUp();
