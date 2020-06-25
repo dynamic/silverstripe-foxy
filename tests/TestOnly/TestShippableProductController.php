@@ -11,7 +11,7 @@ use Dynamic\Foxy\Extension\PurchasableExtension;
 class TestShippableProductController extends \PageController
 {
     /**
-     * @var string[] 
+     * @var string[]
      */
     private static $extensions = [
         PurchasableExtension::class,
