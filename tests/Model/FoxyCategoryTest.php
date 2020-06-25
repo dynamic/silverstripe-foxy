@@ -10,6 +10,10 @@ use SilverStripe\Forms\FieldList;
 use SilverStripe\ORM\ValidationException;
 use SilverStripe\Security\Member;
 
+/**
+ * Class FoxyCategoryTest
+ * @package Dynamic\Foxy\Test\Model
+ */
 class FoxyCategoryTest extends SapphireTest
 {
     /**

@@ -9,6 +9,10 @@ use SilverStripe\Dev\SapphireTest;
 use SilverStripe\Forms\FieldList;
 use SilverStripe\Security\Member;
 
+/**
+ * Class OptionTypeTest
+ * @package Dynamic\Foxy\Test\Model
+ */
 class OptionTypeTest extends SapphireTest
 {
     /**
