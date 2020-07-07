@@ -44,7 +44,7 @@ class FoxyLinkGeneratorController extends Controller
             return 'Code is required';
         }
 
-        if (!$request->getVar('price')) {
+        if (!$request->getVar('price') && $request->getVar('price') != 0) {
             return 'Price is required';
         }
 
