@@ -274,13 +274,12 @@ class AddToCartForm extends Form
         $optionValue = null,
         $method = 'name',
         $output = false,
-        $urlEncode = false,
-        $open = false
+        $urlEncode = false
     ) {
         $optionName = ($optionName !== null) ? preg_replace('/\s/', '_', $optionName) : $optionName;
         $helper = FoxyHelper::create();
 
-        return $helper::fc_hash_value($productCode, $optionName, $optionValue, $method, $output, $urlEncode, $open);
+        return $helper::fc_hash_value($productCode, $optionName, $optionValue, $method, $output, $urlEncode);
     }
 
     /**

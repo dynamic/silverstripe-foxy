@@ -135,7 +135,7 @@ class FoxyCart_Helper {
             }
             // Continue to sign the value and replace the name=value in the querystring with name=value||hash
             $value = self::fc_hash_value($codes[$pair['prefix']], urldecode($pair['name']), urldecode($pair['value']), 'value', FALSE, 'urlencode');
-            if (urldecode($pair['value']) == '--OPEN--') {
+            if (urldecode($pair['value']) === '--OPEN--') {
                 $replacement = $pair['amp'].$value.'=';
             } else {
                 $replacement = $pair['amp'].$pair['prefix'].urlencode($pair['name']).'='.$value;
@@ -162,19 +162,19 @@ class FoxyCart_Helper {
      * @param string $method Choose to encode for the name or the value. Defaults to name.
      * @param bool $output Will echo when true and return when false.
      * @param bool $urlencode Output will be url encoded if true. Defaults to false.
-     * @param bool $open Should be false if the field is not user editable. (e.g. price should be false, order notes should be true)
      *
      * @return string|null
      **/
-    public static function fc_hash_value($product_code, $option_name, $option_value = '', $method = 'name', $output = TRUE, $urlencode = false, $open = true) {
+    public static function fc_hash_value($product_code, $option_name, $option_value = '', $method = 'name', $output = TRUE, $urlencode = false) {
         if (!$product_code || !$option_name) {
             return FALSE;
         }
         $option_name = str_replace(' ', '_', $option_name);
-        $hash = hash_hmac('sha256', $product_code.$option_name.$option_value, self::$secret);
-        if ($option_value == '--OPEN--' && $open) {
+        if ($option_value === '--OPEN--') {
+            $hash = hash_hmac('sha256', $product_code.$option_name.$option_value, self::$secret);
             $value = ($urlencode) ? urlencode($option_name).'||'.$hash.'||open' : $option_name.'||'.$hash.'||open';
         } else {
+            $hash = hash_hmac('sha256', $product_code.$option_name.$option_value, self::$secret);
             self::$log[] = '<strong>Challenge: </strong><span style="font-family:monospace; color:blue"><code>'.$product_code.$option_name.$option_value.'</code></span>';
             if ($method == 'name') {
                 $value = ($urlencode) ? urlencode($option_name).'||'.$hash : $option_name.'||'.$hash;
