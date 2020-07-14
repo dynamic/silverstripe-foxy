@@ -56,7 +56,8 @@ class QuantityField extends NumericField
      */
     public function newvalue(HTTPRequest $request)
     {
-        if (!$value = $request->getVar('value')) {
+        $value = $request->getVar('value');
+        if (!$value && $value != 0) {
             return '';
         }
 

@@ -154,11 +154,21 @@ FC.onLoad = (function (_super) {
       FC.client.request('https://' + FC.settings.storedomain + '/cart?output=json').done(function (dataJSON) {
         jQuery.each(dataJSON.items, function (key, product) {
           var code = product.parent_code === '' ? product.code : product.parent_code;
-          var link = jQuery('input[name="x:visibleQuantity"][data-code="' + code + '"]').data('link');
+          var link = product.hasOwnProperty('url') ? product.url : false;
+          if (!link) {
+            return;
+          }
+
+          var parts = link.split('?');
+          var extra = '';
+          if (parts.length > 1) {
+              link = parts[0];
+              extra = '&' + parts[1];
+          }
 
           jQuery.ajax({
-            url: link + '?code=' + code + '&id=' + product.id +
-              '&value=' + product.quantity + '&isAjax=1',
+            url: link + 'AddToCartForm/field/x:visibleQuantity/newvalue?code=' + code + '&id=' + product.id +
+              '&value=' + product.quantity + '&isAjax=1' + extra,
             dataType: 'json',
             success: function (data) {
               if (product.quantity != data.quantity) {

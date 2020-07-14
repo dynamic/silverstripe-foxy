@@ -9,3 +9,4 @@ Only:
 SilverStripe\Control\Director:
   rules:
     'foxytest//$Action/$ID/$Name': Dynamic\FoxyStripe\Controller\DataTestController
+    'foxylinkgenerator//$Action/$ID/$Name': Dynamic\Foxy\Controller\FoxyLinkGeneratorController

@@ -13,6 +13,8 @@ use SilverStripe\ORM\ValidationResult;
  * @package Dynamic\Foxy\Extension
  *
  * @property double Weight
+ *
+ * @property-read \SilverStripe\ORM\DataObject|Shippable $owner
  */
 class Shippable extends DataExtension
 {
