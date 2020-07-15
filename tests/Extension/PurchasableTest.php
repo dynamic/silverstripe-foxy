@@ -116,8 +116,13 @@ class PurchasableTest extends SapphireTest
         $object3->Available = 1;
         $type = Injector::inst()->create(TestProduct::class);
         $type->Title = 'Product One';
-        $type->Variations()->add($this->objFromFixture(Variation::class, 'small'));
-        $type->Variations()->add($this->objFromFixture(Variation::class, 'large'));
+
+        $variation1 = Injector::inst()->create(Variation::class);
+        $variation1->Title = 'small';
+        $variation2 = Injector::inst()->create(Variation::class);
+        $variation2->Title = 'large';
+        $type->Variations()->add($variation1);
+        $type->Variations()->add($variation2);
         $this->assertTrue($object3->isAvailable());
     }
 
