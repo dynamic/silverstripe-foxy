@@ -16,6 +16,10 @@ class TestProduct extends \Page implements TestOnly
      */
     private static $table_name = 'TestProduct';
 
+    private static $has_one = [
+
+    ];
+
     /**
      * @var array
      */
