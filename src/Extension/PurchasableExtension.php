@@ -28,7 +28,7 @@ class PurchasableExtension extends Extension
     {
         if ($this->owner->hasMethod('isAvailable')) {
             if ($this->owner->data()->isAvailable()) {
-                if ($this->owner->data()->Options()->exists()) {
+                if ($this->owner->data()->getHasVariations()) {
                     Requirements::javascript('silverstripe/admin: thirdparty/jquery/jquery.js');
                     Requirements::javascript('dynamic/silverstripe-foxy: client/dist/javascript/product_options.js');
                 }

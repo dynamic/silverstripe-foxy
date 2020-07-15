@@ -105,15 +105,17 @@ class PurchasableTest extends SapphireTest
         $object = Injector::inst()->create(TestProduct::class);
         $this->assertTrue($object->isAvailable());
 
-        $object->Available = 0;
-        $this->assertFalse($object->isAvailable());
+        $object2 = Injector::inst()->create(TestProduct::class);
+        $object2->Available = false;
+        $this->assertFalse($object2->isAvailable());
 
-        $object->Available = 1;
+        $object3 = Injector::inst()->create(TestProduct::class);
+        $object3->Available = 1;
         $type = Injector::inst()->create(TestProduct::class);
         $type->Title = 'Product One';
         $type->Options()->add($this->objFromFixture(ProductOption::class, 'small'));
         $type->Options()->add($this->objFromFixture(ProductOption::class, 'large'));
-        $this->assertTrue($object->isAvailable());
+        $this->assertTrue($object3->isAvailable());
     }
 
     /**
