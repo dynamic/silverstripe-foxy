@@ -1,3 +1,15 @@
+properties([
+  // only keep 25 builds to prevent disk usage from growing out of control
+  buildDiscarder(
+    logRotator(
+      artifactDaysToKeepStr: '',
+      artifactNumToKeepStr: '',
+      daysToKeepStr: '',
+      numToKeepStr: '25',
+    ),
+  ),
+])
+
 pipeline {
   agent any
   stages {
