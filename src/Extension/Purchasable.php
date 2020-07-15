@@ -179,16 +179,6 @@ class Purchasable extends DataExtension implements PermissionProvider
         );
 
         if ($this->owner->exists()) {
-            $config = GridFieldConfig_RelationEditor::create();
-            $config
-                ->addComponents([
-                    new GridFieldOrderableRows('SortOrder'),
-                    new GridFieldAddExistingSearchButton(),
-                ])
-                ->removeComponentsByType([
-                    GridFieldAddExistingAutocompleter::class,
-                ]);
-
             $variationsConfig = GridFieldConfig_RelationEditor::create()
                 ->removeComponentsByType([
                     GridFieldAddExistingAutocompleter::class,
