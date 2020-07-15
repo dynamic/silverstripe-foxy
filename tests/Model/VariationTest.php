@@ -6,6 +6,7 @@ use Dynamic\Foxy\Extension\Purchasable;
 use Dynamic\Foxy\Model\OptionType;
 use Dynamic\Foxy\Model\Variation;
 use Dynamic\Foxy\Test\TestOnly\TestProduct;
+use Dynamic\Foxy\Test\TestOnly\TestVariationDataExtension;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Dev\SapphireTest;
 use SilverStripe\Forms\FieldList;
@@ -36,6 +37,9 @@ class VariationTest extends SapphireTest
     protected static $required_extensions = [
         TestProduct::class => [
             Purchasable::class,
+        ],
+        Variation::class => [
+            TestVariationDataExtension::class,
         ],
     ];
 
