@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.2.3](https://github.com/dynamic/silverstripe-foxy/tree/1.2.3) (2020-07-14)
+
+[Full Changelog](https://github.com/dynamic/silverstripe-foxy/compare/1.2.2...1.2.3)
+
+**Merged pull requests:**
+
+- BUGFIX replace refs of Options with Variations [\#103](https://github.com/dynamic/silverstripe-foxy/pull/103) ([jsirish](https://github.com/jsirish))
+
 ## [1.2.2](https://github.com/dynamic/silverstripe-foxy/tree/1.2.2) (2020-07-14)
 
 [Full Changelog](https://github.com/dynamic/silverstripe-foxy/compare/1.2.1...1.2.2)
