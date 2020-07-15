@@ -15,6 +15,8 @@ use SilverStripe\Forms\TextField;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\ManyManyList;
 use SilverStripe\ORM\ValidationResult;
+use SilverStripe\Security\Permission;
+use SilverStripe\Security\Security;
 
 /**
  * Class Variation
@@ -521,5 +523,44 @@ class Variation extends DataObject
         $this->extend('updateAvailability', $available);
 
         return $available;
+    }
+
+    /**
+     * @param $member
+     * @return bool|int|void
+     */
+    public function canCreate($member = null, $context = [])
+    {
+        if (!$member) {
+            $member = Security::getCurrentUser();
+        }
+
+        return Permission::checkMember($member, 'MANAGE_FOXY_PRODUCTS');
+    }
+
+    /**
+     * @param $member
+     * @return bool|int|void|null
+     */
+    public function canEdit($member = null, $context = [])
+    {
+        if (!$member) {
+            $member = Security::getCurrentUser();
+        }
+
+        return Permission::checkMember($member, 'MANAGE_FOXY_PRODUCTS');
+    }
+
+    /**
+     * @param $member
+     * @return bool|int|void
+     */
+    public function canDelete($member = null, $context = [])
+    {
+        if (!$member) {
+            $member = Security::getCurrentUser();
+        }
+
+        return Permission::checkMember($member, 'MANAGE_FOXY_PRODUCTS');
     }
 }

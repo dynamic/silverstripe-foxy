@@ -127,22 +127,6 @@ class Setting extends DataObject implements PermissionProvider, TemplateGlobalPr
             );
 
             $fields->addFieldsToTab(
-                'Root.Options.Types',
-                [
-                    LiteralField::create('OptionGroupsDescrip', _t(
-                        __CLASS__ . '.OptionGroupsDescrip',
-                        '<p>Product Option Types allow you to group a set of product options by type.</p>'
-                    )),
-                    GridField::create(
-                        'OptionType',
-                        _t(__CLASS__ . '.OptionTypeLabel', 'Option Types'),
-                        OptionType::get(),
-                        GridFieldConfig_RecordEditor::create()
-                    ),
-                ]
-            );
-
-            $fields->addFieldsToTab(
                 'Root.Options.VariationTypes',
                 [
                     LiteralField::create('VariationDescrip', _t(

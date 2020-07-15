@@ -42,7 +42,7 @@ Dynamic\Foxy\Model\FoxyCategory:
     Title: 'Category Two'
     Code: '67890'
 
-Dynamic\Foxy\Model\ProductOption:
+Dynamic\Foxy\Model\Variation:
   small:
     Title: 'Small'
   large:

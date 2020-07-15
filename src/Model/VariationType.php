@@ -4,6 +4,8 @@ namespace Dynamic\Foxy\Model;
 
 use SilverStripe\Forms\FieldList;
 use SilverStripe\ORM\DataObject;
+use SilverStripe\Security\Permission;
+use SilverStripe\Security\Security;
 
 /**
  * Class VariationType
@@ -58,5 +60,44 @@ class VariationType extends DataObject
         });
 
         return parent::getCMSFields();
+    }
+
+    /**
+     * @param $member
+     * @return bool|int|void
+     */
+    public function canCreate($member = null, $context = [])
+    {
+        if (!$member) {
+            $member = Security::getCurrentUser();
+        }
+
+        return Permission::checkMember($member, 'MANAGE_FOXY_PRODUCTS');
+    }
+
+    /**
+     * @param $member
+     * @return bool|int|void|null
+     */
+    public function canEdit($member = null, $context = [])
+    {
+        if (!$member) {
+            $member = Security::getCurrentUser();
+        }
+
+        return Permission::checkMember($member, 'MANAGE_FOXY_PRODUCTS');
+    }
+
+    /**
+     * @param $member
+     * @return bool|int|void
+     */
+    public function canDelete($member = null, $context = [])
+    {
+        if (!$member) {
+            $member = Security::getCurrentUser();
+        }
+
+        return Permission::checkMember($member, 'MANAGE_FOXY_PRODUCTS');
     }
 }

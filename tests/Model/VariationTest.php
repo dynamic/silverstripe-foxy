@@ -4,7 +4,7 @@ namespace Dynamic\Foxy\Test\Model;
 
 use Dynamic\Foxy\Extension\Purchasable;
 use Dynamic\Foxy\Model\OptionType;
-use Dynamic\Foxy\Model\ProductOption;
+use Dynamic\Foxy\Model\Variation;
 use Dynamic\Foxy\Test\TestOnly\TestProduct;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Dev\SapphireTest;
@@ -16,7 +16,7 @@ use SilverStripe\Versioned\Versioned;
  * Class ProductOptionTest
  * @package Dynamic\Foxy\Test\Model
  */
-class ProductOptionTest extends SapphireTest
+class VariationTest extends SapphireTest
 {
     /**
      * @var string
@@ -44,7 +44,7 @@ class ProductOptionTest extends SapphireTest
      */
     public function testGetCMSFields()
     {
-        $object = $this->objFromFixture(ProductOption::class, 'small');
+        $object = $this->objFromFixture(Variation::class, 'small');
         $fields = $object->getCMSFields();
         $this->assertInstanceOf(FieldList::class, $fields);
     }
@@ -55,7 +55,7 @@ class ProductOptionTest extends SapphireTest
     public function testCanCreate()
     {
         /** @var ProductOption $object */
-        $object = singleton(ProductOption::class);
+        $object = singleton(Variation::class);
         /** @var \SilverStripe\Security\Member $admin */
         $admin = $this->objFromFixture(Member::class, 'admin');
         /** @var \SilverStripe\Security\Member $siteOwner */
@@ -74,7 +74,7 @@ class ProductOptionTest extends SapphireTest
     public function testCanEdit()
     {
         /** @var ProductOption $object */
-        $object = singleton(ProductOption::class);
+        $object = singleton(Variation::class);
         /** @var \SilverStripe\Security\Member $admin */
         $admin = $this->objFromFixture(Member::class, 'admin');
         /** @var \SilverStripe\Security\Member $siteOwner */
@@ -93,7 +93,7 @@ class ProductOptionTest extends SapphireTest
     public function testCanDelete()
     {
         /** @var ProductOption $object */
-        $object = singleton(ProductOption::class);
+        $object = singleton(Variation::class);
         /** @var \SilverStripe\Security\Member $admin */
         $admin = $this->objFromFixture(Member::class, 'admin');
         /** @var \SilverStripe\Security\Member $siteOwner */

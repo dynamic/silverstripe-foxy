@@ -46,7 +46,6 @@ use Symbiote\GridFieldExtensions\GridFieldTitleHeader;
  * @method FoxyCategory FoxyCategory()
  *
  * @method HasManyList Variations()
- * @method ManyManyList Options()
  *
  * @property-read DataObject|Purchasable $owner
  */
@@ -80,34 +79,6 @@ class Purchasable extends DataExtension implements PermissionProvider
      */
     private static $has_many = [
         'Variations' => Variation::class,
-    ];
-
-    /**
-     * @var array
-     */
-    private static $many_many = [
-        'Options' => ProductOption::class,
-    ];
-
-    /**
-     * @var array
-     */
-    private static $many_many_extraFields = [
-        'Options' => [
-            'WeightModifier' => 'Decimal(9,3)',
-            'CodeModifier' => 'Text',
-            'PriceModifier' => 'Currency',
-            'WeightModifierAction' => "Enum('Add,Subtract,Set', null)",
-            'CodeModifierAction' => "Enum('Add,Subtract,Set', null)",
-            'PriceModifierAction' => "Enum('Add,Subtract,Set', null)",
-            'Available' => 'Boolean',
-            'Type' => 'Int',
-            'OptionModifierKey' => 'Varchar(255)',
-            'SortOrder' => 'Int',
-        ],
-        'OptionTypes' => [
-            'SortOrder' => 'Int',
-        ],
     ];
 
     /**
@@ -178,7 +149,7 @@ class Purchasable extends DataExtension implements PermissionProvider
                 CurrencyField::create('Price')
                     ->setDescription(_t(
                         __CLASS__ . '.PriceDescription',
-                        'Base price for this product. Can be modified using Product Options'
+                        'Base price for this product. Can be modified using Product variations'
                     )),
                 TextField::create('Code')
                     ->setDescription(_t(
@@ -217,19 +188,6 @@ class Purchasable extends DataExtension implements PermissionProvider
                 ->removeComponentsByType([
                     GridFieldAddExistingAutocompleter::class,
                 ]);
-            $options = GridField::create(
-                'Options',
-                'Options',
-                $this->owner->Options()->sort('SortOrder'),
-                $config
-            );
-
-            $fields->addFieldsToTab(
-                'Root.Options',
-                [
-                    $options,
-                ]
-            );
 
             $variationsConfig = GridFieldConfig_RelationEditor::create()
                 ->removeComponentsByType([

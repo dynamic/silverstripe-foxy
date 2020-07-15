@@ -50,8 +50,7 @@ class PurchasableTest extends SapphireTest
      */
     public function setUp()
     {
-        Config::modify()->set(Variation::class, 'has_one', ['TestProduct' => TestProduct::class]);
-        Config::modify()->set(OptionType::class, 'has_one', ['TestProduct' => TestProduct::class]);
+        Config::modify()->set(Variation::class, 'has_one', ['Product' => TestProduct::class]);
 
         return parent::setUp();
     }
@@ -113,8 +112,8 @@ class PurchasableTest extends SapphireTest
         $object3->Available = 1;
         $type = Injector::inst()->create(TestProduct::class);
         $type->Title = 'Product One';
-        $type->Options()->add($this->objFromFixture(ProductOption::class, 'small'));
-        $type->Options()->add($this->objFromFixture(ProductOption::class, 'large'));
+        $type->Variations()->add($this->objFromFixture(Variation::class, 'small'));
+        $type->Variations()->add($this->objFromFixture(Variation::class, 'large'));
         $this->assertTrue($object3->isAvailable());
     }
 
