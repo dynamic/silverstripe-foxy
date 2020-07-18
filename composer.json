@@ -19,10 +19,10 @@
     ],
     "require": {
         "bummzack/sortablefile": "^2.0",
-        "silverstripe/recipe-cms": "^4.0",
-        "symbiote/silverstripe-gridfieldextensions": "^3.0",
+        "micschk/silverstripe-groupable-gridfield": "^1.0",
         "silverstripe/display-logic": "^2.0",
-        "micschk/silverstripe-groupable-gridfield": "dev-SilverStripe-4"
+        "silverstripe/recipe-cms": "^4.0",
+        "symbiote/silverstripe-gridfieldextensions": "^3.0"
     },
     "require-dev": {
         "phpunit/phpunit": "^5.7",
