@@ -1,6 +1,14 @@
 # Changelog
 
-## [1.2.3](https://github.com/dynamic/silverstripe-foxy/tree/1.2.3) (2020-07-14)
+## [1.2.4](https://github.com/dynamic/silverstripe-foxy/tree/1.2.4) (2020-07-24)
+
+[Full Changelog](https://github.com/dynamic/silverstripe-foxy/compare/1.2.3...1.2.4)
+
+**Merged pull requests:**
+
+- REFACTOR remove VCS for Groupable Gridfield [\#105](https://github.com/dynamic/silverstripe-foxy/pull/105) ([jsirish](https://github.com/jsirish))
+
+## [1.2.3](https://github.com/dynamic/silverstripe-foxy/tree/1.2.3) (2020-07-15)
 
 [Full Changelog](https://github.com/dynamic/silverstripe-foxy/compare/1.2.2...1.2.3)
 
