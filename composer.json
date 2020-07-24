@@ -33,12 +33,6 @@
         "pdepend/pdepend": "^2.5",
         "theseer/phpdox": "^0.11.0"
     },
-    "repositories": [
-        {
-            "type": "vcs",
-            "url": "git@github.com:mak001/silverstripe-groupable-gridfield.git"
-        }
-    ],
     "autoload": {
         "psr-4": {
             "Dynamic\\Foxy\\": "src/",
@@ -49,9 +43,6 @@
         "expose": [
             "client/dist"
         ],
-        "branch-alias": {
-            "dev-master": "1.x-dev"
-        }
     },
     "minimum-stability": "dev",
     "prefer-stable": true
