@@ -42,7 +42,7 @@
     "extra": {
         "expose": [
             "client/dist"
-        ],
+        ]
     },
     "minimum-stability": "dev",
     "prefer-stable": true
