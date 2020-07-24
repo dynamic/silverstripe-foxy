@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.3.0](https://github.com/dynamic/silverstripe-foxy/tree/1.3.0) (2020-07-24)
+
+[Full Changelog](https://github.com/dynamic/silverstripe-foxy/compare/1.2.5...1.3.0)
+
+**Merged pull requests:**
+
+- REFACTOR remove product options [\#104](https://github.com/dynamic/silverstripe-foxy/pull/104) ([jsirish](https://github.com/jsirish))
+
 ## [1.2.5](https://github.com/dynamic/silverstripe-foxy/tree/1.2.5) (2020-07-24)
 
 [Full Changelog](https://github.com/dynamic/silverstripe-foxy/compare/1.2.4...1.2.5)
