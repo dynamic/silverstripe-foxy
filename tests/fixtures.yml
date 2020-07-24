@@ -42,13 +42,4 @@ Dynamic\Foxy\Model\FoxyCategory:
     Title: 'Category Two'
     Code: '67890'
 
-Dynamic\Foxy\Model\ProductOption:
-  small:
-    Title: 'Small'
-  large:
-    Title: 'Large'
-  red:
-    Title: 'Red'
-  blue:
-    Title: 'Blue'
 

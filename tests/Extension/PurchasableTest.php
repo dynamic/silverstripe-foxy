@@ -9,6 +9,7 @@ use Dynamic\Foxy\Model\ProductOption;
 use Dynamic\Foxy\Model\Setting;
 use Dynamic\Foxy\Model\Variation;
 use Dynamic\Foxy\Test\TestOnly\TestProduct;
+use Dynamic\Foxy\Test\TestOnly\TestVariationDataExtension;
 use SilverStripe\Core\Config\Config;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Dev\Debug;
@@ -43,6 +44,9 @@ class PurchasableTest extends SapphireTest
         TestProduct::class => [
             Purchasable::class,
         ],
+        Variation::class => [
+            TestVariationDataExtension::class,
+        ],
     ];
 
     /**
@@ -50,8 +54,7 @@ class PurchasableTest extends SapphireTest
      */
     public function setUp()
     {
-        Config::modify()->set(Variation::class, 'has_one', ['TestProduct' => TestProduct::class]);
-        Config::modify()->set(OptionType::class, 'has_one', ['TestProduct' => TestProduct::class]);
+        Config::modify()->set(Variation::class, 'has_one', ['Product' => TestProduct::class]);
 
         return parent::setUp();
     }
@@ -113,8 +116,13 @@ class PurchasableTest extends SapphireTest
         $object3->Available = 1;
         $type = Injector::inst()->create(TestProduct::class);
         $type->Title = 'Product One';
-        $type->Options()->add($this->objFromFixture(ProductOption::class, 'small'));
-        $type->Options()->add($this->objFromFixture(ProductOption::class, 'large'));
+
+        $variation1 = Injector::inst()->create(Variation::class);
+        $variation1->Title = 'small';
+        $variation2 = Injector::inst()->create(Variation::class);
+        $variation2->Title = 'large';
+        $type->Variations()->add($variation1);
+        $type->Variations()->add($variation2);
         $this->assertTrue($object3->isAvailable());
     }
 
