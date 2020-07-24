@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.2.5](https://github.com/dynamic/silverstripe-foxy/tree/1.2.5) (2020-07-24)
+
+[Full Changelog](https://github.com/dynamic/silverstripe-foxy/compare/1.2.4...1.2.5)
+
+**Merged pull requests:**
+
+- BUGFIX update composer to remove vcs [\#107](https://github.com/dynamic/silverstripe-foxy/pull/107) ([jsirish](https://github.com/jsirish))
+
 ## [1.2.4](https://github.com/dynamic/silverstripe-foxy/tree/1.2.4) (2020-07-24)
 
 [Full Changelog](https://github.com/dynamic/silverstripe-foxy/compare/1.2.3...1.2.4)
