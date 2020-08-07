@@ -265,7 +265,7 @@ class Purchasable extends DataExtension implements PermissionProvider
             return false;
         }
 
-        if (!$this->getHasVariations()) {
+        if (!$this->owner->Variations()->count()) {
             return true;
         }
 
