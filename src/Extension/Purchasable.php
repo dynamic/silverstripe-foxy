@@ -49,6 +49,11 @@ use Symbiote\GridFieldExtensions\GridFieldTitleHeader;
 class Purchasable extends DataExtension implements PermissionProvider
 {
     /**
+     * @var
+     */
+    private $is_available;
+
+    /**
      * @var array
      */
     private static $db = [
@@ -229,23 +234,44 @@ class Purchasable extends DataExtension implements PermissionProvider
     }
 
     /**
-     * @return bool
+     * @return $this
+     */
+    public function setIsAvailable()
+    {
+        $available = true;
+
+        if (!$this->owner->Available) {
+            $available = false;
+        }
+
+        if ($available && !$this->owner->Variations()->count()) {
+            $available = true;
+        }
+
+        if ($available && $this->owner->Variations()->count()) {
+            $available = false;
+            foreach ($this->owner->Variations() as $variation) {
+                if ($variation->Available) {
+                    $available = true;
+                }
+            }
+        }
+
+        $this->owner->extend('updateSetIsAvailable', $available);
+
+        $this->is_available = $available;
+        return $this;
+    }
+
+    /**
+     * @return mixed
      */
     public function getIsAvailable()
     {
-        if (!$this->owner->Available) {
-            return false;
+        if (!isset($this->is_available)) {
+            $this->setIsAvailable();
         }
-
-        if (!$this->owner->Variations()->count()) {
-            return true;
-        }
-
-        foreach ($this->owner->Variations() as $variation) {
-            if ($variation->Available) {
-                return true;
-            }
-        }
+        return $this->is_available;
     }
 
     /**
