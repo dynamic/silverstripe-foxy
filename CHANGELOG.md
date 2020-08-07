@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.3.1](https://github.com/dynamic/silverstripe-foxy/tree/1.3.1) (2020-08-07)
+
+[Full Changelog](https://github.com/dynamic/silverstripe-foxy/compare/1.3.0...1.3.1)
+
+**Merged pull requests:**
+
+- BUGFIX Purchasable isAvailable - Variations count [\#108](https://github.com/dynamic/silverstripe-foxy/pull/108) ([jsirish](https://github.com/jsirish))
+
 ## [1.3.0](https://github.com/dynamic/silverstripe-foxy/tree/1.3.0) (2020-07-24)
 
 [Full Changelog](https://github.com/dynamic/silverstripe-foxy/compare/1.2.5...1.3.0)
