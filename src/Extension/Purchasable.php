@@ -3,10 +3,10 @@
 namespace Dynamic\Foxy\Extension;
 
 use Dynamic\Foxy\Model\FoxyCategory;
-use Dynamic\Foxy\Model\ProductOption;
 use Dynamic\Foxy\Model\Variation;
 use Dynamic\Foxy\Model\VariationType;
 use micschk\GroupableGridfield\GridFieldGroupable;
+use SilverStripe\Dev\Deprecation;
 use SilverStripe\Forms\CheckboxField;
 use SilverStripe\Forms\CurrencyField;
 use SilverStripe\Forms\DropdownField;
@@ -23,12 +23,9 @@ use SilverStripe\Forms\TextField;
 use SilverStripe\ORM\DataExtension;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\HasManyList;
-use SilverStripe\ORM\ManyManyList;
-use SilverStripe\ORM\ValidationResult;
 use SilverStripe\Security\Permission;
 use SilverStripe\Security\PermissionProvider;
 use SilverStripe\Security\Security;
-use Symbiote\GridFieldExtensions\GridFieldAddExistingSearchButton;
 use Symbiote\GridFieldExtensions\GridFieldOrderableRows;
 use Symbiote\GridFieldExtensions\GridFieldTitleHeader;
 
@@ -232,9 +229,9 @@ class Purchasable extends DataExtension implements PermissionProvider
     }
 
     /**
-     * @return mixed
+     * @return bool
      */
-    public function isAvailable()
+    public function getIsAvailable()
     {
         if (!$this->owner->Available) {
             return false;
@@ -249,8 +246,15 @@ class Purchasable extends DataExtension implements PermissionProvider
                 return true;
             }
         }
+    }
 
-        return false;
+    /**
+     * @return mixed
+     */
+    public function isAvailable()
+    {
+        Deprecation::notice('1.4', 'Use getIsAvailable() instead');
+        return $this->getIsAvailable();
     }
 
     /**

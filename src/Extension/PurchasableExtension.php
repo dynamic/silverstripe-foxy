@@ -27,7 +27,7 @@ class PurchasableExtension extends Extension
     public function onAfterInit()
     {
         if ($this->owner->hasMethod('isAvailable')) {
-            if ($this->owner->data()->isAvailable()) {
+            if ($this->owner->data()->getIsAvailable()) {
                 if ($this->owner->data()->Variations()->count()) {
                     Requirements::javascript('silverstripe/admin: thirdparty/jquery/jquery.js');
                     Requirements::javascript('dynamic/silverstripe-foxy: client/dist/javascript/product_options.js');
@@ -54,7 +54,7 @@ class PurchasableExtension extends Extension
      */
     public function AddToCartForm()
     {
-        if ($this->owner->data()->isAvailable()) {
+        if ($this->owner->data()->getIsAvailable()) {
             $form = AddToCartForm::create($this->owner, __FUNCTION__, null, null, null, $this->owner->data());
         } else {
             $form = false;
