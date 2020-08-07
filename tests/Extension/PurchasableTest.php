@@ -106,11 +106,11 @@ class PurchasableTest extends SapphireTest
     public function testIsAvailable()
     {
         $object = Injector::inst()->create(TestProduct::class);
-        $this->assertTrue($object->isAvailable());
+        $this->assertTrue($object->getIsAvailable());
 
         $object2 = Injector::inst()->create(TestProduct::class);
         $object2->Available = false;
-        $this->assertFalse($object2->isAvailable());
+        $this->assertFalse($object2->getIsAvailable());
 
         $object3 = Injector::inst()->create(TestProduct::class);
         $object3->Available = 1;
@@ -123,7 +123,7 @@ class PurchasableTest extends SapphireTest
         $variation2->Title = 'large';
         $type->Variations()->add($variation1);
         $type->Variations()->add($variation2);
-        $this->assertTrue($object3->isAvailable());
+        $this->assertTrue($object3->getIsAvailable());
     }
 
     /**

@@ -147,7 +147,7 @@ class AddToCartForm extends Form
             htmlspecialchars($this->product->Title);
         $code = $this->product->Code;
 
-        if ($this->product->isAvailable()) {
+        if ($this->product->getIsAvailable()) {
             $fields->push(
                 HiddenField::create('name')
                     ->setValue(
@@ -257,7 +257,7 @@ class AddToCartForm extends Form
      */
     protected function getProductActions(FieldList $actions)
     {
-        if (!empty(trim($this->helper->getStoreCartURL())) && $this->product->isAvailable()) {
+        if (!empty(trim($this->helper->getStoreCartURL())) && $this->product->getIsAvailable()) {
             $actions->push(
                 FormAction::create(
                     'x:submit',
