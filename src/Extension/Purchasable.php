@@ -52,11 +52,6 @@ use Symbiote\GridFieldExtensions\GridFieldTitleHeader;
 class Purchasable extends DataExtension implements PermissionProvider
 {
     /**
-     * @var
-     */
-    private $has_variations;
-
-    /**
      * @var array
      */
     private static $db = [
@@ -237,26 +232,6 @@ class Purchasable extends DataExtension implements PermissionProvider
     }
 
     /**
-     * @return $this
-     */
-    public function setHasVariations()
-    {
-        $this->has_variations = $this->owner->Variations()->exists();
-        return $this;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getHasVariations()
-    {
-        if (!$this->has_variations) {
-            $this->setHasVariations();
-        }
-        return $this->has_variations;
-    }
-
-    /**
      * @return mixed
      */
     public function isAvailable()
@@ -265,7 +240,7 @@ class Purchasable extends DataExtension implements PermissionProvider
             return false;
         }
 
-        if (!$this->getHasVariations()) {
+        if (!$this->owner->Variations()->count()) {
             return true;
         }
 
