@@ -238,12 +238,17 @@ class AddToCartForm extends Form
                         self::getGeneratedValue($code, 'quantity', 1, 'value')
                     )
             );
-
+        } else {
             $fields->push(
-                HeaderField::create('submitPrice', '$' . $this->product->Price, 4)
-                    ->addExtraClass('submit-price')
+                HeaderField::create('OutOfStock', 'Out of stock')
+                    ->setHeadingLevel(3)
             );
         }
+
+        $fields->push(
+            HeaderField::create('submitPrice', '$' . $this->product->Price, 4)
+                ->addExtraClass('submit-price')
+        );
 
         $this->extend('updateProductFields', $fields);
 
