@@ -4,6 +4,7 @@ namespace Dynamic\Foxy\Model;
 
 use Bummzack\SortableFile\Forms\SortableUploadField;
 use SilverStripe\Assets\File;
+use SilverStripe\Dev\Deprecation;
 use SilverStripe\Forms\CheckboxField;
 use SilverStripe\Forms\CurrencyField;
 use SilverStripe\Forms\DropdownField;
@@ -516,13 +517,26 @@ class Variation extends DataObject
     /**
      * @return bool
      */
-    public function getAvailability()
+    public function getIsAvailable()
     {
-        $available = $this->Available;
+        $available = true;
 
-        $this->extend('updateAvailability', $available);
+        if (!$this->Available) {
+            $available = false;
+        }
+
+        $this->extend('updateGetIsAvailable', $available);
 
         return $available;
+    }
+
+    /**
+     * @return bool
+     */
+    public function getAvailability()
+    {
+        Deprecation::notice('1.4', 'Use getIsAvailable() instead');
+        return $this->getIsAvailable();
     }
 
     /**
