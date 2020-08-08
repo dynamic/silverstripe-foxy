@@ -340,7 +340,7 @@ class AddToCartForm extends Form
 
             $list[$name] = $variation->getGeneratedTitle();
 
-            if (!$variation->getAvailability()) {
+            if (!$variation->getIsAvailable()) {
                 array_push($disabled, $name);
             }
         }
