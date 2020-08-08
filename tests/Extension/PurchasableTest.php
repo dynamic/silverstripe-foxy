@@ -80,50 +80,42 @@ class PurchasableTest extends SapphireTest
     /**
      *
      */
-    /*
-    public function testValidate()
+    public function testGetIsAvailable()
     {
+        /** @var TestProduct $object */
         $object = Injector::inst()->create(TestProduct::class);
-        $object->Price = '';
-        $this->setExpectedException(ValidationException::class);
-        $object->write();
-
-        $object->Price = '10.00';
-        $object->Code = '';
-        $this->setExpectedException(ValidationException::class);
-        $object->write();
-
-        $object->Code = '123';
-        $object->FoxyCategoryID = '';
-        $this->setExpectedException(ValidationException::class);
-        $object->write();
-    }
-    */
-
-    /**
-     *
-     */
-    public function testIsAvailable()
-    {
-        $object = Injector::inst()->create(TestProduct::class);
+        $object->Available = 1;
         $this->assertTrue($object->getIsAvailable());
 
+        /** @var TestProduct $object2 */
         $object2 = Injector::inst()->create(TestProduct::class);
         $object2->Available = false;
         $this->assertFalse($object2->getIsAvailable());
 
+        /** @var TestProduct $object3 */
         $object3 = Injector::inst()->create(TestProduct::class);
         $object3->Available = 1;
-        $type = Injector::inst()->create(TestProduct::class);
-        $type->Title = 'Product One';
-
+        /** @var Variation $variation1 */
         $variation1 = Injector::inst()->create(Variation::class);
         $variation1->Title = 'small';
+        $variation1->Available = 1;
+        /** @var Variation $variation2 */
         $variation2 = Injector::inst()->create(Variation::class);
         $variation2->Title = 'large';
-        $type->Variations()->add($variation1);
-        $type->Variations()->add($variation2);
+        $variation2->Available = 0;
+        $object3->Variations()->add($variation1);
+        $object3->Variations()->add($variation2);
         $this->assertTrue($object3->getIsAvailable());
+
+        /** @var TestProduct $object4 */
+        $object4 = Injector::inst()->create(TestProduct::class);
+        $object4->Available = 1;
+        /** @var Variation $variation3 */
+        $variation3 = Injector::inst()->create(Variation::class);
+        $variation3->Title = 'red';
+        $variation3->Available = 0;
+        $object4->Variations()->add($variation3);
+        $this->assertFalse($object4->getIsAvailable());
     }
 
     /**
@@ -140,7 +132,7 @@ class PurchasableTest extends SapphireTest
      */
     public function testProvidePermissions()
     {
-        /** @var TestProduct $object */
+        /** @var Purchasable $object */
         $object = singleton(Purchasable::class);
 
         i18n::set_locale('en');
