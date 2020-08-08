@@ -233,19 +233,28 @@ class Purchasable extends DataExtension implements PermissionProvider
      */
     public function getIsAvailable()
     {
+        $available = true;
+
         if (!$this->owner->Available) {
-            return false;
+            $available = false;
         }
 
-        if (!$this->owner->Variations()->count()) {
-            return true;
+        if ($available && !$this->owner->Variations()->count()) {
+            $available = true;
         }
 
-        foreach ($this->owner->Variations() as $variation) {
-            if ($variation->Available) {
-                return true;
+        if ($available && $this->owner->Variations()->count()) {
+            $available = false;
+            foreach ($this->owner->Variations() as $variation) {
+                if ($variation->Available) {
+                    $available = true;
+                }
             }
         }
+
+        $this->owner->extend('updateGetIsAvailable', $available);
+
+        return $available;
     }
 
     /**
