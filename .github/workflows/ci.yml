@@ -31,7 +31,7 @@ jobs:
         with:
           php-version: '7.4'
           extensions: intl, json
-          coverage: phpdbg
+          coverage: xdebug
 
       - name: Validate composer.json
         run: composer validate
@@ -59,7 +59,7 @@ jobs:
         run: composer install --prefer-source --no-interaction --no-progress --no-suggest --optimize-autoloader --verbose --profile
 
       - name: Run PHPUnit Test Coverage
-        run: phpdbg -qrr vendor/bin/phpunit --coverage-clover=coverage.xml
+        run: vendor/bin/phpunit --coverage-clover=coverage.xml
         env:
           SS_DATABASE_CLASS: SQLite3Database
           SS_SQLITE_DATABASE_PATH: /tmp/database-file
