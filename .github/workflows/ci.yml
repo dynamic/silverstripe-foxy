@@ -49,9 +49,6 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-composer-
 
-      - name: Install Silverstripe
-        run: composer require --no-update silverstripe/recipe-cms
-
       - name: Install SQLite3
         run: composer require --no-update silverstripe/sqlite3
 
