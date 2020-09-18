@@ -31,7 +31,7 @@ jobs:
         with:
           php-version: '7.4'
           extensions: intl, json
-          coverage: xdebug
+          coverage: phpdbg
 
       - name: Validate composer.json
         run: composer validate
@@ -40,6 +40,7 @@ jobs:
         id: composer-cache
         run: |
           echo "::set-output name=dir::$(composer config cache-files-dir)"
+
       - name: Cache Composer Downloads
         uses: actions/cache@v1
         with:
@@ -47,14 +48,18 @@ jobs:
           key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.json') }}
           restore-keys: |
             ${{ runner.os }}-composer-
+
+      - name: Install Silverstripe
+        run: composer require --no-update silverstripe/recipe-cms
+
       - name: Install SQLite3
         run: composer require --no-update silverstripe/sqlite3
 
       - name: Install dependencies
-        run: composer install --prefer-dist --no-interaction --no-progress --no-suggest --optimize-autoloader --verbose --profile
+        run: composer install --prefer-source --no-interaction --no-progress --no-suggest --optimize-autoloader --verbose --profile
 
       - name: Run PHPUnit Test Coverage
-        run: vendor/bin/phpunit --coverage-clover=coverage.xml
+        run: phpdbg -qrr vendor/bin/phpunit --coverage-clover=coverage.xml
         env:
           SS_DATABASE_CLASS: SQLite3Database
           SS_SQLITE_DATABASE_PATH: /tmp/database-file
@@ -65,3 +70,6 @@ jobs:
           file: ./coverage.xml
           flags: unittests
           fail_ci_if_error: false
+
+      - name: phpcs testing
+        run: vendor/bin/phpcs src/ tests/
