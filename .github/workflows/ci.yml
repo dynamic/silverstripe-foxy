@@ -20,6 +20,16 @@ jobs:
           - "7.3"
           - "7.4"
 
+    services:
+      mysql:
+        image: mysql:5.7
+        env:
+          MYSQL_ALLOW_EMPTY_PASSWORD: yes
+          MYSQL_DATABASE: SS_mysite
+        ports:
+          - 3306
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+
     steps:
       - name: "Checkout"
         uses: "actions/checkout@v2"
@@ -41,7 +51,7 @@ jobs:
         run: "composer update --no-ansi --no-interaction --no-progress"
 
       - name: "Run tests with phpunit/phpunit"
-        run: "vendor/bin/phpunit --coverage-clover=coverage.xml --log-junit=build/logs/junit.xml --coverage-xml=build/logs/coverage"
+        run: "vendor/bin/phpunit --coverage-clover=coverage.xml"
 
       - name: "Send code coverage report to Codecov.io"
         run: "bash <(curl -s https://codecov.io/bash) || true"
