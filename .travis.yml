@@ -8,6 +8,10 @@ env:
   global:
     - TRAVIS_NODE_VERSION="10"
 
+jobs:
+  allow_failures:
+    - env: DB=PGSQL RECIPE_VERSION=4.5.x-dev PHPUNIT_TEST=1 PHPCS_TEST=1
+
 matrix:
   include:
     - php: 7.1
