@@ -34,12 +34,5 @@ SilverStripe\Security\Member:
     Surname: User
     Email: user@dynamicagency.com
 
-Dynamic\Foxy\Model\FoxyCategory:
-  one:
-    Title: 'Category One'
-    Code: '12345'
-  two:
-    Title: 'Category Two'
-    Code: '67890'
 
 

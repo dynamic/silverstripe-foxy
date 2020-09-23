@@ -15,9 +15,11 @@ use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Dev\Debug;
 use SilverStripe\Dev\SapphireTest;
 use SilverStripe\Forms\FieldList;
+use SilverStripe\Forms\GridField\GridField;
 use SilverStripe\i18n\i18n;
 use SilverStripe\ORM\ValidationException;
 use SilverStripe\Security\Member;
+use SilverStripe\Versioned\Versioned;
 
 /**
  * Class PurchasableTest
@@ -28,7 +30,10 @@ class PurchasableTest extends SapphireTest
     /**
      * @var string
      */
-    protected static $fixture_file = '../fixtures.yml';
+    protected static $fixture_file = [
+        '../fixtures.yml',
+        '../purchasableproducts.yml',
+    ];
 
     /**
      * @var array
@@ -52,29 +57,19 @@ class PurchasableTest extends SapphireTest
     /**
      *
      */
-    public function setUp()
-    {
-        Config::modify()->set(Variation::class, 'has_one', ['Product' => TestProduct::class]);
-
-        return parent::setUp();
-    }
-
-    /**
-     *
-     */
     public function testUpdateCMSFields()
     {
-        $object = Injector::inst()->create(TestProduct::class);
-        $fields = $object->getCMSFields();
-        $this->assertInstanceOf(FieldList::class, $fields);
+        $newProduct = TestProduct::singleton();
+        $fields = $newProduct->getCMSFields();
 
-        $object->Price = 10.00;
-        $object->Code = 000123;
-        $object->FoxyCategoryID = $this->objFromFixture(FoxyCategory::class, 'one')->ID;
-
-        $object->write();
-        $fields = $object->getCMSFields();
         $this->assertInstanceOf(FieldList::class, $fields);
+        $this->assertNull($fields->dataFieldByName('SKU'));
+
+        $existingProduct = $this->objFromFixture(TestProduct::class, 'productone');
+        $existingFields = $existingProduct->getCMSFields();
+
+        $this->assertNull($existingFields->dataFieldByName('SKU'));
+        $this->assertInstanceOf(GridField::class, $existingFields->dataFieldByName('Variations'));
     }
 
     /**
@@ -82,40 +77,21 @@ class PurchasableTest extends SapphireTest
      */
     public function testGetIsAvailable()
     {
-        /** @var TestProduct $object */
-        $object = Injector::inst()->create(TestProduct::class);
-        $object->Available = 1;
-        $this->assertTrue($object->getIsAvailable());
+        /** @var TestProduct $availableProduct */
+        $availableProduct = $this->objFromFixture(TestProduct::class, 'productone');
+        $this->assertTrue($availableProduct->getIsAvailable());
 
-        /** @var TestProduct $object2 */
-        $object2 = Injector::inst()->create(TestProduct::class);
-        $object2->Available = false;
-        $this->assertFalse($object2->getIsAvailable());
+        /** @var TestProduct $unavailableProduct */
+        $unavailableProduct = $this->objFromFixture(TestProduct::class, 'productwo');
+        $this->assertFalse($unavailableProduct->getIsAvailable());
 
-        /** @var TestProduct $object3 */
-        $object3 = Injector::inst()->create(TestProduct::class);
-        $object3->Available = 1;
-        /** @var Variation $variation1 */
-        $variation1 = Injector::inst()->create(Variation::class);
-        $variation1->Title = 'small';
-        $variation1->Available = 1;
-        /** @var Variation $variation2 */
-        $variation2 = Injector::inst()->create(Variation::class);
-        $variation2->Title = 'large';
-        $variation2->Available = 0;
-        $object3->Variations()->add($variation1);
-        $object3->Variations()->add($variation2);
-        $this->assertTrue($object3->getIsAvailable());
+        /** @var TestProduct $availableVariations */
+        $availableVariations = $this->objFromFixture(TestProduct::class, 'productfour');
+        $this->assertTrue($availableVariations->getIsAvailable());
 
-        /** @var TestProduct $object4 */
-        $object4 = Injector::inst()->create(TestProduct::class);
-        $object4->Available = 1;
-        /** @var Variation $variation3 */
-        $variation3 = Injector::inst()->create(Variation::class);
-        $variation3->Title = 'red';
-        $variation3->Available = 0;
-        $object4->Variations()->add($variation3);
-        $this->assertFalse($object4->getIsAvailable());
+        /** @var TestProduct $unavailableVariations */
+        $unavailableVariations = $this->objFromFixture(TestProduct::class, 'productthree');
+        $this->assertFalse($unavailableVariations->getIsAvailable());
     }
 
     /**
@@ -123,7 +99,9 @@ class PurchasableTest extends SapphireTest
      */
     public function testIsProduct()
     {
-        $object = Injector::inst()->create(TestProduct::class);
+        /** @var TestProduct $object */
+        $object = TestProduct::singleton();
+
         $this->assertTrue($object->isProduct());
     }
 
@@ -141,8 +119,8 @@ class PurchasableTest extends SapphireTest
                 'name' => 'Manage products',
                 'category' => 'Foxy',
                 'help' => 'Manage products and related settings',
-                'sort' => 400
-            ]
+                'sort' => 400,
+            ],
         ];
         $this->assertEquals($expected, $object->providePermissions());
     }
@@ -153,12 +131,12 @@ class PurchasableTest extends SapphireTest
     public function testCanCreate()
     {
         /** @var TestProduct $object */
-        $object = singleton(TestProduct::class);
-        /** @var \SilverStripe\Security\Member $admin */
+        $object = TestProduct::singleton();
+        /** @var Member $admin */
         $admin = $this->objFromFixture(Member::class, 'admin');
-        /** @var \SilverStripe\Security\Member $siteOwner */
+        /** @var Member $siteOwner */
         $siteOwner = $this->objFromFixture(Member::class, 'site-owner');
-        /** @var \SilverStripe\Security\Member $default */
+        /** @var Member $default */
         $default = $this->objFromFixture(Member::class, 'default');
 
         $this->assertFalse($object->canCreate($default));
@@ -172,12 +150,12 @@ class PurchasableTest extends SapphireTest
     public function testCanEdit()
     {
         /** @var TestProduct $object */
-        $object = singleton(TestProduct::class);
-        /** @var \SilverStripe\Security\Member $admin */
+        $object = TestProduct::singleton();
+        /** @var Member $admin */
         $admin = $this->objFromFixture(Member::class, 'admin');
-        /** @var \SilverStripe\Security\Member $siteOwner */
+        /** @var Member $siteOwner */
         $siteOwner = $this->objFromFixture(Member::class, 'site-owner');
-        /** @var \SilverStripe\Security\Member $default */
+        /** @var Member $default */
         $default = $this->objFromFixture(Member::class, 'default');
 
         $this->assertFalse($object->canEdit($default));
@@ -191,12 +169,12 @@ class PurchasableTest extends SapphireTest
     public function testCanDelete()
     {
         /** @var TestProduct $object */
-        $object = singleton(TestProduct::class);
-        /** @var \SilverStripe\Security\Member $admin */
+        $object = TestProduct::singleton();
+        /** @var Member $admin */
         $admin = $this->objFromFixture(Member::class, 'admin');
-        /** @var \SilverStripe\Security\Member $siteOwner */
+        /** @var Member $siteOwner */
         $siteOwner = $this->objFromFixture(Member::class, 'site-owner');
-        /** @var \SilverStripe\Security\Member $default */
+        /** @var Member $default */
         $default = $this->objFromFixture(Member::class, 'default');
 
         $this->assertFalse($object->canDelete($default));
@@ -210,12 +188,12 @@ class PurchasableTest extends SapphireTest
     public function testCanUnpublish()
     {
         /** @var TestProduct $object */
-        $object = singleton(TestProduct::class);
-        /** @var \SilverStripe\Security\Member $admin */
+        $object = TestProduct::singleton();
+        /** @var Member $admin */
         $admin = $this->objFromFixture(Member::class, 'admin');
-        /** @var \SilverStripe\Security\Member $siteOwner */
+        /** @var Member $siteOwner */
         $siteOwner = $this->objFromFixture(Member::class, 'site-owner');
-        /** @var \SilverStripe\Security\Member $default */
+        /** @var Member $default */
         $default = $this->objFromFixture(Member::class, 'default');
 
         $this->assertFalse($object->canUnpublish($default));
@@ -229,16 +207,32 @@ class PurchasableTest extends SapphireTest
     public function testCanArchive()
     {
         /** @var TestProduct $object */
-        $object = singleton(TestProduct::class);
-        /** @var \SilverStripe\Security\Member $admin */
+        $object = TestProduct::singleton();
+        /** @var Member $admin */
         $admin = $this->objFromFixture(Member::class, 'admin');
-        /** @var \SilverStripe\Security\Member $siteOwner */
+        /** @var Member $siteOwner */
         $siteOwner = $this->objFromFixture(Member::class, 'site-owner');
-        /** @var \SilverStripe\Security\Member $default */
+        /** @var Member $default */
         $default = $this->objFromFixture(Member::class, 'default');
 
         $this->assertFalse($object->canArchive($default));
         $this->assertTrue($object->canArchive($admin));
         $this->assertTrue($object->canArchive($siteOwner));
+    }
+
+    /**
+     *
+     */
+    public function testBeforeWrite()
+    {
+        $product = TestProduct::create();
+        $product->Title = 'My New Product';
+        $product->Code = ' foo- bar  -baz ';
+
+        $this->assertEquals(' foo- bar  -baz ', $product->Code);
+        $product->writeToStage(Versioned::DRAFT);
+
+        $product = TestProduct::get()->byID($product->ID);
+        $this->assertEquals('foo- bar -baz', $product->Code);
     }
 }

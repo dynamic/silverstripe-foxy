@@ -3,10 +3,14 @@
 namespace Dynamic\Foxy\Test\Form;
 
 use Dynamic\Foxy\Extension\Purchasable;
+use Dynamic\Foxy\Extension\PurchasableExtension;
 use Dynamic\Foxy\Extension\Shippable;
 use Dynamic\Foxy\Form\AddToCartForm;
+use Dynamic\Foxy\Model\Variation;
+use Dynamic\Foxy\Test\TestOnly\TestProduct;
 use Dynamic\Foxy\Test\TestOnly\TestShippableProduct;
 use Dynamic\Foxy\Test\TestOnly\TestShippableProductController;
+use Dynamic\Foxy\Test\TestOnly\TestVariationDataExtension;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Dev\SapphireTest;
 use SilverStripe\Forms\FieldList;
@@ -21,27 +25,56 @@ class AddToCartFormTest extends SapphireTest
     /**
      * @var string
      */
-    protected static $fixture_file = '../fixtures.yml';
+    protected static $fixture_file = [
+        '../fixtures.yml',
+        '../shippableproducts.yml',
+    ];
+
+    /**
+     * @var string[]
+     */
+    protected static $extra_controllers = [
+        TestShippableProductController::class,
+    ];
+
+    /**
+     * @var string[]
+     */
+    protected static $extra_dataobjects = [
+        TestProduct::class,
+        TestShippableProduct::class,
+    ];
 
     /**
      * @var \string[][]
      */
     protected static $required_extensions = [
+        TestProduct::class => [
+            Purchasable::class,
+            Shippable::class,
+        ],
         TestShippableProduct::class => [
             Purchasable::class,
             Shippable::class,
-        ]
+        ],
+        Variation::class => [
+            TestVariationDataExtension::class,
+        ],
+        TestShippableProductController::class => [
+            PurchasableExtension::class,
+        ],
     ];
+
 
     /**
      *
      */
     public function testConstruct()
     {
-        $object = Injector::inst()->create(TestShippableProduct::class);
+        $object = TestShippableProduct::create();
         $controller = TestShippableProductController::create($object);
-        $form = $controller->AddToCartForm($controller, __FUNCTION__, null, null, null, $object);
-        $this->assertInstanceOf(Form::class, $form);
+        $form = $controller->AddToCartForm();
+        $this->assertInstanceOf(AddToCartForm::class, $form);
     }
 
     /**
@@ -49,10 +82,10 @@ class AddToCartFormTest extends SapphireTest
      */
     public function testGetProductFields()
     {
-        $object = Injector::inst()->create(TestShippableProduct::class);
-        $object->Weight = 1.0;
-        $controller = TestShippableProductController::create($object);
-        $form = $controller->AddToCartForm($controller, __FUNCTION__, null, null, null, $object);
+        /** @var TestProduct $productPage */
+        $productPage = $this->objFromFixture(TestProduct::class, 'productone');
+        $controller = TestShippableProductController::create($productPage);
+        $form = $controller->AddToCartForm();
         $fields = $form->Fields();
         $this->assertInstanceOf(FieldList::class, $fields);
     }
@@ -62,9 +95,9 @@ class AddToCartFormTest extends SapphireTest
      */
     public function testGetProductActions()
     {
-        $object = Injector::inst()->create(TestShippableProduct::class);
-        $controller = TestShippableProductController::create($object);
-        $form = $controller->AddToCartForm($controller, __FUNCTION__, null, null, null, $object);
+        $productPage = $this->objFromFixture(TestProduct::class, 'productone');
+        $controller = TestShippableProductController::create($productPage);
+        $form = $controller->AddToCartForm();
         $fields = $form->Actions();
         $this->assertInstanceOf(FieldList::class, $fields);
     }

@@ -3,13 +3,14 @@
 namespace Dynamic\Foxy\Test\Model;
 
 use Dynamic\Foxy\Extension\Purchasable;
-use Dynamic\Foxy\Model\OptionType;
+use Dynamic\Foxy\Extension\Shippable;
 use Dynamic\Foxy\Model\Variation;
 use Dynamic\Foxy\Test\TestOnly\TestProduct;
 use Dynamic\Foxy\Test\TestOnly\TestVariationDataExtension;
-use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Dev\SapphireTest;
 use SilverStripe\Forms\FieldList;
+use SilverStripe\ORM\DataObject;
+use SilverStripe\ORM\ValidationException;
 use SilverStripe\Security\Member;
 use SilverStripe\Versioned\Versioned;
 
@@ -22,7 +23,10 @@ class VariationTest extends SapphireTest
     /**
      * @var string
      */
-    protected static $fixture_file = '../fixtures.yml';
+    protected static $fixture_file = [
+        '../fixtures.yml',
+        '../shippableproducts.yml',
+    ];
 
     /**
      * @var array
@@ -37,6 +41,7 @@ class VariationTest extends SapphireTest
     protected static $required_extensions = [
         TestProduct::class => [
             Purchasable::class,
+            Shippable::class,
         ],
         Variation::class => [
             TestVariationDataExtension::class,
@@ -46,9 +51,18 @@ class VariationTest extends SapphireTest
     /**
      *
      */
+    public function testVariationHasExtension()
+    {
+        $this->assertTrue(Variation::has_extension(TestVariationDataExtension::class));
+        $this->assertTrue(Variation::singleton()->hasDatabaseField('ProductID'));
+    }
+
+    /**
+     *
+     */
     public function testGetCMSFields()
     {
-        $object = singleton(Variation::class);
+        $object = Variation::singleton();
         $fields = $object->getCMSFields();
         $this->assertInstanceOf(FieldList::class, $fields);
     }
@@ -58,13 +72,13 @@ class VariationTest extends SapphireTest
      */
     public function testCanCreate()
     {
-        /** @var ProductOption $object */
-        $object = singleton(Variation::class);
-        /** @var \SilverStripe\Security\Member $admin */
+        /** @var Variation $object */
+        $object = Variation::singleton();
+        /** @var Member $admin */
         $admin = $this->objFromFixture(Member::class, 'admin');
-        /** @var \SilverStripe\Security\Member $siteOwner */
+        /** @var Member $siteOwner */
         $siteOwner = $this->objFromFixture(Member::class, 'site-owner');
-        /** @var \SilverStripe\Security\Member $default */
+        /** @var Member $default */
         $default = $this->objFromFixture(Member::class, 'default');
 
         $this->assertFalse($object->canCreate($default));
@@ -77,13 +91,13 @@ class VariationTest extends SapphireTest
      */
     public function testCanEdit()
     {
-        /** @var ProductOption $object */
-        $object = singleton(Variation::class);
-        /** @var \SilverStripe\Security\Member $admin */
+        /** @var Variation $object */
+        $object = Variation::singleton();
+        /** @var Member $admin */
         $admin = $this->objFromFixture(Member::class, 'admin');
-        /** @var \SilverStripe\Security\Member $siteOwner */
+        /** @var Member $siteOwner */
         $siteOwner = $this->objFromFixture(Member::class, 'site-owner');
-        /** @var \SilverStripe\Security\Member $default */
+        /** @var Member $default */
         $default = $this->objFromFixture(Member::class, 'default');
 
         $this->assertFalse($object->canEdit($default));
@@ -96,13 +110,13 @@ class VariationTest extends SapphireTest
      */
     public function testCanDelete()
     {
-        /** @var ProductOption $object */
-        $object = singleton(Variation::class);
-        /** @var \SilverStripe\Security\Member $admin */
+        /** @var Variation $object */
+        $object = Variation::singleton();
+        /** @var Member $admin */
         $admin = $this->objFromFixture(Member::class, 'admin');
-        /** @var \SilverStripe\Security\Member $siteOwner */
+        /** @var Member $siteOwner */
         $siteOwner = $this->objFromFixture(Member::class, 'site-owner');
-        /** @var \SilverStripe\Security\Member $default */
+        /** @var Member $default */
         $default = $this->objFromFixture(Member::class, 'default');
 
         $this->assertFalse($object->canDelete($default));
@@ -111,42 +125,217 @@ class VariationTest extends SapphireTest
     }
 
     /**
-     * @throws \SilverStripe\ORM\ValidationException
+     * @throws ValidationException
      */
-    public function testGenerateKey()
+    public function testOnBeforeWrite()
     {
-        $this->markTestSkipped();
-        /*$product = $this->findOrMakeProduct();
-        $option = ProductOption::create();
-        //$option->write();
+        $productID = $this->idFromFixture(TestProduct::class, 'productfiveandvariations');
 
-        $option->Title = $title = 'My Title';
-        $price = 150;
-        $action = 'Set';
+        $newVariation = Variation::create();
+        $newVariation->Title = 'My Variation - Before Write Test';
+        $newVariation->ProductID = $productID;
 
-        $product->Options()->add(
-            $option,
-            [
-                'Available' => true,
-                'PriceModifier' => $price,
-                'PriceModifierAction' => $action,
-            ]
-        );
+        $newVariation->PriceModifierAction = 'Add';
+        $newVariation->PriceModifier = 10;
 
-        $actionSymbol = ProductOption::getOptionModifierActionSymbol($action);
+        $newVariation->WeightModifier = .5;
+        $newVariation->WeightModifierAction = 'Subtract';
 
-        $expected = "{$title}{p{$actionSymbol}{$price}|w+0|c+0}";
+        $newVariation->CodeModifier = 'my-foo-code-modifier';
+        $newVariation->CodeModifierAction = 'Set';
 
-        $option = $product->Options()->filter('ProductOptionID', $option->ID)->first();
+        $this->assertNull($newVariation->FinalPrice);
+        $this->assertNull($newVariation->FinalWeight);
+        $this->assertNull($newVariation->FinalCode);
 
-        $this->assertEquals(
-            $expected,
-            $option->OptionModifierKey
-        );//*/
+        $newVariation->write();
+        /** @var Variation $newVariation */
+        $newVariation = Variation::get()->byID($newVariation->ID);
+
+        $this->assertEquals(110, $newVariation->FinalPrice);
+        $this->assertEquals(9.5, $newVariation->FinalWeight);
+        $this->assertEquals('my-foo-code-modifier', $newVariation->FinalCode);
     }
 
     /**
-     * @return TestProduct|\SilverStripe\ORM\DataObject
+     *
+     */
+    public function testBeforeWriteRetainWhiteSpace()
+    {
+        Variation::config()->update('code_trim_right_space', false);
+        Variation::config()->update('code_trim_left_spaces', false);
+        $productID = $this->idFromFixture(TestProduct::class, 'productfiveandvariations');
+
+        $newVariation = Variation::create();
+        $newVariation->Title = 'My Variation - Before Write Whitespace Test';
+        $newVariation->ProductID = $productID;
+
+        $newVariation->CodeModifier = ' my-foo-code- modifier ';
+        $newVariation->CodeModifierAction = 'Add';
+
+        $newVariation->write();
+        $newVariation = Variation::get()->byID($newVariation->ID);
+
+        $this->assertEquals(' my-foo-code- modifier ', $newVariation->CodeModifier);
+    }
+
+    /**
+     * @throws ValidationException
+     */
+    public function testBeforeWriteTrimRight()
+    {
+        Variation::config()->update('code_trim_right_space', true);
+        $productID = $this->idFromFixture(TestProduct::class, 'productfiveandvariations');
+
+        $newVariation = Variation::create();
+        $newVariation->Title = 'My Variation - Before Write Whitespace Test';
+        $newVariation->ProductID = $productID;
+
+        $newVariation->CodeModifier = ' my-foo-code- modifier ';
+        $newVariation->CodeModifierAction = 'Add';
+
+        $newVariation->write();
+        $newVariation = Variation::get()->byID($newVariation->ID);
+
+        $this->assertEquals(' my-foo-code- modifier', $newVariation->CodeModifier);
+    }
+
+    /**
+     * @throws ValidationException
+     */
+    public function testBeforeWriteSingleSpace()
+    {
+        Variation::config()->update('code_trim_left_spaces', false);
+        Variation::config()->update('code_trim_right_space', false);
+        Variation::config()->update('code_enforce_single_spaces', true);
+        $productID = $this->idFromFixture(TestProduct::class, 'productfiveandvariations');
+
+        $newVariation = Variation::create();
+        $newVariation->Title = 'My Variation - Before Write Whitespace Test';
+        $newVariation->ProductID = $productID;
+
+        $newVariation->CodeModifier = '   my-foo-code-  modifier    ';
+        $newVariation->CodeModifierAction = 'Add';
+
+        $newVariation->write();
+        $newVariation = Variation::get()->byID($newVariation->ID);
+
+        $this->assertEquals(' my-foo-code- modifier ', $newVariation->CodeModifier);
+    }
+
+    /**
+     * @throws ValidationException
+     */
+    public function testBeforeWriteRemoveSpaces()
+    {
+        Variation::config()->update('code_enforce_single_spaces', true);
+        Variation::config()->update('code_remove_spaces', true);
+        $productID = $this->idFromFixture(TestProduct::class, 'productfiveandvariations');
+
+        $newVariation = Variation::create();
+        $newVariation->Title = 'My Variation - Before Write Whitespace Test';
+        $newVariation->ProductID = $productID;
+
+        $newVariation->CodeModifier = '   my-foo-code-  modifier    ';
+        $newVariation->CodeModifierAction = 'Add';
+
+        $newVariation->write();
+        $newVariation = Variation::get()->byID($newVariation->ID);
+
+        $this->assertEquals('my-foo-code-modifier', $newVariation->CodeModifier);
+    }
+
+    /**
+     * @throws ValidationException
+     */
+    public function testBeforeWriteSetSpaces()
+    {
+        $productID = $this->idFromFixture(TestProduct::class, 'productfiveandvariations');
+
+        $newVariation = Variation::create();
+        $newVariation->Title = 'My Variation - Before Write Whitespace Test';
+        $newVariation->ProductID = $productID;
+
+        $newVariation->CodeModifier = ' my-foo-code-  modifier    ';
+        $newVariation->CodeModifierAction = 'Add';
+
+        $newVariation->write();
+        $newVariation = Variation::get()->byID($newVariation->ID);
+
+        $this->assertEquals(' my-foo-code- modifier', $newVariation->CodeModifier);
+
+        Variation::config()->update('code_trim_left_spaces', true);
+
+        $newVariation->CodeModifier = ' my-foo-code-  modifier    ';
+        $newVariation->write();
+
+        $this->assertEquals('my-foo-code- modifier', $newVariation->CodeModifier);
+    }
+
+    /**
+     * @throws ValidationException
+     */
+    public function testBeforeWriteNoSpaces()
+    {
+        Variation::config()->update('code_remove_spaces', true);
+        $productID = $this->idFromFixture(TestProduct::class, 'productfiveandvariations');
+
+        $newVariation = Variation::create();
+        $newVariation->Title = 'My Variation - Before Write Whitespace Test';
+        $newVariation->ProductID = $productID;
+
+        $newVariation->CodeModifier = '   my-foo-code-  modifier    ';
+        $newVariation->CodeModifierAction = 'Add';
+
+        $newVariation->write();
+        $newVariation = Variation::get()->byID($newVariation->ID);
+
+        $this->assertEquals('my-foo-code-modifier', $newVariation->CodeModifier);
+    }
+
+    /**
+     *
+     */
+    public function testGetGeneratedValue()
+    {
+        $variation = $this->objFromFixture(Variation::class, 'variationone');
+        $variation2 = $this->objFromFixture(Variation::class, 'variationtwo');
+        $variation3 = $this->objFromFixture(Variation::class, 'variationthree');
+
+        //Add
+        $expected = sprintf(
+            '%s{p%s|w%s|c%s}',
+            $variation->Title,
+            '+10',
+            '+0',
+            '+'
+        );
+
+        //Set
+        $expected2 = sprintf(
+            '%s{p%s|w%s|c%s}',
+            $variation2->Title,
+            ':150',
+            '+0',
+            '+'
+        );
+
+        //Subtract
+        $expected3 = sprintf(
+            '%s{p%s|w%s|c%s}',
+            $variation3->Title,
+            '-20',
+            '+0',
+            '+'
+        );
+
+        $this->assertEquals($expected, $variation->getGeneratedValue());
+        $this->assertEquals($expected2, $variation2->getGeneratedValue());
+        $this->assertEquals($expected3, $variation3->getGeneratedValue());
+    }
+
+    /**
+     * @return TestProduct|DataObject
      */
     protected function findOrMakeProduct()
     {

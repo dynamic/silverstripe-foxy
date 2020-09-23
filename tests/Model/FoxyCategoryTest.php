@@ -2,11 +2,16 @@
 
 namespace Dynamic\Foxy\Test\Model;
 
+use Dynamic\Foxy\Extension\Purchasable;
+use Dynamic\Foxy\Extension\Shippable;
 use Dynamic\Foxy\Model\FoxyCategory;
+use Dynamic\Foxy\Model\Variation;
 use Dynamic\Foxy\Test\TestOnly\TestProduct;
-use SilverStripe\Core\Injector\Injector;
+use Dynamic\Foxy\Test\TestOnly\TestVariationDataExtension;
 use SilverStripe\Dev\SapphireTest;
 use SilverStripe\Forms\FieldList;
+use SilverStripe\Forms\ReadonlyField;
+use SilverStripe\Forms\TextField;
 use SilverStripe\ORM\ValidationException;
 use SilverStripe\Security\Member;
 
@@ -19,7 +24,30 @@ class FoxyCategoryTest extends SapphireTest
     /**
      * @var string
      */
-    protected static $fixture_file = '../fixtures.yml';
+    protected static $fixture_file = [
+        '../fixtures.yml',
+        '../purchasableproducts.yml',
+    ];
+
+    /**
+     * @var array
+     */
+    public static $extra_dataobjects = [
+        TestProduct::class,
+    ];
+
+    /**
+     * @var \string[][]
+     */
+    protected static $required_extensions = [
+        TestProduct::class => [
+            Purchasable::class,
+            Shippable::class,
+        ],
+        Variation::class => [
+            TestVariationDataExtension::class,
+        ],
+    ];
 
     /**
      *
@@ -29,12 +57,18 @@ class FoxyCategoryTest extends SapphireTest
         $object = $this->objFromFixture(FoxyCategory::class, 'one');
         $fields = $object->getCMSFields();
         $this->assertInstanceOf(FieldList::class, $fields);
+        $this->assertInstanceOf(TextField::class, $fields->dataFieldByName('Title'));
+        $this->assertInstanceOf(TextField::class, $fields->dataFieldByName('Code'));
 
-        $object = Injector::inst()->create(FoxyCategory::class);
-        $object->Code = 'DEFAULT';
-        $object->write();
-        $fields = $object->getCMSFields();
-        $this->assertInstanceOf(FieldList::class, $fields);
+        $default = FoxyCategory::create();
+        $default->Title = 'DEFAULT';
+        $default->Code = 'DEFAULT';
+        $default->write();
+
+        $defaultCategoryFields = $default->getCMSFields();
+
+        $this->assertInstanceOf(ReadonlyField::class, $defaultCategoryFields->dataFieldByName('Title'));
+        $this->assertInstanceOf(ReadonlyField::class, $defaultCategoryFields->dataFieldByName('Code'));
     }
 
     /**
@@ -44,12 +78,12 @@ class FoxyCategoryTest extends SapphireTest
     {
         $object = $this->objFromFixture(FoxyCategory::class, 'one');
         $object->Code = '';
-        $this->setExpectedException(ValidationException::class);
+        $this->expectException(ValidationException::class);
         $object->write();
 
         $object = $this->objFromFixture(FoxyCategory::class, 'one');
-        $object->Code = 'DEFAULT';
-        $this->setExpectedException(ValidationException::class);
+        $object->Code = '67890';
+        $this->expectException(ValidationException::class);
         $object->write();
     }
 
@@ -59,12 +93,12 @@ class FoxyCategoryTest extends SapphireTest
     public function testCanCreate()
     {
         /** @var FoxyCategory $object */
-        $object = singleton(FoxyCategory::class);
-        /** @var \SilverStripe\Security\Member $admin */
+        $object = FoxyCategory::singleton();
+        /** @var Member $admin */
         $admin = $this->objFromFixture(Member::class, 'admin');
-        /** @var \SilverStripe\Security\Member $siteOwner */
+        /** @var Member $siteOwner */
         $siteOwner = $this->objFromFixture(Member::class, 'site-owner');
-        /** @var \SilverStripe\Security\Member $default */
+        /** @var Member $default */
         $default = $this->objFromFixture(Member::class, 'default');
 
         $this->assertFalse($object->canCreate($default));
@@ -78,12 +112,12 @@ class FoxyCategoryTest extends SapphireTest
     public function testCanEdit()
     {
         /** @var FoxyCategory $object */
-        $object = singleton(FoxyCategory::class);
-        /** @var \SilverStripe\Security\Member $admin */
+        $object = FoxyCategory::singleton();
+        /** @var Member $admin */
         $admin = $this->objFromFixture(Member::class, 'admin');
-        /** @var \SilverStripe\Security\Member $siteOwner */
+        /** @var Member $siteOwner */
         $siteOwner = $this->objFromFixture(Member::class, 'site-owner');
-        /** @var \SilverStripe\Security\Member $default */
+        /** @var Member $default */
         $default = $this->objFromFixture(Member::class, 'default');
 
         $this->assertFalse($object->canEdit($default));
@@ -97,12 +131,12 @@ class FoxyCategoryTest extends SapphireTest
     public function testCanDelete()
     {
         /** @var FoxyCategory $object */
-        $object = singleton(FoxyCategory::class);
-        /** @var \SilverStripe\Security\Member $admin */
+        $object = FoxyCategory::singleton();
+        /** @var Member $admin */
         $admin = $this->objFromFixture(Member::class, 'admin');
-        /** @var \SilverStripe\Security\Member $siteOwner */
+        /** @var Member $siteOwner */
         $siteOwner = $this->objFromFixture(Member::class, 'site-owner');
-        /** @var \SilverStripe\Security\Member $default */
+        /** @var Member $default */
         $default = $this->objFromFixture(Member::class, 'default');
 
         $this->assertFalse($object->canDelete($default));
