@@ -63,6 +63,21 @@ class Variation extends DataObject
     private static $plural_name = 'Variations';
 
     /**
+     * @var bool
+     */
+    private static $code_trim_right_space = true;
+
+    /**
+     * @var bool
+     */
+    private static $code_enforce_single_spaces = true;
+
+    /**
+     * @var bool
+     */
+    private static $code_trim_left_spaces = false;
+
+    /**
      * @var string[]
      */
     private static $db = [
@@ -331,22 +346,44 @@ class Variation extends DataObject
         $this->{$modifierKeyField} = $this->getGeneratedValue();
 
         $codeModifierField = 'CodeModifier';
+        $codeModifier = $this->{$codeModifierField};
+
         switch ($this->CodeModifierAction) {
             case 'Subtract':
             case 'Add':
-                if ($this->config()->get('trimAllWhitespace') == false) {
-                    // trim the right of the code - some companies use spaces to denote options
-                    $trimmed = rtrim($this->{$codeModifierField});
-                    // replace duplicate spaces
-                    $this->{$codeModifierField} = preg_replace('/\s+/', ' ', $trimmed);
-                    break;
+                if (static::config()->get('code_trim_left_spaces')) {
+                    //remove duplicate leading spaces
+                    if (strpos($codeModifier, ' ') == 0) {
+                        $codeModifier = ltrim($codeModifier);
+                    }
                 }
-            /* falls through */
+                if (static::config()->get('code_trim_right_space')) {
+                    $codeModifier = rtrim($codeModifier);
+                }
+                break;
             case 'Set':
-                $trimmed = trim($this->{$codeModifierField});
-                $this->{$codeModifierField} = preg_replace('/\s+/', ' ', $trimmed);
+                //We must trim for Foxy
+                $codeModifier = trim($codeModifier);
                 break;
         }
+
+        if (static::config()->get('code_enforce_single_spaces')) {
+            //replace duplicate spaces
+            $codeModifier = preg_replace('/\s+/', ' ', $codeModifier);
+        }
+
+        /**
+         * This method supersedes configs code_trim_right_space and code_enforce_single_spaces
+         */
+        if (static::config()->get('code_remove_spaces')) {
+            // replace duplicate spaces
+            $codeModifier = preg_replace('/\s+/', '', $codeModifier);
+        }
+
+        //can be used for backwards compatibility (do your own logic)
+        $this->extend('updateCodeModifier', $this, $codeModifier);
+
+        $this->{$codeModifierField} = $codeModifier;
 
         $this->FinalPrice = $this->calculateFinalPrice();
         $this->FinalCode = $this->calculateFinalCode();
