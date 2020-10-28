@@ -75,8 +75,8 @@ jobs:
           name: "coverage"
           path: "build/logs/coverage/"
 
-      - name: "Run tests with squizlabs/php_codesniffer"
-        run: "vendor/bin/phpcs --report=checkstyle --report-file=build/logs/checkstyle.xml --standard=phpcs.xml.dist --extensions=php,inc --ignore=autoload.php --ignore=vendor/ src/ tests/"
+      #- name: "Run tests with squizlabs/php_codesniffer"
+      #  run: "vendor/bin/phpcs --report=checkstyle --report-file=build/logs/checkstyle.xml --standard=phpcs.xml.dist --extensions=php,inc --ignore=autoload.php --ignore=vendor/ src/ tests/"
 
       #- name: "Run tests with phpmd/phpmd"
       #  run: "vendor/bin/phpmd src xml codesize,unusedcode,naming --reportfile build/logs/pmd.xml --exclude vendor/ --exclude autoload.php"
