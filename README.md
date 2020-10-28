@@ -2,6 +2,7 @@
 
 Foxy.io integration for SilverStripe websites.
 
+![CI](https://github.com/dynamic/silverstripe-foxy/workflows/CI/badge.svg)
 [![Build Status](https://travis-ci.org/dynamic/silverstripe-foxy.svg?branch=master)](https://travis-ci.org/dynamic/silverstripe-foxy)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/dynamic/silverstripe-foxy/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/dynamic/silverstripe-foxy/?branch=master)
 [![Build Status](https://scrutinizer-ci.com/g/dynamic/silverstripe-foxy/badges/build.png?b=master)](https://scrutinizer-ci.com/g/dynamic/silverstripe-foxy/build-status/master)
