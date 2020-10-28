@@ -67,7 +67,7 @@ jobs:
       - name: "Run tests with phpunit/phpunit"
         env:
           SS_DATABASE_PORT: ${{ job.services.mysql.ports['3306'] }}
-        run: "vendor/bin/phpunit --coverage-html=build/logs/coverage/html --phpunit-xml=build/logs/coverage/index.xml"
+        run: "vendor/bin/phpunit --coverage-html=build/logs/coverage/html --coverage-xml=build/logs/coverage"
 
       - name: "Archive code coverage results"
         uses: "actions/upload-artifact@v2"
