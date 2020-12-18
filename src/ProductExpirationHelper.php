@@ -19,7 +19,7 @@ class ProductExpirationHelper
     /**
      * @var
      */
-    private $expirations;
+    private $expirations = [];
 
     /**
      * ProductExpirationHelper constructor.
