@@ -51,6 +51,7 @@ use Symbiote\GridFieldExtensions\GridFieldTitleHeader;
  */
 class Purchasable extends DataExtension implements PermissionProvider
 {
+
     /**
      * @var array
      */
