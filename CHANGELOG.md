@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.3.2](https://github.com/dynamic/silverstripe-foxy/tree/1.3.2) (2020-12-17)
+
+[Full Changelog](https://github.com/dynamic/silverstripe-foxy/compare/1.3.1...1.3.2)
+
+**Merged pull requests:**
+
+- ENHANCEMENT ProductExpirationHelper [\#121](https://github.com/dynamic/silverstripe-foxy/pull/121) ([muskie9](https://github.com/muskie9))
+- CI Workflow - phpcs - standard [\#120](https://github.com/dynamic/silverstripe-foxy/pull/120) ([jsirish](https://github.com/jsirish))
+- CI remove Jenkins [\#119](https://github.com/dynamic/silverstripe-foxy/pull/119) ([jsirish](https://github.com/jsirish))
+
 ## [1.3.1](https://github.com/dynamic/silverstripe-foxy/tree/1.3.1) (2020-08-07)
 
 [Full Changelog](https://github.com/dynamic/silverstripe-foxy/compare/1.3.0...1.3.1)
