@@ -276,7 +276,7 @@ class AddToCartForm extends Form
 
         $this->extend('updateProductFields', $fields);
 
-        if ($this->getExpirationHelper()->getExpiration() !== null) {
+        if ($this->getExpirationHelper()->getExpiration() !== null && $this->getExpirationHelper()->getExpiration() > 0) {
             $fields->push(
                 HiddenField::create('expires')
                     ->setValue(
