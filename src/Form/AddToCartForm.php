@@ -8,6 +8,7 @@ use Dynamic\Foxy\Model\OptionType;
 use Dynamic\Foxy\Model\ProductOption;
 use Dynamic\Foxy\Model\Variation;
 use Dynamic\Foxy\Model\VariationType;
+use Dynamic\Foxy\ProductExpirationHelper;
 use Dynamic\Products\Page\Product;
 use SilverStripe\CMS\Model\VirtualPage;
 use SilverStripe\Forms\CompositeField;
@@ -38,6 +39,11 @@ class AddToCartForm extends Form
      * @var
      */
     private $product;
+
+    /**
+     * @var ProductExpirationHelper
+     */
+    private $expiration_helper;
 
     /**
      * @param $helper
@@ -92,6 +98,28 @@ class AddToCartForm extends Form
     public function getProduct()
     {
         return $this->product;
+    }
+
+    /**
+     * @return $this
+     */
+    protected function setExpirationHelper()
+    {
+        $this->expiration_helper = ProductExpirationHelper::create();
+
+        return $this;
+    }
+
+    /**
+     * @return ProductExpirationHelper
+     */
+    public function getExpirationHelper()
+    {
+        if (!$this->expiration_helper) {
+            $this->setExpirationHelper();
+        }
+
+        return $this->expiration_helper;
     }
 
     /**
@@ -246,6 +274,20 @@ class AddToCartForm extends Form
         }
 
         $this->extend('updateProductFields', $fields);
+
+        if ($this->getExpirationHelper()->getExpiration() !== null && $this->getExpirationHelper()->getExpiration() > 0) {
+            $fields->push(
+                HiddenField::create('expires')
+                    ->setValue(
+                        AddToCartForm::getGeneratedValue(
+                            $this->getProduct()->Code,
+                            'expires',
+                            $this->getExpirationHelper()->getExpiration(),
+                            'value'
+                        )
+                    )
+            );
+        }
 
         return $fields;
     }
