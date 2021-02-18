@@ -51,6 +51,15 @@ use Symbiote\GridFieldExtensions\GridFieldTitleHeader;
  */
 class Purchasable extends DataExtension implements PermissionProvider
 {
+    /**
+     * @var null|bool
+     */
+    private $is_available = null;
+
+    /**
+     * @var null|bool
+     */
+    private $has_variations = null;
 
     /**
      * @var array
@@ -190,7 +199,7 @@ class Purchasable extends DataExtension implements PermissionProvider
                         'Variation Type',   // A description of the function of the group
                         'none',         // A title/header for items without a group/unassigned
                         VariationType::get()->sort('SortOrder')->map()->toArray()
-                    )
+                    ),
                 ]);
 
             $fields->addFieldToTab(
@@ -233,25 +242,64 @@ class Purchasable extends DataExtension implements PermissionProvider
     }
 
     /**
+     * @return bool|null
+     */
+    public function getHasVariations()
+    {
+        if ($this->has_variations === null) {
+            $this->setHasVariations();
+        }
+
+        return $this->has_variations;
+    }
+
+    protected function setHasVariations()
+    {
+        $this->has_variations = !$this->owner->Variations()->count() || $this->owner->Variations()->filter('Available', true)->count();
+
+        return $this;
+    }
+
+    /**
      * @return mixed
      */
     public function isAvailable()
     {
+        return $this->getIsAvailable();
+    }
+
+    /**
+     * @return bool|null
+     */
+    public function getIsAvailable()
+    {
+        if ($this->is_available === null) {
+            $this->setIsAvailable();
+        }
+
+        return $this->is_available;
+    }
+
+    /**
+     * @return $this
+     */
+    protected function setIsAvailable()
+    {
         if (!$this->owner->Available) {
-            return false;
+            $this->is_available = false;
+
+            return $this;
         }
 
-        if (!$this->owner->Variations()->count()) {
-            return true;
+        if ($this->getHasVariations()) {
+            $this->is_available = true;
+
+            return $this;
         }
 
-        foreach ($this->owner->Variations() as $variation) {
-            if ($variation->Available) {
-                return true;
-            }
-        }
+        $this->is_available = false;
 
-        return false;
+        return $this;
     }
 
     /**
