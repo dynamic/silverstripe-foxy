@@ -1,18 +1,16 @@
 <?php
 
-namespace Dynamic\Foxy\Extension;
+namespace Dynamic\Foxy\Controller;
 
 use Dynamic\Foxy\Form\AddToCartForm;
 use Dynamic\Foxy\Model\FoxyHelper;
 use Dynamic\Foxy\Model\Setting;
-use SilverStripe\Core\Extension;
 use SilverStripe\View\Requirements;
 
 /**
- * Class PurchasableExtension
- * @package Dynamic\Foxy\Extension
+ *
  */
-class PurchasableExtension extends Extension
+class ProductController extends \PageController
 {
     /**
      * @var array
@@ -24,8 +22,10 @@ class PurchasableExtension extends Extension
     /**
      *
      */
-    public function onAfterInit()
+    public function init()
     {
+        parent::init();
+
         if ($this->owner->hasMethod('isAvailable')) {
             if ($this->owner->data()->getIsAvailable()) {
                 if ($this->owner->data()->Variations()->count()) {
@@ -73,4 +73,5 @@ class PurchasableExtension extends Extension
 
         return $helper::StoreURL();
     }
+
 }
