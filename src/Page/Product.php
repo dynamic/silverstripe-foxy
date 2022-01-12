@@ -95,7 +95,7 @@ class Product extends \Page
      * @var array
      */
     private static $summary_fields = [
-        'Image.CMSThumbnail',
+        //'Image.CMSThumbnail',
         'Title',
         'Code',
         'Price.Nice',
@@ -124,7 +124,7 @@ class Product extends \Page
         $labels['Price.Nice'] = _t(__CLASS__ . '.PriceLabel', 'Price');
         $labels['Available'] = _t(__CLASS__ . '.AvailableLabel', 'Available for purchase');
         $labels['Available.Nice'] = _t(__CLASS__ . '.AvailableLabelNice', 'Available');
-        $labels['Image.CMSThumbnail'] = _t(__CLASS__ . '.ImageLabel', 'Image');
+        //$labels['Image.CMSThumbnail'] = _t(__CLASS__ . '.ImageLabel', 'Image');
         $labels['ReceiptTitle'] = _t(__CLASS__ . '.ReceiptTitleLabel', 'Product title for receipt');
         $labels['FoxyCategoryID'] = _t(__CLASS__ . '.FoxyCategoryLabel', 'Foxy Category');
 
@@ -411,6 +411,11 @@ class Product extends \Page
     {
         if (!$variant = $this->getDefaultVariation()) {
             $variant = Variation::create();
+
+            foreach (Variation::singleton()->config()->get('default_variation_mapping') as $productField => $variationField) {
+                $variant->$variationField = $this->$productField;
+            }
+
             $variant->ProductID = $this->ID;
             $variant->IsDefault = true;
 

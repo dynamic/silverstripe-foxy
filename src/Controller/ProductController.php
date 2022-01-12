@@ -26,9 +26,9 @@ class ProductController extends \PageController
     {
         parent::init();
 
-        if ($this->owner->hasMethod('isAvailable')) {
-            if ($this->owner->data()->getIsAvailable()) {
-                if ($this->owner->data()->Variations()->count()) {
+        if ($this->hasMethod('isAvailable')) {
+            if ($this->data()->getIsAvailable()) {
+                if ($this->data()->Variations()->count()) {
                     Requirements::javascript('silverstripe/admin: thirdparty/jquery/jquery.js');
                     Requirements::javascript('dynamic/silverstripe-foxy: client/dist/javascript/product_options.js');
                 }
@@ -54,12 +54,12 @@ class ProductController extends \PageController
      */
     public function AddToCartForm()
     {
-        if ($this->owner->data()->getIsAvailable()) {
-            $form = AddToCartForm::create($this->owner, __FUNCTION__, null, null, null, $this->owner->data());
+        if ($this->data()->getIsAvailable()) {
+            $form = AddToCartForm::create($this, __FUNCTION__, null, null, null, $this->data());
         } else {
             $form = false;
         }
-        $this->owner->extend('updateAddToCartForm', $form);
+        $this->extend('updateAddToCartForm', $form);
 
         return $form;
     }

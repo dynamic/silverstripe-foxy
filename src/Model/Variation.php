@@ -82,6 +82,16 @@ class Variation extends DataObject
     private static $code_trim_left_spaces = false;
 
     /**
+     * Mapping from a Product's field to the Variation's field for a default variation
+     *
+     * @var string[]
+     */
+    private static $default_variation_mapping = [
+        'Title' => 'Title',
+        'Available' => 'Available',
+    ];
+
+    /**
      * @var string[]
      */
     private static $db = [
@@ -102,6 +112,8 @@ class Variation extends DataObject
         'FinalWeight' => 'Decimal(9,3)',
         'FinalCode' => 'Varchar(255)',
         'IsDefault' => 'Boolean',
+        'ReceiptTitle' => 'HTMLVarchar(255)',
+        'QuantityMax' => 'Int',
     ];
 
     /**
@@ -188,7 +200,7 @@ class Variation extends DataObject
                 'FinalPrice',
                 'FinalWeight',
                 'FinalCode',
-                'IsDefault'
+                'IsDefault',
             ]);
 
             $fields->insertBefore(
@@ -408,9 +420,9 @@ class Variation extends DataObject
         $validate = parent::validate();
         $product = $this->Product();
 
-        /*if (!$this->Title) {
+        if (!$this->Title) {
             $validate->addFieldError('Title', 'A title is required');
-        }//*/
+        }
 
         /*if (!$this->VariationTypeID) {
             $validate->addFieldError('VariationTypeID', 'A variation type is required');
