@@ -10,3 +10,11 @@ SilverStripe\Control\Director:
   rules:
     'foxytest//$Action/$ID/$Name': Dynamic\FoxyStripe\Controller\DataTestController
     'foxylinkgenerator//$Action/$ID/$Name': Dynamic\Foxy\Controller\FoxyLinkGeneratorController
+    'foxywebhook//$Action/$ID/$Name': Dynamic\Foxy\Controller\FoxyWebhookController'
+
+---
+Only:
+  moduleexists: 'ryanpotter/silverstripe-cms-theme'
+---
+Dynamic\Foxy\Admin\FoxyAdmin:
+  menu_icon_class: 'fas fa-cash-register'

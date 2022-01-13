@@ -114,6 +114,7 @@ class Variation extends DataObject
         'IsDefault' => 'Boolean',
         'ReceiptTitle' => 'HTMLVarchar(255)',
         'QuantityMax' => 'Int',
+        'InventoryLevel' => 'Int',
     ];
 
     /**
