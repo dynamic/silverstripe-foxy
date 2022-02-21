@@ -2,6 +2,7 @@
 
 namespace Dynamic\Foxy\Model;
 
+use Dynamic\Foxy\Page\Product;
 use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\ReadonlyField;
 use SilverStripe\ORM\DataObject;
@@ -23,6 +24,13 @@ class FoxyCategory extends DataObject
     private static $db = [
         'Title' => 'Varchar(255)',
         'Code' => 'Varchar(50)',
+    ];
+
+    /**
+     * @var string[]
+     */
+    private static $has_many = [
+        'Products' => Product::class,
     ];
 
     /**

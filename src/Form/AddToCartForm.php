@@ -2,13 +2,11 @@
 
 namespace Dynamic\Foxy\Form;
 
-use Dynamic\Foxy\Extension\Shippable;
 use Dynamic\Foxy\Model\FoxyHelper;
-use Dynamic\Foxy\Model\OptionType;
-use Dynamic\Foxy\Model\ProductOption;
 use Dynamic\Foxy\Model\Variation;
 use Dynamic\Foxy\Model\VariationType;
-use Dynamic\Products\Page\Product;
+use Dynamic\Foxy\Page\Product;
+use Dynamic\Foxy\Page\ShippableProduct;
 use SilverStripe\CMS\Model\VirtualPage;
 use SilverStripe\Forms\CompositeField;
 use SilverStripe\Forms\DropdownField;
@@ -18,10 +16,8 @@ use SilverStripe\Forms\FormAction;
 use SilverStripe\Forms\HeaderField;
 use SilverStripe\Forms\HiddenField;
 use SilverStripe\Forms\RequiredFields;
-use SilverStripe\ORM\ArrayList;
-use SilverStripe\ORM\DataList;
-use SilverStripe\ORM\GroupedList;
 use SilverStripe\ORM\HasManyList;
+use SilverStripe\ORM\ValidationException;
 
 /**
  * Class AddToCartForm
@@ -75,15 +71,14 @@ class AddToCartForm extends Form
     public function setProduct($product)
     {
         if ($product instanceof VirtualPage) {
-            $product = $this->getFoxyHelper()->getProducts()->filter('ID', $product->CopyContentFromID)->first();
+            if (!$product = Product::get_by_id(Product::class, $product->CopyContentFromID)) {
+                throw new \InvalidArgumentException(sprintf('$product needs to be a descendant of %s, or a Virtual Page copied from a %s descendant.', Product::class, Product::class));
+            }
         }
 
-        if ($product->isProduct()) {
-            $this->product = $product;
+        $this->product = $product;
 
-            return $this;
-        }
-        throw new \InvalidArgumentException('$product needs to implement a Foxy DataExtension.');
+        return $this;
     }
 
     /**
@@ -103,7 +98,7 @@ class AddToCartForm extends Form
      * @param null $validator
      * @param null $product
      * @param null $helper
-     * @throws \SilverStripe\ORM\ValidationException
+     * @throws ValidationException
      */
     public function __construct(
         $controller,
@@ -113,7 +108,8 @@ class AddToCartForm extends Form
         $validator = null,
         $product = null,
         $helper = null
-    ) {
+    )
+    {
         $this->setProduct($product);
         $this->setFoxyHelper($helper);
 
@@ -193,7 +189,7 @@ class AddToCartForm extends Form
                 );
             }
 
-            if ($this->product->hasExtension(Shippable::class)) {
+            if ($this->product instanceof ShippableProduct) {
                 if ($this->product->Weight > 0) {
                     $fields->push(
                         HiddenField::create('weight')
@@ -291,7 +287,8 @@ class AddToCartForm extends Form
         $method = 'name',
         $output = false,
         $urlEncode = false
-    ) {
+    )
+    {
         $optionName = ($optionName !== null) ? preg_replace('/\s/', '_', $optionName) : $optionName;
         $helper = FoxyHelper::create();
 

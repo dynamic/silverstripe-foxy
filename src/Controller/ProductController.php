@@ -1,18 +1,16 @@
 <?php
 
-namespace Dynamic\Foxy\Extension;
+namespace Dynamic\Foxy\Controller;
 
 use Dynamic\Foxy\Form\AddToCartForm;
 use Dynamic\Foxy\Model\FoxyHelper;
 use Dynamic\Foxy\Model\Setting;
-use SilverStripe\Core\Extension;
 use SilverStripe\View\Requirements;
 
 /**
- * Class PurchasableExtension
- * @package Dynamic\Foxy\Extension
+ *
  */
-class PurchasableExtension extends Extension
+class ProductController extends \PageController
 {
     /**
      * @var array
@@ -24,11 +22,13 @@ class PurchasableExtension extends Extension
     /**
      *
      */
-    public function onAfterInit()
+    public function init()
     {
-        if ($this->owner->hasMethod('isAvailable')) {
-            if ($this->owner->data()->getIsAvailable()) {
-                if ($this->owner->data()->Variations()->count()) {
+        parent::init();
+
+        if ($this->hasMethod('isAvailable')) {
+            if ($this->data()->getIsAvailable()) {
+                if ($this->data()->Variations()->count()) {
                     Requirements::javascript('silverstripe/admin: thirdparty/jquery/jquery.js');
                     Requirements::javascript('dynamic/silverstripe-foxy: client/dist/javascript/product_options.js');
                 }
@@ -54,12 +54,12 @@ class PurchasableExtension extends Extension
      */
     public function AddToCartForm()
     {
-        if ($this->owner->data()->getIsAvailable()) {
-            $form = AddToCartForm::create($this->owner, __FUNCTION__, null, null, null, $this->owner->data());
+        if ($this->data()->getIsAvailable()) {
+            $form = AddToCartForm::create($this, __FUNCTION__, null, null, null, $this->data());
         } else {
             $form = false;
         }
-        $this->owner->extend('updateAddToCartForm', $form);
+        $this->extend('updateAddToCartForm', $form);
 
         return $form;
     }
@@ -73,4 +73,5 @@ class PurchasableExtension extends Extension
 
         return $helper::StoreURL();
     }
+
 }

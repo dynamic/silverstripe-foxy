@@ -1,0 +1,92 @@
+Dynamic\Foxy\Model\FoxyCategory:
+  one:
+    Title: 'Category One'
+    Code: '12345'
+  two:
+    Title: 'Category Two'
+    Code: '67890'
+
+Dynamic\Foxy\Page\Product:
+  productone:
+    Title: 'My Sample Product One'
+    Price: 25.00
+    Code: 'sample-product-one'
+    Available: true
+    QuantityMax: 0
+    FoxyCategory: =>Dynamic\Foxy\Model\FoxyCategory.one
+#  productwo:
+#    Title: 'My Sample Product Two'
+#    Price: 50.00
+#    Code: 'sample-product-two'
+#    Available: false
+#    QuantityMax: 0
+#    FoxyCategory: =>Dynamic\Foxy\Model\FoxyCategory.one
+#  productthree:
+#    Title: 'My Sample Product Three'
+#    Price: 100.00
+#    Code: 'sample-product-three'
+#    Available: true
+#    QuantityMax: 0
+#    FoxyCategory: =>Dynamic\Foxy\Model\FoxyCategory.two
+#  productfour:
+#    Title: 'My Sample Product Four'
+#    Price: 1000.00
+#    Code: 'sample-product-four'
+#    Avalailable: true
+#    QuantityMax: 0
+#    FoxyCategory: =>Dynamic\Foxy\Model\FoxyCategory.two
+#  productfiveandvariations:
+#    Title: 'Product Five and Variations'
+#    Price: 100.00
+#    Code: 'product-five-and-variations'
+#    Avalailable: true
+#    QuantityMax: 0
+#    FoxyCategory: =>Dynamic\Foxy\Model\FoxyCategory.one
+#
+#Dynamic\Foxy\Model\VariationType:
+#  typeone:
+#    Title: 'Variation Type One'
+#
+#Dynamic\Foxy\Model\Variation:
+#  variationone:
+#    Title: 'Variation One'
+#    PriceModifier: 10
+#    PriceModifierAction: Add
+#    Available: true
+#    VariationType: =>Dynamic\Foxy\Model\VariationType.typeone
+#    Product: =>Dynamic\Foxy\Test\TestOnly\TestProduct.productfiveandvariations
+#  variationtwo:
+#    Title: 'Variation Two'
+#    PriceModifier: 150
+#    PriceModifierAction: Set
+#    Available: true
+#    VariationType: =>Dynamic\Foxy\Model\VariationType.typeone
+#    Product: =>Dynamic\Foxy\Test\TestOnly\TestProduct.productfiveandvariations
+#  variationthree:
+#    Title: 'Variation One'
+#    PriceModifier: 20
+#    PriceModifierAction: Subtract
+#    Available: true
+#    VariationType: =>Dynamic\Foxy\Model\VariationType.typeone
+#    Product: =>Dynamic\Foxy\Test\TestOnly\TestProduct.productfiveandvariations
+#  variationtwosetavailable:
+#    Title: 'Variation One'
+#    PriceModifier: 10
+#    PriceModifierAction: Add
+#    Available: true
+#    VariationType: =>Dynamic\Foxy\Model\VariationType.typeone
+#    Product: =>Dynamic\Foxy\Test\TestOnly\TestProduct.productfour
+#  variationtwosetunavailable:
+#    Title: 'Variation One'
+#    PriceModifier: 10
+#    PriceModifierAction: Add
+#    Available: false
+#    VariationType: =>Dynamic\Foxy\Model\VariationType.typeone
+#    Product: =>Dynamic\Foxy\Test\TestOnly\TestProduct.productfour
+#  variationsetunavailable:
+#    Title: 'Variation One'
+#    PriceModifier: 10
+#    PriceModifierAction: Add
+#    Available: false
+#    VariationType: =>Dynamic\Foxy\Model\VariationType.typeone
+#    Product: =>Dynamic\Foxy\Test\TestOnly\TestProduct.productthree

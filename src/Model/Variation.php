@@ -3,6 +3,7 @@
 namespace Dynamic\Foxy\Model;
 
 use Bummzack\SortableFile\Forms\SortableUploadField;
+use Dynamic\Foxy\Page\Product;
 use SilverStripe\Assets\File;
 use SilverStripe\Dev\Deprecation;
 use SilverStripe\Forms\CheckboxField;
@@ -39,9 +40,12 @@ use SilverStripe\Security\Security;
  * @property float $FinalPrice
  * @property float $FinalWeight
  * @property string $FinalCode
+ * @property bool $IsDefault
  * @property int $VariationTypeID
+ * @property int $ProductID
  *
  * @method VariationType VariationType()
+ * @method Product Product
  *
  * @method ManyManyList Images()
  */
@@ -78,6 +82,16 @@ class Variation extends DataObject
     private static $code_trim_left_spaces = false;
 
     /**
+     * Mapping from a Product's field to the Variation's field for a default variation
+     *
+     * @var string[]
+     */
+    private static $default_variation_mapping = [
+        'Title' => 'Title',
+        'Available' => 'Available',
+    ];
+
+    /**
      * @var string[]
      */
     private static $db = [
@@ -97,6 +111,10 @@ class Variation extends DataObject
         'FinalPrice' => 'Currency',
         'FinalWeight' => 'Decimal(9,3)',
         'FinalCode' => 'Varchar(255)',
+        'IsDefault' => 'Boolean',
+        'ReceiptTitle' => 'HTMLVarchar(255)',
+        'QuantityMax' => 'Int',
+        'InventoryLevel' => 'Int',
     ];
 
     /**
@@ -113,6 +131,7 @@ class Variation extends DataObject
      */
     private static $has_one = [
         'VariationType' => VariationType::class,
+        'Product' => Product::class,
     ];
 
     /**
@@ -182,6 +201,7 @@ class Variation extends DataObject
                 'FinalPrice',
                 'FinalWeight',
                 'FinalCode',
+                'IsDefault',
             ]);
 
             $fields->insertBefore(
@@ -599,6 +619,10 @@ class Variation extends DataObject
             $member = Security::getCurrentUser();
         }
 
+        if ($this->IsDefault) {
+            return false;
+        }
+
         return Permission::checkMember($member, 'MANAGE_FOXY_PRODUCTS');
     }
 
@@ -610,6 +634,10 @@ class Variation extends DataObject
     {
         if (!$member) {
             $member = Security::getCurrentUser();
+        }
+
+        if ($this->IsDefault) {
+            return false;
         }
 
         return Permission::checkMember($member, 'MANAGE_FOXY_PRODUCTS');

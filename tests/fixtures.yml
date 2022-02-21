@@ -33,6 +33,3 @@ SilverStripe\Security\Member:
     FirstName: Default
     Surname: User
     Email: user@dynamicagency.com
-
-
-
