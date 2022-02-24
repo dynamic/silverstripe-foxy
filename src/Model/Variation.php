@@ -52,6 +52,16 @@ use SilverStripe\Security\Security;
 class Variation extends DataObject
 {
     /**
+     * @var array
+     */
+    protected $default_read_only_fields = [
+        'WeightModifierAction',
+        'CodeModifierAction',
+        'PriceModifierAction',
+        'CodeModifier',
+    ];
+
+    /**
      * @var string
      */
     private static $table_name = 'Variation';
@@ -352,7 +362,42 @@ class Variation extends DataObject
             ]);
         });
 
-        return parent::getCMSFields();
+        $fields = parent::getCMSFields();
+
+        $this->applyReadOnlyTransformations($fields);
+
+        return $fields;
+    }
+
+    /**
+     * @param $fields
+     * @return void
+     */
+    protected function applyReadonlyTransformations(&$fields)
+    {
+        if ($this->IsDefault) {
+            foreach ($this->getDefaultReadOnlyFields() as $fieldName) {
+                if ($field = $fields->dataFieldByName($fieldName)) {
+                    if ($field instanceof DropdownField) {
+                        $field->setDisabled(true);
+                    } else {
+                        $field->setReadOnly(true);
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * @return array
+     */
+    protected function getDefaultReadOnlyFields()
+    {
+        $fields = $this->default_read_only_fields;
+
+        $this->extend('updateDefaultReadOnlyFields', $fields);
+
+        return $fields;
     }
 
     /**
@@ -617,10 +662,6 @@ class Variation extends DataObject
     {
         if (!$member) {
             $member = Security::getCurrentUser();
-        }
-
-        if ($this->IsDefault) {
-            return false;
         }
 
         return Permission::checkMember($member, 'MANAGE_FOXY_PRODUCTS');
