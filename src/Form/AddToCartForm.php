@@ -13,6 +13,7 @@ use SilverStripe\Forms\DropdownField;
 use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\Form;
 use SilverStripe\Forms\FormAction;
+use SilverStripe\Forms\FormField;
 use SilverStripe\Forms\HeaderField;
 use SilverStripe\Forms\HiddenField;
 use SilverStripe\Forms\RequiredFields;
@@ -26,21 +27,21 @@ use SilverStripe\ORM\ValidationException;
 class AddToCartForm extends Form
 {
     /**
-     * @var
+     * @var FoxyHelper
      */
-    protected $helper;
+    protected FoxyHelper $helper;
 
     /**
-     * @var
+     * @var Product
      */
-    private $product;
+    private Product $product;
 
     /**
      * @param $helper
      *
      * @return $this
      */
-    public function setFoxyHelper($helper)
+    public function setFoxyHelper($helper): self
     {
         $helper = $helper === null ? FoxyHelper::create() : $helper;
         if ($helper instanceof FoxyHelper) {
@@ -54,7 +55,7 @@ class AddToCartForm extends Form
     /**
      * @return FoxyHelper
      */
-    public function getFoxyHelper()
+    public function getFoxyHelper(): FoxyHelper
     {
         if (!$this->helper) {
             $this->setFoxyHelper(FoxyHelper::create());
@@ -68,7 +69,7 @@ class AddToCartForm extends Form
      *
      * @return $this
      */
-    public function setProduct($product)
+    public function setProduct($product): self
     {
         if ($product instanceof VirtualPage) {
             if (!$product = Product::get_by_id(Product::class, $product->CopyContentFromID)) {
@@ -84,7 +85,7 @@ class AddToCartForm extends Form
     /**
      * @return Product
      */
-    public function getProduct()
+    public function getProduct(): Product
     {
         return $this->product;
     }
@@ -136,7 +137,7 @@ class AddToCartForm extends Form
      *
      * @return FieldList
      */
-    protected function getProductFields(FieldList $fields)
+    protected function getProductFields(FieldList $fields): FieldList
     {
         $hiddenTitle = ($this->product->ReceiptTitle) ?
             htmlspecialchars($this->product->ReceiptTitle) :
@@ -222,8 +223,9 @@ class AddToCartForm extends Form
                 );
             }
 
-            $fields->push($this->getProductVariations());
-
+            if ($variationsField = $this->getProductVariations()) {
+                $fields->push($variationsField);
+            }
 
             if ($this->product->QuantityMax != 1) {
                 $fields->push(QuantityField::create('x:visibleQuantity')->setTitle('Quantity')->setValue(1));
@@ -251,7 +253,7 @@ class AddToCartForm extends Form
      *
      * @return FieldList
      */
-    protected function getProductActions(FieldList $actions)
+    protected function getProductActions(FieldList $actions): FieldList
     {
         if (!empty(trim($this->helper->getStoreCartURL())) && $this->product->getIsAvailable()) {
             $actions->push(
@@ -279,7 +281,6 @@ class AddToCartForm extends Form
      *
      * @return null|string
      */
-    // todo - Purchasable Extension or AddToCartForm? protected in Form
     public static function getGeneratedValue(
         $productCode = null,
         $optionName = null,
@@ -287,7 +288,7 @@ class AddToCartForm extends Form
         $method = 'name',
         $output = false,
         $urlEncode = false
-    )
+    ): string
     {
         $optionName = ($optionName !== null) ? preg_replace('/\s/', '_', $optionName) : $optionName;
         $helper = FoxyHelper::create();
@@ -296,31 +297,36 @@ class AddToCartForm extends Form
     }
 
     /**
-     * @return CompositeField
+     * @return CompositeField|FormField|DropdownField|bool
      */
     protected function getProductVariations()
     {
-        $types = VariationType::get();
-
-        $variationsField = CompositeField::create();
-
-        foreach ($types as $type) {
-            if (($variations = $type->Variations()->filter('ProductID', $this->product->ID)) && $variations->count()) {
-                $variationsField->push($this->createVariationField($type, $variations));
-            }
+        // we have 1 variant (the default) so we don't need to do anything
+        if ($this->getProduct()->Variations()->count() == 1) {
+            return false;
         }
 
-        $variationsField->addExtraClass('foxycartOptionsContainer');
+        if (($types = VariationType::get()) && $types->count()) {
+            $variationsField = CompositeField::create();
+
+            foreach ($types as $type) {
+                if (($variations = $type->Variations()->filter('ProductID', $this->product->ID)) && $variations->count()) {
+                    $variationsField->push($this->createVariationField($variations, $type));
+                }
+            }
+        } else {
+            $variationsField = $this->createVariationField($this->getProduct()->Variations());
+        }
 
         return $variationsField;
     }
 
     /**
-     * @param VariationType $type
      * @param HasManyList $variations
+     * @param VariationType|null $type
      * @return DropdownField
      */
-    protected function createVariationField(VariationType $type, HasManyList $variations)
+    protected function createVariationField(HasManyList $variations, VariationType $type = null): DropdownField
     {
         $disabled = [];
         $list = [];

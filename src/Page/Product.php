@@ -49,6 +49,13 @@ class Product extends \Page
     private static $table_name = 'FoxyProduct';
 
     /**
+     * Force default variant's title to match the Product page's title if the variant reset is called.
+     *
+     * @var bool
+     */
+    private static $force_default_variant_title_update = false;
+
+    /**
      * @var array
      */
     private static $db = [
@@ -422,7 +429,10 @@ class Product extends \Page
             $variant->write();
         }
 
-        $variant->Title = $this->Title;
+        if (!$variant->Title || $this->config()->get('force_default_variant_title_update')) {
+            $variant->Title = $this->Title;
+        }
+
         $variant->CodeModifier = $this->Code;
         $variant->CodeModifierAction = 'Set';
 
