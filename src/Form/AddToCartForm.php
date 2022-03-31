@@ -37,6 +37,11 @@ class AddToCartForm extends Form
     private Product $product;
 
     /**
+     * @var string If there are no variation types defined this value will be used in place of type title
+     */
+    private static $default_options_title = 'Options';
+
+    /**
      * @param $helper
      *
      * @return $this
@@ -330,13 +335,18 @@ class AddToCartForm extends Form
     {
         $disabled = [];
         $list = [];
-        $variationField = DropdownField::create(preg_replace('/\s/', '_', $type->Title));
+
+        $title = $type === null
+            ? $this->config()->get('default_options_title')
+            : $type->Title;
+
+        $variationField = DropdownField::create(preg_replace('/\s/', '_', $title));
 
         /** @var Variation $variation */
         foreach ($variations as $variation) {
             $name = self::getGeneratedValue(
                 $this->product->Code,
-                $type->Title,
+                $title,
                 $variation->getGeneratedValue(),
                 'value'
             );
@@ -349,7 +359,7 @@ class AddToCartForm extends Form
         }
 
         $variationField->setSource($list)
-            ->setTitle($type->Title)
+            ->setTitle($title)
             ->addExtraClass("product-options");
 
         if (!empty($disabled)) {
