@@ -173,6 +173,16 @@ class Variation extends DataObject
     private static $default_sort = 'SortOrder';
 
     /**
+     * @var bool
+     */
+    private static $force_price_variation_display = false;
+
+    /**
+     * @var bool
+     */
+    private static $variant_price_with_plus_minus = true;
+
+    /**
      * The relation name was established before requests for videos.
      * The relation has subsequently been updated from Image::class to File::class
      * to allow for additional file types such as mp4
@@ -413,6 +423,11 @@ class Variation extends DataObject
         $codeModifierField = 'CodeModifier';
         $codeModifier = $this->{$codeModifierField};
 
+        if ($this->IsDefault) {
+            $this->PriceModifierAction = 'Set';
+            $this->PriceModifier = $this->Product()->Price;
+        }
+
         switch ($this->CodeModifierAction) {
             case 'Subtract':
             case 'Add':
@@ -606,12 +621,17 @@ class Variation extends DataObject
     {
         $modPrice = ($this->PriceModifier) ? (string)$this->PriceModifier : '0';
         $title = $this->Title;
-        $title .= ($this->PriceModifier != 0) ?
-            ': (' . self::getOptionModifierActionSymbol(
-                $this->PriceModifierAction,
-                $returnWithOnlyPlusMinus = true
-            ) . '$' . $modPrice . ')' :
-            '';
+
+        if ($this->PriceModifier != 0 || $this->config()->get('force_price_variation_display')) {
+            if ($modPrice == '0') {
+                $modPrice = $this->Product()->Price;
+            }
+
+            $title .= ': (' . self::getOptionModifierActionSymbol(
+                    $this->PriceModifierAction,
+                    $this->config()->get('variant_price_with_plus_minus')
+                ) . '$' . $modPrice . ')';
+        }
 
         return $title;
     }
