@@ -627,6 +627,8 @@ class Variation extends DataObject
                 $modPrice = $this->Product()->Price;
             }
 
+            $modPrice = number_format((float)$modPrice, 2);
+
             $title .= ': (' . self::getOptionModifierActionSymbol(
                     $this->PriceModifierAction,
                     $this->config()->get('variant_price_with_plus_minus')
