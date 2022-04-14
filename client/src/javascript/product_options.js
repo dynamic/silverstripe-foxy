@@ -24,7 +24,7 @@
     if (alteredPrice !== undefined) {
       shownPrice.html('$' + Number.parseFloat(alteredPrice).toFixed(2));
     } else {
-      shownPrice.html(basePrice);
+      shownPrice.html('$' + Number.parseFloat(basePrice).toFixed(2));
     }
   });
 

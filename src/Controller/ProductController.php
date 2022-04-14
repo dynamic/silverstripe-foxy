@@ -26,7 +26,7 @@ class ProductController extends \PageController
     {
         parent::init();
 
-        if ($this->hasMethod('isAvailable')) {
+        if ($this->hasMethod('getIsAvailable')) {
             if ($this->data()->getIsAvailable()) {
                 if ($this->data()->Variations()->count()) {
                     Requirements::javascript('silverstripe/admin: thirdparty/jquery/jquery.js');
