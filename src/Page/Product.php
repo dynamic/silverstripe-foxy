@@ -59,7 +59,7 @@ class Product extends \Page
      * @var array
      */
     private static $db = [
-        'Price' => 'Currency',
+        'Price' => 'Currency(9,3)',
         'Code' => 'Varchar(100)',
         'ReceiptTitle' => 'HTMLVarchar(255)',
         'Available' => 'Boolean',
@@ -151,7 +151,7 @@ class Product extends \Page
             $fields->addFieldsToTab(
                 'Root.Ecommerce',
                 [
-                    CurrencyField::create('Price')
+                    TextField::create('Price')
                         ->setDescription(_t(
                             __CLASS__ . '.PriceDescription',
                             'Base price for this product. Can be modified using Product variations'
