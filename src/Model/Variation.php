@@ -110,7 +110,7 @@ class Variation extends DataObject
         'Content' => 'HTMLText',
         'WeightModifier' => 'Decimal(9,3)',
         'CodeModifier' => 'Text',
-        'PriceModifier' => 'Currency',
+        'PriceModifier' => 'Currency(9,3)',
         'WeightModifierAction' => "Enum('Add,Subtract,Set', null)",
         'CodeModifierAction' => "Enum('Add,Subtract,Set', null)",
         'PriceModifierAction' => "Enum('Add,Subtract,Set', null)",
@@ -118,7 +118,7 @@ class Variation extends DataObject
         'Type' => 'Int',
         'OptionModifierKey' => 'Varchar(255)',
         'SortOrder' => 'Int',
-        'FinalPrice' => 'Currency',
+        'FinalPrice' => 'Currency(9,3)',
         'FinalWeight' => 'Decimal(9,3)',
         'FinalCode' => 'Varchar(255)',
         'IsDefault' => 'Boolean',
@@ -318,10 +318,10 @@ class Variation extends DataObject
                         )
                             ->setEmptyString('')
                             ->setDescription(_t('Variation.PriceDescription', 'Does price modify or replace base price?')),
-                        CurrencyField::create('PriceModifier')
+                        TextField::create('PriceModifier')
                             ->setTitle(_t('Variation.PriceModifier', 'Price'))
                             ->displayIf('PriceModifierAction')->isNotEmpty()->end(),
-                        CurrencyField::create('FinalPrice')
+                        TextField::create('FinalPrice')
                             ->setTitle('Final Modified Price')
                             ->setDescription("Product's price is {$this->Product()->Price}")
                             ->performDisabledTransformation()
