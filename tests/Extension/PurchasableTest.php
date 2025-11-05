@@ -52,11 +52,11 @@ class PurchasableTest extends SapphireTest
     /**
      *
      */
-    public function setUp()
+    public function setUp(): void
     {
-        Config::modify()->set(Variation::class, 'has_one', ['Product' => TestProduct::class]);
+        parent::setUp();
 
-        return parent::setUp();
+        Config::modify()->set(Variation::class, 'has_one', ['Product' => TestProduct::class]);
     }
 
     /**
