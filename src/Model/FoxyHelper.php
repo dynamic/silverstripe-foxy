@@ -2,6 +2,7 @@
 
 namespace Dynamic\Foxy\Model;
 
+use FoxyCart_Helper;
 use SilverStripe\CMS\Model\SiteTree;
 use SilverStripe\Core\ClassInfo;
 use SilverStripe\Core\Config\Configurable;
@@ -13,29 +14,34 @@ use SilverStripe\ORM\ArrayList;
  * Class FoxyHelper
  * @package Dynamic\Foxy\Model
  */
-class FoxyHelper extends \FoxyCart_Helper
+class FoxyHelper
 {
     use Configurable;
     use Injectable;
     use Extensible;
 
     /**
-     * @var
+     * @var FoxyCart_Helper
+     */
+    private $cartHelper;
+
+    /**
+     * @var string
      */
     private static $secret;
 
     /**
-     * @var
+     * @var string
      */
     protected static $cart_url;
 
     /**
-     * @var
+     * @var bool
      */
     private static $custom_ssl;
 
     /**
-     * @var
+     * @var int
      */
     private static $max_quantity = 10;
 
@@ -45,27 +51,32 @@ class FoxyHelper extends \FoxyCart_Helper
     private static $product_classes = [];
 
     /**
-     * @var
+     * @var bool
+     */
+    private static $include_product_subclasses = false;
+
+    /**
+     * @var string
      */
     private $foxy_secret;
 
     /**
-     * @var
+     * @var string
      */
     private $foxy_cart_url;
 
     /**
-     * @var
+     * @var bool
      */
     private $foxy_custom_ssl;
 
     /**
-     * @var
+     * @var int
      */
     private $foxy_max_quantity;
 
     /**
-     * @var
+     * @var array
      */
     private $foxy_product_classes;
 
@@ -219,14 +230,26 @@ class FoxyHelper extends \FoxyCart_Helper
     /**
      * FoxyHelper constructor.
      *
-     * Set the private statics $secret and $cart_url in FoxyCart_Helper
-     *
-     * @throws \SilverStripe\ORM\ValidationException
+     * Set the cart URL and secret in the FoxyCart_Helper
      */
     public function __construct()
     {
-        self::setCartURL($this->getStoreCartURL());
-        self::setSecret($this->getStoreSecret());
+        $this->cartHelper = new FoxyCart_Helper();
+        FoxyCart_Helper::setCartUrl($this->getStoreCartURL());
+        FoxyCart_Helper::setSecret($this->getStoreSecret());
+    }
+
+    /**
+     * Get the underlying FoxyCart_Helper instance
+     *
+     * @return FoxyCart_Helper
+     */
+    public function getCartHelper(): FoxyCart_Helper
+    {
+        if (!$this->cartHelper) {
+            $this->cartHelper = new FoxyCart_Helper();
+        }
+        return $this->cartHelper;
     }
 
     /**
