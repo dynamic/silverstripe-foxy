@@ -19,8 +19,8 @@
     ],
     "require": {
         "php": "^8.1",
-        "bummzack/sortablefile": "^3.0",
-        "micschk/silverstripe-groupable-gridfield": "^2.0",
+        "bummzack/sortablefile": "^2.2",
+        "micschk/silverstripe-groupable-gridfield": "^1.1",
         "silverstripe/display-logic": "^3.0 || ^4.0",
         "silverstripe/recipe-cms": "^5.0",
         "symbiote/silverstripe-gridfieldextensions": "^4.0"
