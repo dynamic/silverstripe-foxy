@@ -6,7 +6,6 @@ use Dynamic\Foxy\Model\FoxyCategory;
 use Dynamic\Foxy\Model\ProductOption;
 use Dynamic\Foxy\Model\Variation;
 use Dynamic\Foxy\Model\VariationType;
-use micschk\GroupableGridfield\GridFieldGroupable;
 use SilverStripe\Forms\CheckboxField;
 use SilverStripe\Forms\CurrencyField;
 use SilverStripe\Forms\DropdownField;
@@ -194,13 +193,19 @@ class Purchasable extends DataExtension implements PermissionProvider
                 ->addComponents([
                     new GridFieldOrderableRows('SortOrder'),
                     new GridFieldTitleHeader(),
-                    new GridFieldGroupable(
+                ]);
+
+            // Add GridFieldGroupable if available (SS4 compatibility)
+            if (class_exists('micschk\GroupableGridfield\GridFieldGroupable')) {
+                $variationsConfig->addComponent(
+                    new \micschk\GroupableGridfield\GridFieldGroupable(
                         'VariationTypeID',    // The fieldname to set the Group
                         'Variation Type',   // A description of the function of the group
                         'none',         // A title/header for items without a group/unassigned
                         VariationType::get()->sort('SortOrder')->map()->toArray()
-                    ),
-                ]);
+                    )
+                );
+            }
 
             $fields->addFieldToTab(
                 'Root.Variations',
