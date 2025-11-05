@@ -1,72 +1,11 @@
-# https://help.github.com/en/categories/automating-your-workflow-with-github-actions
+name: CI
 
 on:
   push:
-    branches: [ '5.x-dev', '5.*' ]
   pull_request:
-    branches: [ '5.x-dev', '5.*' ]
-
-name: "CI - SilverStripe 5"
+  workflow_dispatch:
 
 jobs:
-  tests:
-    name: "Tests (PHP ${{ matrix.php-version }})"
-
-    runs-on: "ubuntu-latest"
-
-    env:
-      php_extensions: ctype, dom, fileinfo, hash, intl, mbstring, session, simplexml, tokenizer, xml, pdo, mysqli, gd, zip
-
-    services:
-      mysql:
-        image: "mysql:8.0"
-        env:
-          MYSQL_ALLOW_EMPTY_PASSWORD: true
-          MYSQL_ROOT_PASSWORD:
-          MYSQL_DATABASE: test_db
-        ports:
-          - 3306/tcp
-        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
-
-    strategy:
-      fail-fast: false
-      matrix:
-        php-version:
-          - "8.1"
-          - "8.2"
-          - "8.3"
-
-    steps:
-      - name: "Checkout"
-        uses: "actions/checkout@v4"
-
-      - name: "Install PHP with extensions"
-        uses: "shivammathur/setup-php@v2"
-        with:
-          php-version: "${{ matrix.php-version }}"
-          extensions: "${{ env.php_extensions }}"
-          coverage: "xdebug"
-          tools: composer:v2
-
-      - name: "Cache dependencies installed with composer"
-        uses: "actions/cache@v3"
-        with:
-          path: "~/.composer/cache"
-          key: "php${{ matrix.php-version }}-composer-${{ hashFiles('**/composer.json') }}"
-          restore-keys: "php${{ matrix.php-version }}-composer-"
-
-      - name: "Install dependencies with composer"
-        run: "composer install --no-ansi --no-interaction --no-progress --prefer-dist"
-
-      - name: "Run tests with phpunit/phpunit"
-        env:
-          SS_DATABASE_PORT: ${{ job.services.mysql.ports['3306'] }}
-          SS_DATABASE_SERVER: "127.0.0.1"
-          SS_DATABASE_USERNAME: "root"
-          SS_DATABASE_PASSWORD: ""
-          SS_DATABASE_NAME: "test_db"
-        run: "vendor/bin/phpunit --coverage-clover=coverage.xml"
-
-      - name: "Run tests with squizlabs/php_codesniffer"
-        run: "vendor/bin/phpcs src/ --standard=phpcs.xml.dist --report=checkstyle --report-file=build/logs/checkstyle.xml || true"
-        continue-on-error: true
+  ci:
+    name: CI
+    uses: silverstripe/gha-ci/.github/workflows/ci.yml@v1
