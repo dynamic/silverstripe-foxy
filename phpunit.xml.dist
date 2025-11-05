@@ -1,13 +1,24 @@
-<phpunit bootstrap="vendor/silverstripe/cms/tests/bootstrap.php" colors="true">
-    <testsuite name="dynamic/silverstripe-foxy">
-        <directory>tests/</directory>
-    </testsuite>
-    <filter>
-        <whitelist addUncoveredFilesFromWhitelist="true">
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.5/phpunit.xsd"
+         bootstrap="vendor/silverstripe/cms/tests/bootstrap.php"
+         colors="true"
+         executionOrder="random"
+         failOnWarning="true"
+         failOnRisky="true"
+         beStrictAboutOutputDuringTests="true"
+         verbose="true">
+    <testsuites>
+        <testsuite name="dynamic/silverstripe-foxy">
+            <directory>tests/</directory>
+        </testsuite>
+    </testsuites>
+    <coverage>
+        <include>
             <directory suffix=".php">src/</directory>
-            <exclude>
-                <directory suffix=".php">tests/</directory>
-            </exclude>
-        </whitelist>
-    </filter>
+        </include>
+        <exclude>
+            <directory suffix=".php">tests/</directory>
+        </exclude>
+    </coverage>
 </phpunit>
