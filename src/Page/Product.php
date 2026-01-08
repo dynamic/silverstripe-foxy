@@ -59,7 +59,7 @@ class Product extends \Page
      * @var array
      */
     private static $db = [
-        'Price' => 'Currency(9,3)',
+        'Price' => 'Currency(9,4)',
         'Code' => 'Varchar(100)',
         'ReceiptTitle' => 'HTMLVarchar(255)',
         'Available' => 'Boolean',
