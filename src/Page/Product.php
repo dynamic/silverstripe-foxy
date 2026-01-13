@@ -6,7 +6,6 @@ use Dynamic\Foxy\Controller\ProductController;
 use Dynamic\Foxy\Model\FoxyCategory;
 use Dynamic\Foxy\Model\Variation;
 use Dynamic\Foxy\Model\VariationType;
-use micschk\GroupableGridfield\GridFieldGroupable;
 use SilverStripe\Forms\CheckboxField;
 use SilverStripe\Forms\CurrencyField;
 use SilverStripe\Forms\DropdownField;
@@ -153,32 +152,32 @@ class Product extends \Page
                 [
                     TextField::create('Price')
                         ->setDescription(_t(
-                            __CLASS__ . '.PriceDescription',
-                            'Base price for this product. Can be modified using Product variations'
-                        )),
+                                __CLASS__ . '.PriceDescription',
+                                'Base price for this product. Can be modified using Product variations'
+                            )),
                     TextField::create('Code')
                         ->setDescription(_t(
-                            __CLASS__ . '.CodeDescription',
-                            'Required, must be unique. Product identifier used by FoxyCart in transactions. All leading and trailing spaces are removed on save.'
-                        )),
+                                __CLASS__ . '.CodeDescription',
+                                'Required, must be unique. Product identifier used by FoxyCart in transactions. All leading and trailing spaces are removed on save.'
+                            )),
                     DropdownField::create('FoxyCategoryID')
                         ->setTitle($this->fieldLabel('FoxyCategoryID'))
                         ->setSource(FoxyCategory::get()->map())
                         ->setDescription(_t(
-                            __CLASS__ . '.FoxyCategoryDescription',
-                            'Required. Must also exist in
+                                __CLASS__ . '.FoxyCategoryDescription',
+                                'Required. Must also exist in
                         <a href="https://admin.foxycart.com/admin.php?ThisAction=ManageProductCategories"
                             target="_blank">
                             Foxy Categories
                         </a>.
                         Used to set category specific options like shipping and taxes. Managed in Foxy > Categories'
-                        ))
+                            ))
                         ->setEmptyString(''),
                     TextField::create('ReceiptTitle')
                         ->setDescription(_t(
-                            __CLASS__ . '.ReceiptTitleDescription',
-                            'Optional. Alternate title to display on order receipt'
-                        )),
+                                __CLASS__ . '.ReceiptTitleDescription',
+                                'Optional. Alternate title to display on order receipt'
+                            )),
                 ],
                 'Content'
             );
@@ -186,23 +185,17 @@ class Product extends \Page
             if ($this->exists()) {
                 $variationsConfig = GridFieldConfig_RelationEditor::create()
                     ->removeComponentsByType([
-                        GridFieldAddExistingAutocompleter::class,
-                        GridFieldPaginator::class,
-                        GridFieldPageCount::class,
-                        GridFieldSortableHeader::class,
-                        GridFieldDeleteAction::class,
-                    ])
+                            GridFieldAddExistingAutocompleter::class,
+                            GridFieldPaginator::class,
+                            GridFieldPageCount::class,
+                            GridFieldSortableHeader::class,
+                            GridFieldDeleteAction::class,
+                        ])
                     ->addComponents([
-                        new GridFieldOrderableRows('SortOrder'),
-                        new GridFieldTitleHeader(),
-                        new GridFieldGroupable(
-                            'VariationTypeID',    // The fieldname to set the Group
-                            'Variation Type',   // A description of the function of the group
-                            'none',         // A title/header for items without a group/unassigned
-                            VariationType::get()->sort('SortOrder')->map()->toArray()
-                        ),
-                        new GridFieldDeleteAction(),
-                    ]);
+                            new GridFieldOrderableRows('SortOrder'),
+                            new GridFieldTitleHeader(),
+                            new GridFieldDeleteAction(),
+                        ]);
 
                 $fields->addFieldToTab(
                     'Root.Variations',
@@ -224,9 +217,9 @@ class Product extends \Page
                         ->addExtraClass('stacked'),
                     CheckboxField::create('Available')
                         ->setDescription(_t(
-                            __CLASS__ . '.AvailableDescription',
-                            'If unchecked, will remove "Add to Cart" form and instead display "Currently unavailable"'
-                        )),
+                                __CLASS__ . '.AvailableDescription',
+                                'If unchecked, will remove "Add to Cart" form and instead display "Currently unavailable"'
+                            )),
                 ]
             );
         });

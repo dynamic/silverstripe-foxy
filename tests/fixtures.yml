@@ -27,9 +27,22 @@ SilverStripe\Security\Member:
   site-owner:
     FirstName: "Site"
     Surname: "Owner"
-    Email: "owner"
+    Email: "owner@dynamicagency.com"
     Groups: =>SilverStripe\Security\Group.site-owners
   default:
     FirstName: Default
     Surname: User
     Email: user@dynamicagency.com
+
+Dynamic\Foxy\Model\FoxyCategory:
+  default:
+    Title: "Default"
+    Code: "DEFAULT"
+
+Dynamic\Foxy\Model\VariationType:
+  size:
+    Title: "Size"
+    SortOrder: 1
+  color:
+    Title: "Color"
+    SortOrder: 2

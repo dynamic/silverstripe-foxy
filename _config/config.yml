@@ -18,3 +18,20 @@ Only:
 ---
 Dynamic\Foxy\Admin\FoxyAdmin:
   menu_icon_class: 'fas fa-cash-register'
+
+---
+name: foxy-helper-config
+---
+Dynamic\Foxy\Model\FoxyHelper:
+  # Cart URL (store subdomain or custom domain)
+  # Set via environment variable: FOXY_CART_URL
+  cart_url: '`FOXY_CART_URL`'
+  # Store secret for HMAC signing
+  # Set via environment variable: FOXY_STORE_SECRET
+  secret: '`FOXY_STORE_SECRET`'
+  # Set to true if using a custom SSL domain
+  custom_ssl: false
+  # Product page classes to include in sitemap/helpers
+  product_classes:
+    - Dynamic\Foxy\Page\Product
+  include_product_subclasses: true
