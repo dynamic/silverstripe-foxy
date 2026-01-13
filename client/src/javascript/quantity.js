@@ -1,148 +1,272 @@
-;(function ($) {
-  var field = $("input[name='x:visibleQuantity']"),
-    quantityField = $("input[name='quantity']"),
-    getLink = function (element) {
-      return element.parent().find("input[name='x:visibleQuantity']").data('link');
-    },
-    getLinkURL = function (link, data) {
-      var delimiter = '?';
-      if (link.indexOf('?') != -1) {
-        delimiter = '&';
-      }
-      return link + delimiter + $.param(data);
-    },
-    getCode = function (element) {
-      return element.parent().find("input[name='x:visibleQuantity']").data('code');
-    },
-    getId = function (element) {
-      return element.parent().find("input[name='x:visibleQuantity']").data('id');
-    },
-    getLimit = function (element) {
-      return element.parent().find("input[name='x:visibleQuantity']").data('limit');
-    },
-    updateLimit = function (element, newLimit) {
-      return element.parent().find("input[name='x:visibleQuantity']").data('limit', newLimit);
-    },
-    getVisibleQuantityField = function (element) {
-      return element.parent().parent().find("input[name='x:visibleQuantity']");
-    },
-    disableIncreaseButton = function (element) {
-      element.parent().find("button.increase").attr('disabled', true);
-    },
-    enableIncreaseButton = function (element) {
-      element.parent().find("button.increase").attr('disabled', false);
-    },
-    hideButtons = function (element) {
-      element.parent().find("button.increase, button.reduced")
-        .attr('disabled', true)
-        .addClass('hidden');
-    },
-    outOfStock = function (element) {
-      var form = element.parents('form[id^=FoxyStripePurchaseForm_PurchaseForm_]');
-      var id = form.attr('id');
+/**
+ * Quantity Field Handler - Vanilla JavaScript
+ * Handles cart quantity increase/decrease with inventory validation
+ */
+(function () {
+  'use strict';
 
-      form.find('fieldset')
-        .html('<h4 id="' + id + '_unavailableText">Currently Out of Stock</h4>');
-      form.find('input[name=action_x\\:submit]').remove();
-    },
-    disableSubmit = function (element) {
-      element.parent().parent().parent().find('.fs-add-to-cart-button').attr('disabled', true);
-    },
-    enableSubmit = function (element) {
-      element.parent().parent().parent().find('.fs-add-to-cart-button').attr('disabled', false);
-    },
-    trackFetch = function () {
-      field.data('fetch', 1);
-    },
-    releaseFetch = function () {
-      field.data('fetch', 0);
-    },
-    queryNewValue = function (code, newValue, link, id, clicked) {
-      var quantData = {
-        'code': code,
-        'value': newValue,
-        'id': id,
-        'isAjax': 1
-      };
+  /**
+   * Get the link URL for AJAX requests
+   * @param {HTMLElement} element - The button element
+   * @returns {string} - The AJAX endpoint URL
+   */
+  function getLink(element) {
+    const input = element.parentElement.querySelector("input[name='x:visibleQuantity']");
+    return input ? input.dataset.link : '';
+  }
 
-      $.ajax({
-        type: 'get',
-        url: getLinkURL(link, quantData),
-      }).done(function (response) {
-        var data = JSON.parse(response);
+  /**
+   * Build URL with query parameters
+   * @param {string} link - Base URL
+   * @param {Object} data - Query parameters
+   * @returns {string} - Full URL with query string
+   */
+  function getLinkURL(link, data) {
+    const delimiter = link.indexOf('?') !== -1 ? '&' : '?';
+    return link + delimiter + new URLSearchParams(data).toString();
+  }
 
+  /**
+   * Get the product code from the quantity field
+   * @param {HTMLElement} element - The button element
+   * @returns {string} - The product code
+   */
+  function getCode(element) {
+    const input = element.parentElement.querySelector("input[name='x:visibleQuantity']");
+    return input ? input.dataset.code : '';
+  }
+
+  /**
+   * Get the product ID from the quantity field
+   * @param {HTMLElement} element - The button element
+   * @returns {string} - The product ID
+   */
+  function getId(element) {
+    const input = element.parentElement.querySelector("input[name='x:visibleQuantity']");
+    return input ? input.dataset.id : '';
+  }
+
+  /**
+   * Get the quantity limit from the quantity field
+   * @param {HTMLElement} element - The button element
+   * @returns {number} - The quantity limit
+   */
+  function getLimit(element) {
+    const input = element.parentElement.querySelector("input[name='x:visibleQuantity']");
+    return input ? parseInt(input.dataset.limit) || 0 : 0;
+  }
+
+  /**
+   * Update the quantity limit on the field
+   * @param {HTMLElement} element - The button element
+   * @param {number} newLimit - The new limit value
+   */
+  function updateLimit(element, newLimit) {
+    const input = element.parentElement.querySelector("input[name='x:visibleQuantity']");
+    if (input) {
+      input.dataset.limit = newLimit;
+    }
+  }
+
+  /**
+   * Get the visible quantity input field
+   * @param {HTMLElement} element - The button element
+   * @returns {HTMLElement|null} - The quantity input field
+   */
+  function getVisibleQuantityField(element) {
+    return element.parentElement.parentElement.querySelector("input[name='x:visibleQuantity']");
+  }
+
+  /**
+   * Disable the increase button
+   * @param {HTMLElement} element - The button element
+   */
+  function disableIncreaseButton(element) {
+    const btn = element.parentElement.querySelector('button.increase');
+    if (btn) btn.disabled = true;
+  }
+
+  /**
+   * Enable the increase button
+   * @param {HTMLElement} element - The button element
+   */
+  function enableIncreaseButton(element) {
+    const btn = element.parentElement.querySelector('button.increase');
+    if (btn) btn.disabled = false;
+  }
+
+  /**
+   * Hide both increase and decrease buttons
+   * @param {HTMLElement} element - The button element
+   */
+  function hideButtons(element) {
+    const buttons = element.parentElement.querySelectorAll('button.increase, button.reduced');
+    buttons.forEach(function (btn) {
+      btn.disabled = true;
+      btn.classList.add('hidden');
+    });
+  }
+
+  /**
+   * Display out of stock message and remove submit button
+   * @param {HTMLElement} element - The button element
+   */
+  function outOfStock(element) {
+    const form = element.closest('form[id^=FoxyStripePurchaseForm_PurchaseForm_]');
+    if (!form) return;
+
+    const id = form.id;
+    const fieldset = form.querySelector('fieldset');
+    if (fieldset) {
+      fieldset.innerHTML = '<h4 id="' + id + '_unavailableText">Currently Out of Stock</h4>';
+    }
+
+    const submitBtn = form.querySelector('input[name="action_x:submit"]');
+    if (submitBtn) submitBtn.remove();
+  }
+
+  /**
+   * Disable the add to cart submit button
+   * @param {HTMLElement} element - The button element
+   */
+  function disableSubmit(element) {
+    const submitBtn = element.closest('.product__form, form')?.querySelector('.fs-add-to-cart-button');
+    if (submitBtn) submitBtn.disabled = true;
+  }
+
+  /**
+   * Enable the add to cart submit button
+   * @param {HTMLElement} element - The button element
+   */
+  function enableSubmit(element) {
+    const submitBtn = element.closest('.product__form, form')?.querySelector('.fs-add-to-cart-button');
+    if (submitBtn) submitBtn.disabled = false;
+  }
+
+  /**
+   * Query new quantity value from server
+   * @param {string} code - Product code
+   * @param {number} newValue - New quantity value
+   * @param {string} link - AJAX endpoint URL
+   * @param {string} id - Product ID
+   * @param {HTMLElement} clicked - The clicked button element
+   */
+  function queryNewValue(code, newValue, link, id, clicked) {
+    const quantData = {
+      'code': code,
+      'value': newValue,
+      'id': id,
+      'isAjax': 1
+    };
+
+    fetch(getLinkURL(link, quantData))
+      .then(function (response) {
+        if (!response.ok) {
+          throw new Error(response.statusText);
+        }
+        return response.json();
+      })
+      .then(function (data) {
         if (data.hasOwnProperty('limit')) {
           updateLimit(clicked, data.limit);
 
-          var visibleQuantity = getVisibleQuantityField(clicked);
-          if (data.limit < visibleQuantity.val()) {
-            visibleQuantity.val(data.limit);
+          const visibleQuantity = getVisibleQuantityField(clicked);
+          if (visibleQuantity && data.limit < parseInt(visibleQuantity.value)) {
+            visibleQuantity.value = data.limit;
           }
 
-          if (data.limit == 0) {
+          if (data.limit === 0) {
             outOfStock(clicked);
-          } else if (data.limit == 1) {
+          } else if (data.limit === 1) {
             hideButtons(clicked);
-          } else if (data.limit == data.quantity) {
+          } else if (data.limit === data.quantity) {
             disableIncreaseButton(clicked);
           } else {
             enableIncreaseButton(clicked);
           }
         }
 
-        clicked.parent().parent().parent().parent().find("input[name='quantity']")
-          .val(data.quantityGenerated);
-        releaseFetch();
+        // Update hidden quantity field with generated value
+        const form = clicked.closest('form');
+        if (form) {
+          const hiddenQty = form.querySelector("input[name='quantity']");
+          if (hiddenQty) {
+            hiddenQty.value = data.quantityGenerated;
+          }
+        }
+
         enableSubmit(clicked);
-      }).fail(function (xhr) {
-        // because the form field no longer exists if it is out of stock
-        if (xhr.status == 404 &&
-          xhr.responseText == "I can't handle sub-URLs on class SilverStripe\\Forms\\FormRequestHandler."
-        ) {
+      })
+      .catch(function (error) {
+        if (error.message.includes("404") || error.message.includes("sub-URLs")) {
           outOfStock(clicked);
         } else {
-          console.log('Error: ' + xhr.responseText);
+          console.error('Error:', error.message);
         }
       });
-    };
+  }
 
-  $(document).on('click', 'button.increase', function (event) {
-    var visibleQuantity = getVisibleQuantityField($(this)),
-      currentVal = visibleQuantity.val(),
-      newValue = parseInt(currentVal) + 1;
+  /**
+   * Initialize event listeners
+   */
+  function init() {
+    // Event delegation for increase button
+    document.addEventListener('click', function (event) {
+      if (!event.target.matches('button.increase')) return;
 
-    trackFetch();
-    disableSubmit($(this));
-    queryNewValue(getCode($(this)), newValue, getLink($(this)), getId($(this)), $(this));
-    visibleQuantity.val(newValue);
-  });
+      const btn = event.target;
+      const visibleQuantity = getVisibleQuantityField(btn);
+      if (!visibleQuantity) return;
 
-  $(document).on('click', 'button.reduced', function (event) {
-    field.data('fetch', 1);
-    var visibleQuantity = getVisibleQuantityField($(this)),
-      currentVal = visibleQuantity.val(),
-      newValue = parseInt(currentVal) - 1;
+      const currentVal = parseInt(visibleQuantity.value) || 0;
+      const newValue = currentVal + 1;
 
-    if (currentVal > 1) {
-      trackFetch();
-      disableSubmit($(this));
-      queryNewValue(getCode($(this)), newValue, getLink($(this)), getId($(this)), $(this));
-      visibleQuantity.val(newValue);
-    }
-  });
+      disableSubmit(btn);
+      queryNewValue(getCode(btn), newValue, getLink(btn), getId(btn), btn);
+      visibleQuantity.value = newValue;
+    });
 
-  $(document).ready(function () {
-    $('button.increase').each(function () {
-      var limit = getLimit($(this));
-      if (limit == 1) {
-        hideButtons($(this));
-      } else if (limit == 0) {
-        outOfStock($(this));
+    // Event delegation for decrease button
+    document.addEventListener('click', function (event) {
+      if (!event.target.matches('button.reduced')) return;
+
+      const btn = event.target;
+      const visibleQuantity = getVisibleQuantityField(btn);
+      if (!visibleQuantity) return;
+
+      const currentVal = parseInt(visibleQuantity.value) || 0;
+      const newValue = currentVal - 1;
+
+      if (currentVal > 1) {
+        disableSubmit(btn);
+        queryNewValue(getCode(btn), newValue, getLink(btn), getId(btn), btn);
+        visibleQuantity.value = newValue;
       }
     });
-  });
-}(jQuery));
 
+    // Check initial limits on page load
+    document.querySelectorAll('button.increase').forEach(function (btn) {
+      const limit = getLimit(btn);
+      if (limit === 1) {
+        hideButtons(btn);
+      } else if (limit === 0) {
+        outOfStock(btn);
+      }
+    });
+  }
+
+  // Initialize when DOM is ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+})();
+
+/**
+ * Foxy Cart Integration
+ * Syncs quantity with Foxy cart when items are added/updated
+ */
 var FC = FC || {};
 FC.onLoad = (function (_super) {
   return function () {
@@ -150,54 +274,55 @@ FC.onLoad = (function (_super) {
       _super.apply(this, arguments);
     }
 
+    /**
+     * Update quantity in local inventory tracking
+     */
     function updateQuantity() {
-      FC.client.request('https://' + FC.settings.storedomain + '/cart?output=json').done(function (dataJSON) {
-        jQuery.each(dataJSON.items, function (key, product) {
-          var code = product.parent_code === '' ? product.code : product.parent_code;
-          var link = product.hasOwnProperty('url') ? product.url : false;
-          if (!link) {
-            return;
-          }
+      FC.client.request('https://' + FC.settings.storedomain + '/cart?output=json')
+        .done(function (dataJSON) {
+          dataJSON.items.forEach(function (product) {
+            const code = product.parent_code === '' ? product.code : product.parent_code;
+            const link = product.hasOwnProperty('url') ? product.url : false;
 
-          var parts = link.split('?');
-          var extra = '';
-          if (parts.length > 1) {
-              link = parts[0];
-              extra = '&' + parts[1];
-          }
+            if (!link) return;
 
-          jQuery.ajax({
-            url: link + 'AddToCartForm/field/x:visibleQuantity/newvalue?code=' + code + '&id=' + product.id +
-              '&value=' + product.quantity + '&isAjax=1' + extra,
-            dataType: 'json',
-            success: function (data) {
-              if (product.quantity != data.quantity) {
-                setTimeout(function () {
-                  FC.cart.updateItemQuantity({
-                    id: product.id,
-                    quantity: data.quantity,
-                  });
-                }, 150);
-                return;
-              }
-              FC.client.event("cart-quantity-updated").trigger({
-                id: product.id,
-                quantity: data.quantity,
+            const parts = link.split('?');
+            let baseLink = parts[0];
+            let extra = parts.length > 1 ? '&' + parts[1] : '';
+
+            const url = baseLink + 'AddToCartForm/field/x:visibleQuantity/newvalue?code=' + code +
+              '&id=' + product.id + '&value=' + product.quantity + '&isAjax=1' + extra;
+
+            fetch(url)
+              .then(function (response) {
+                return response.json();
+              })
+              .then(function (data) {
+                if (product.quantity !== data.quantity) {
+                  setTimeout(function () {
+                    FC.cart.updateItemQuantity({
+                      id: product.id,
+                      quantity: data.quantity
+                    });
+                  }, 150);
+                  return;
+                }
+                FC.client.event('cart-quantity-updated').trigger({
+                  id: product.id,
+                  quantity: data.quantity
+                });
+              })
+              .catch(function (error) {
+                console.error('Quantity sync error:', error);
               });
-            },
           });
         });
-      });
     }
 
     FC.client.on('cart-item-quantity-update.done', function () {
       updateQuantity();
     });
-    /*
-        FC.client.on('cart-item-remove', function () {
-          updateQuantity();
-        });
-    */
+
     FC.client.on('cart-submit.done', function () {
       updateQuantity();
     });

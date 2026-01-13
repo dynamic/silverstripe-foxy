@@ -362,7 +362,7 @@ class Product extends \Page
         parent::onBeforeWrite();
 
         // trim spaces and replace duplicate spaces
-        $trimmed = trim($this->Code);
+        $trimmed = trim((string) $this->Code);
         $this->Code = preg_replace('/\s+/', ' ', $trimmed);
     }
 
