@@ -3,20 +3,16 @@
 Foxy.io integration for SilverStripe websites.
 
 ![CI](https://github.com/dynamic/silverstripe-foxy/workflows/CI/badge.svg)
-[![Build Status](https://travis-ci.org/dynamic/silverstripe-foxy.svg?branch=master)](https://travis-ci.org/dynamic/silverstripe-foxy)
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/dynamic/silverstripe-foxy/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/dynamic/silverstripe-foxy/?branch=master)
-[![Build Status](https://scrutinizer-ci.com/g/dynamic/silverstripe-foxy/badges/build.png?b=master)](https://scrutinizer-ci.com/g/dynamic/silverstripe-foxy/build-status/master)
-[![codecov](https://codecov.io/gh/dynamic/silverstripe-foxy/branch/master/graph/badge.svg)](https://codecov.io/gh/dynamic/silverstripe-foxy)
 
 [![Latest Stable Version](https://poser.pugx.org/dynamic/silverstripe-foxy/v/stable)](https://packagist.org/packages/dynamic/silverstripe-foxy)
 [![Total Downloads](https://poser.pugx.org/dynamic/silverstripe-foxy/downloads)](https://packagist.org/packages/dynamic/silverstripe-foxy)
-[![Latest Unstable Version](https://poser.pugx.org/dynamic/silverstripe-foxy/v/unstable)](https://packagist.org/packages/dynamic/silverstripe-foxy)
 [![License](https://poser.pugx.org/dynamic/silverstripe-foxy/license)](https://packagist.org/packages/dynamic/silverstripe-foxy)
 
 
 ## Requirements
 
-* SilverStripe ^4.0
+* SilverStripe ^5.0
+* PHP ^8.1
 
 ## Installation
 
