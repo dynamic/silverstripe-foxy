@@ -24,9 +24,18 @@ composer require dynamic/silverstripe-foxy
 
 See [License](license.md)
 
+## Environment Configuration
+
+FoxyStripe uses the `FOXY_CART_URL` and `FOXY_STORE_SECRET` environment variables. These can be set in your `.env` file:
+
+```dotenv
+FOXY_CART_URL="your-cart-url"
+FOXY_STORE_SECRET="your-store-secret"
+```
+
 ## Example configuration
 
-Add the following extensions and configuration options to `foxy.yml`:
+Add the following extensions and configuration options to `foxy.yml`. Note the use of backticks to reference environment variables:
 
 ```yaml
 
@@ -39,8 +48,8 @@ Dynamic\Products\Page\Product:
     - Dynamic\Foxy\Extension\Purchasable
 
 Dynamic\Foxy\Model\FoxyHelper:
-  cart_url: ''      # from Foxy store settings
-  secret: ''        # from Foxy store advanced settings
+  cart_url: '`FOXY_CART_URL`'      # mapped to FOXY_CART_URL env var
+  secret: '`FOXY_STORE_SECRET`'    # mapped to FOXY_STORE_SECRET env var
   custom_ssl: 0     # (optional) enable custom ssl setting from Foxy store advanced settings
   max_quantity: 10  # maximum number of the same product that can be added to the cart
   product_classes:
