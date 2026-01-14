@@ -11,7 +11,7 @@ use SilverStripe\View\Requirements;
 
 /**
  * Class QuantityField
- * @package Dynamic\FoxyStripe\Form
+ * @package Dynamic\Foxy\Form
  */
 class QuantityField extends NumericField
 {
@@ -28,8 +28,8 @@ class QuantityField extends NumericField
      */
     public function Field($properties = [])
     {
-        Requirements::javascript('dynamic/silverstripe-foxy: client/dist/javascript/quantity.js');
-        Requirements::css('dynamic/silverstripe-foxy: client/dist/css/quantityfield.css');
+        Requirements::javascript('dynamic/silverstripe-foxy:client/dist/javascript/quantity.js');
+        Requirements::css('dynamic/silverstripe-foxy:client/dist/css/quantityfield.css');
 
         $this->setAttribute('data-link', $this->Link('newvalue'));
         $this->setAttribute('data-code', $this->getProduct()->Code);

@@ -275,16 +275,16 @@ class Variation extends DataObject
                         )
                             ->setEmptyString('')
                             ->setDescription(_t(
-                                    'Variation.WeightDescription',
-                                    'Does weight modify or replace base weight?'
-                                )),
+                                'Variation.WeightDescription',
+                                'Does weight modify or replace base weight?'
+                            )),
                         NumericField::create("WeightModifier")
                             ->setTitle(_t('Variation.WeightModifier', 'Weight'))
                             ->setScale(3)
                             ->setDescription(_t(
-                                    'Variation.WeightDescription',
-                                    'Only supports up to 3 decimal places'
-                                ))->displayIf('WeightModifierAction')->isNotEmpty()->end(),
+                                'Variation.WeightDescription',
+                                'Only supports up to 3 decimal places'
+                            ))->displayIf('WeightModifierAction')->isNotEmpty()->end(),
                         NumericField::create('FinalWeight')
                             ->setTitle('Final Modified Weight')
                             ->setDescription("Product's weight is {$this->Product()->Weight}")

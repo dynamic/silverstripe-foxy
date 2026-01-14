@@ -72,5 +72,4 @@ class ProductController extends \PageController
 
         return $helper::StoreURL();
     }
-
 }

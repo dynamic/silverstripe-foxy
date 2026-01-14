@@ -13,7 +13,6 @@ use SilverStripe\Security\Member;
  */
 class SettingsTest extends SapphireTest
 {
-
     /**
      * @var string
      */

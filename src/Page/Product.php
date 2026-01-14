@@ -152,32 +152,32 @@ class Product extends \Page
                 [
                     TextField::create('Price')
                         ->setDescription(_t(
-                                __CLASS__ . '.PriceDescription',
-                                'Base price for this product. Can be modified using Product variations'
-                            )),
+                            __CLASS__ . '.PriceDescription',
+                            'Base price for this product. Can be modified using Product variations'
+                        )),
                     TextField::create('Code')
                         ->setDescription(_t(
-                                __CLASS__ . '.CodeDescription',
-                                'Required, must be unique. Product identifier used by FoxyCart in transactions. All leading and trailing spaces are removed on save.'
-                            )),
+                            __CLASS__ . '.CodeDescription',
+                            'Required, must be unique. Product identifier used by FoxyCart in transactions. All leading and trailing spaces are removed on save.'
+                        )),
                     DropdownField::create('FoxyCategoryID')
                         ->setTitle($this->fieldLabel('FoxyCategoryID'))
                         ->setSource(FoxyCategory::get()->map())
                         ->setDescription(_t(
-                                __CLASS__ . '.FoxyCategoryDescription',
-                                'Required. Must also exist in
+                            __CLASS__ . '.FoxyCategoryDescription',
+                            'Required. Must also exist in
                         <a href="https://admin.foxycart.com/admin.php?ThisAction=ManageProductCategories"
                             target="_blank">
                             Foxy Categories
                         </a>.
                         Used to set category specific options like shipping and taxes. Managed in Foxy > Categories'
-                            ))
+                        ))
                         ->setEmptyString(''),
                     TextField::create('ReceiptTitle')
                         ->setDescription(_t(
-                                __CLASS__ . '.ReceiptTitleDescription',
-                                'Optional. Alternate title to display on order receipt'
-                            )),
+                            __CLASS__ . '.ReceiptTitleDescription',
+                            'Optional. Alternate title to display on order receipt'
+                        )),
                 ],
                 'Content'
             );
@@ -217,9 +217,9 @@ class Product extends \Page
                         ->addExtraClass('stacked'),
                     CheckboxField::create('Available')
                         ->setDescription(_t(
-                                __CLASS__ . '.AvailableDescription',
-                                'If unchecked, will remove "Add to Cart" form and instead display "Currently unavailable"'
-                            )),
+                            __CLASS__ . '.AvailableDescription',
+                            'If unchecked, will remove "Add to Cart" form and instead display "Currently unavailable"'
+                        )),
                 ]
             );
         });
