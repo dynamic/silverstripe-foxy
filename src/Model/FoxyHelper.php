@@ -5,6 +5,7 @@ namespace Dynamic\Foxy\Model;
 use SilverStripe\CMS\Model\SiteTree;
 use SilverStripe\Core\ClassInfo;
 use SilverStripe\Core\Config\Configurable;
+use SilverStripe\Core\Environment;
 use SilverStripe\Core\Extensible;
 use SilverStripe\Core\Injector\Injectable;
 use SilverStripe\ORM\ArrayList;
@@ -86,7 +87,12 @@ class FoxyHelper extends \FoxyCart_Helper
      */
     public function setStoreSecret()
     {
-        $this->foxy_secret = $this->config()->get('secret');
+        $secret = $this->config()->get('secret');
+        if (substr($secret, 0, 1) === '`' && substr($secret, -1) === '`') {
+            $envVar = substr($secret, 1, -1);
+            $secret = Environment::getEnv($envVar);
+        }
+        $this->foxy_secret = $secret;
 
         return $this;
     }
@@ -108,7 +114,12 @@ class FoxyHelper extends \FoxyCart_Helper
      */
     public function setStoreCartURL()
     {
-        $this->foxy_cart_url = $this->config()->get('cart_url');
+        $url = $this->config()->get('cart_url');
+        if (substr($url, 0, 1) === '`' && substr($url, -1) === '`') {
+            $envVar = substr($url, 1, -1);
+            $url = Environment::getEnv($envVar);
+        }
+        $this->foxy_cart_url = $url;
 
         return $this;
     }

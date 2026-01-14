@@ -114,8 +114,7 @@ class AddToCartForm extends Form
         $validator = null,
         $product = null,
         $helper = null
-    )
-    {
+    ) {
         $this->setProduct($product);
         $this->setFoxyHelper($helper);
 
@@ -293,8 +292,7 @@ class AddToCartForm extends Form
         $method = 'name',
         $output = false,
         $urlEncode = false
-    ): string
-    {
+    ): string {
         $optionName = ($optionName !== null) ? preg_replace('/\s/', '_', $optionName) : $optionName;
         $helper = FoxyHelper::create();
 

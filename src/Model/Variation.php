@@ -449,7 +449,7 @@ class Variation extends DataObject
 
         if (static::config()->get('code_enforce_single_spaces')) {
             //replace duplicate spaces
-            $codeModifier = preg_replace('/\s+/', ' ', $codeModifier);
+            $codeModifier = preg_replace('/\s+/', ' ', (string) $codeModifier);
         }
 
         /**
@@ -457,7 +457,7 @@ class Variation extends DataObject
          */
         if (static::config()->get('code_remove_spaces')) {
             // replace duplicate spaces
-            $codeModifier = preg_replace('/\s+/', '', $codeModifier);
+            $codeModifier = preg_replace('/\s+/', '', (string) $codeModifier);
         }
 
         //can be used for backwards compatibility (do your own logic)
@@ -505,9 +505,9 @@ class Variation extends DataObject
      */
     public function getGeneratedValue()
     {
-        $modPrice = ($this->PriceModifier) ? (string)$this->PriceModifier : '0';
+        $modPrice = ($this->PriceModifier) ? (string) $this->PriceModifier : '0';
         $modPriceWithSymbol = self::getOptionModifierActionSymbol($this->PriceModifierAction) . $modPrice;
-        $modWeight = ($this->WeightModifier) ? (string)$this->WeightModifier : '0';
+        $modWeight = ($this->WeightModifier) ? (string) $this->WeightModifier : '0';
         $modWeight = self::getOptionModifierActionSymbol($this->WeightModifierAction) . $modWeight;
         $modCode = self::getOptionModifierActionSymbol($this->CodeModifierAction) . $this->CodeModifier;
 
@@ -619,7 +619,7 @@ class Variation extends DataObject
      */
     public function getGeneratedTitle()
     {
-        $modPrice = ($this->PriceModifier) ? (string)$this->PriceModifier : '0';
+        $modPrice = ($this->PriceModifier) ? (string) $this->PriceModifier : '0';
         $title = $this->Title;
 
         if ($this->PriceModifier != 0 || $this->config()->get('force_price_variation_display')) {
@@ -627,12 +627,12 @@ class Variation extends DataObject
                 $modPrice = $this->Product()->Price;
             }
 
-            $modPrice = number_format((float)$modPrice, 2);
+            $modPrice = number_format((float) $modPrice, 2);
 
             $title .= ': (' . self::getOptionModifierActionSymbol(
-                    $this->PriceModifierAction,
-                    $this->config()->get('variant_price_with_plus_minus')
-                ) . '$' . $modPrice . ')';
+                $this->PriceModifierAction,
+                $this->config()->get('variant_price_with_plus_minus')
+            ) . '$' . $modPrice . ')';
         }
 
         return $title;

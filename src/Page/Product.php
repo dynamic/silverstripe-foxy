@@ -6,7 +6,6 @@ use Dynamic\Foxy\Controller\ProductController;
 use Dynamic\Foxy\Model\FoxyCategory;
 use Dynamic\Foxy\Model\Variation;
 use Dynamic\Foxy\Model\VariationType;
-use micschk\GroupableGridfield\GridFieldGroupable;
 use SilverStripe\Forms\CheckboxField;
 use SilverStripe\Forms\CurrencyField;
 use SilverStripe\Forms\DropdownField;
@@ -186,23 +185,17 @@ class Product extends \Page
             if ($this->exists()) {
                 $variationsConfig = GridFieldConfig_RelationEditor::create()
                     ->removeComponentsByType([
-                        GridFieldAddExistingAutocompleter::class,
-                        GridFieldPaginator::class,
-                        GridFieldPageCount::class,
-                        GridFieldSortableHeader::class,
-                        GridFieldDeleteAction::class,
-                    ])
+                            GridFieldAddExistingAutocompleter::class,
+                            GridFieldPaginator::class,
+                            GridFieldPageCount::class,
+                            GridFieldSortableHeader::class,
+                            GridFieldDeleteAction::class,
+                        ])
                     ->addComponents([
-                        new GridFieldOrderableRows('SortOrder'),
-                        new GridFieldTitleHeader(),
-                        new GridFieldGroupable(
-                            'VariationTypeID',    // The fieldname to set the Group
-                            'Variation Type',   // A description of the function of the group
-                            'none',         // A title/header for items without a group/unassigned
-                            VariationType::get()->sort('SortOrder')->map()->toArray()
-                        ),
-                        new GridFieldDeleteAction(),
-                    ]);
+                            new GridFieldOrderableRows('SortOrder'),
+                            new GridFieldTitleHeader(),
+                            new GridFieldDeleteAction(),
+                        ]);
 
                 $fields->addFieldToTab(
                     'Root.Variations',
@@ -369,7 +362,7 @@ class Product extends \Page
         parent::onBeforeWrite();
 
         // trim spaces and replace duplicate spaces
-        $trimmed = trim($this->Code);
+        $trimmed = trim((string) $this->Code);
         $this->Code = preg_replace('/\s+/', ' ', $trimmed);
     }
 

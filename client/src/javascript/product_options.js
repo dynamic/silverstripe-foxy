@@ -1,57 +1,110 @@
-;(function ($) {
-  var shownPrice = $('[id*="submitPrice"]'),
-    basePrice = $('input[name="price"]').val().split('||')[0],
-    trigger = $('select.product-options');
+/**
+ * Product Options Handler - Vanilla JavaScript
+ * Handles price modifier display when product variations are selected
+ */
+(function() {
+  'use strict';
 
-  $('.foxycartOptionsContainer option:disabled').each(function () {
-    if ($(this).prop('disabled')) {
-      $(this).addClass('outOfStock').append(document.createTextNode(" (out of stock)"));
-    }
-  });
+  /**
+   * Initialize product options functionality
+   */
+  function init() {
+    const shownPrice = document.querySelector('[id*="submitPrice"]');
+    const priceInput = document.querySelector('input[name="price"]');
+    const triggers = document.querySelectorAll('select.product-options');
 
-  trigger.bind('change', function () {
-    var selected = $(this).val(),
-      modifiers = $(this).val().substring(selected.lastIndexOf('{') + 1, selected.lastIndexOf('}'));
-
-    if (getAddition(modifiers) !== undefined) {
-      alteredPrice = parseFloat(getAddition(modifiers)) + parseFloat(basePrice);
-    } else if (getSubtraction(modifiers) !== undefined) {
-      alteredPrice = parseFloat(basePrice) - parseFloat(getSubtraction(modifiers));
-    } else if (getNewPrice(modifiers)) {
-      alteredPrice = parseFloat(getNewPrice(modifiers));
+    if (!priceInput || !shownPrice) {
+      return;
     }
 
-    if (alteredPrice !== undefined) {
-      shownPrice.html('$' + Number.parseFloat(alteredPrice).toFixed(2));
-    } else {
-      shownPrice.html('$' + Number.parseFloat(basePrice).toFixed(2));
-    }
-  });
+    const basePrice = priceInput.value.split('||')[0];
 
-  if (trigger.length > 0) {
-    $(window).on('load', function () {
-      trigger.change();
+    // Mark disabled options as out of stock
+    document.querySelectorAll('.foxycartOptionsContainer option:disabled').forEach(function(option) {
+      if (option.disabled) {
+        option.classList.add('outOfStock');
+        option.textContent += ' (out of stock)';
+      }
     });
+
+    // Bind change event to each trigger
+    triggers.forEach(function(trigger) {
+      trigger.addEventListener('change', function(event) {
+        const selected = event.target.value;
+        const modifiers = selected.substring(
+          selected.lastIndexOf('{') + 1,
+          selected.lastIndexOf('}')
+        );
+
+        let alteredPrice;
+
+        const addition = getAddition(modifiers);
+        const subtraction = getSubtraction(modifiers);
+        const newPrice = getNewPrice(modifiers);
+
+        if (addition !== undefined) {
+          alteredPrice = parseFloat(addition) + parseFloat(basePrice);
+        } else if (subtraction !== undefined) {
+          alteredPrice = parseFloat(basePrice) - parseFloat(subtraction);
+        } else if (newPrice !== undefined) {
+          alteredPrice = parseFloat(newPrice);
+        }
+
+        if (alteredPrice !== undefined) {
+          shownPrice.innerHTML = '$' + Number.parseFloat(alteredPrice).toFixed(2);
+        } else {
+          shownPrice.innerHTML = '$' + Number.parseFloat(basePrice).toFixed(2);
+        }
+      });
+    });
+
+    // Trigger change on load if triggers exist
+    if (triggers.length > 0) {
+      window.addEventListener('load', function() {
+        triggers.forEach(function(trigger) {
+          trigger.dispatchEvent(new Event('change'));
+        });
+      });
+    }
   }
 
+  /**
+   * Extract price addition from modifiers string
+   * @param {string} variants - The modifiers string
+   * @returns {string|undefined} - The price modifier or undefined
+   */
   function getAddition(variants) {
-    priceModifier = variants.split('|')[0];
-    priceModifier = (priceModifier.split('+').length === 2) ? priceModifier.split('+')[1] : undefined;
-
-    return priceModifier;
+    const parts = variants.split('|')[0];
+    const splitParts = parts.split('+');
+    return splitParts.length === 2 ? splitParts[1] : undefined;
   }
 
+  /**
+   * Extract price subtraction from modifiers string
+   * @param {string} variants - The modifiers string
+   * @returns {string|undefined} - The price modifier or undefined
+   */
   function getSubtraction(variants) {
-    priceModifier = variants.split('|')[0];
-    priceModifier = (priceModifier.split('-').length === 2) ? priceModifier.split('-')[1] : undefined;
-
-    return priceModifier;
+    const parts = variants.split('|')[0];
+    const splitParts = parts.split('-');
+    return splitParts.length === 2 ? splitParts[1] : undefined;
   }
 
+  /**
+   * Extract new fixed price from modifiers string
+   * @param {string} variants - The modifiers string
+   * @returns {string|undefined} - The new price or undefined
+   */
   function getNewPrice(variants) {
-    priceModifier = variants.split('|')[0];
-    priceModifier = (priceModifier.split(':').length === 2) ? priceModifier.split(':')[1] : undefined;
-
-    return priceModifier;
+    const parts = variants.split('|')[0];
+    const splitParts = parts.split(':');
+    return splitParts.length === 2 ? splitParts[1] : undefined;
   }
-})(jQuery);
+
+  // Initialize when DOM is ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+})();

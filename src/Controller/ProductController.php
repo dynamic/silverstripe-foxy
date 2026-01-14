@@ -29,7 +29,6 @@ class ProductController extends \PageController
         if ($this->hasMethod('getIsAvailable')) {
             if ($this->data()->getIsAvailable()) {
                 if ($this->data()->Variations()->count()) {
-                    Requirements::javascript('silverstripe/admin: thirdparty/jquery/jquery.js');
                     Requirements::javascript('dynamic/silverstripe-foxy: client/dist/javascript/product_options.js');
                 }
             }
@@ -73,5 +72,4 @@ class ProductController extends \PageController
 
         return $helper::StoreURL();
     }
-
 }

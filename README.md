@@ -3,20 +3,16 @@
 Foxy.io integration for SilverStripe websites.
 
 ![CI](https://github.com/dynamic/silverstripe-foxy/workflows/CI/badge.svg)
-[![Build Status](https://travis-ci.org/dynamic/silverstripe-foxy.svg?branch=master)](https://travis-ci.org/dynamic/silverstripe-foxy)
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/dynamic/silverstripe-foxy/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/dynamic/silverstripe-foxy/?branch=master)
-[![Build Status](https://scrutinizer-ci.com/g/dynamic/silverstripe-foxy/badges/build.png?b=master)](https://scrutinizer-ci.com/g/dynamic/silverstripe-foxy/build-status/master)
-[![codecov](https://codecov.io/gh/dynamic/silverstripe-foxy/branch/master/graph/badge.svg)](https://codecov.io/gh/dynamic/silverstripe-foxy)
 
 [![Latest Stable Version](https://poser.pugx.org/dynamic/silverstripe-foxy/v/stable)](https://packagist.org/packages/dynamic/silverstripe-foxy)
 [![Total Downloads](https://poser.pugx.org/dynamic/silverstripe-foxy/downloads)](https://packagist.org/packages/dynamic/silverstripe-foxy)
-[![Latest Unstable Version](https://poser.pugx.org/dynamic/silverstripe-foxy/v/unstable)](https://packagist.org/packages/dynamic/silverstripe-foxy)
 [![License](https://poser.pugx.org/dynamic/silverstripe-foxy/license)](https://packagist.org/packages/dynamic/silverstripe-foxy)
 
 
 ## Requirements
 
-* SilverStripe ^4.0
+* SilverStripe ^5.0
+* PHP ^8.1
 
 ## Installation
 
@@ -28,9 +24,18 @@ composer require dynamic/silverstripe-foxy
 
 See [License](license.md)
 
+## Environment Configuration
+
+FoxyStripe uses the `FOXY_CART_URL` and `FOXY_STORE_SECRET` environment variables. These can be set in your `.env` file:
+
+```dotenv
+FOXY_CART_URL="your-cart-url"
+FOXY_STORE_SECRET="your-store-secret"
+```
+
 ## Example configuration
 
-Add the following extensions and configuration options to `foxy.yml`:
+Add the following extensions and configuration options to `foxy.yml`. Note the use of backticks to reference environment variables:
 
 ```yaml
 
@@ -43,8 +48,8 @@ Dynamic\Products\Page\Product:
     - Dynamic\Foxy\Extension\Purchasable
 
 Dynamic\Foxy\Model\FoxyHelper:
-  cart_url: ''      # from Foxy store settings
-  secret: ''        # from Foxy store advanced settings
+  cart_url: '`FOXY_CART_URL`'      # mapped to FOXY_CART_URL env var
+  secret: '`FOXY_STORE_SECRET`'    # mapped to FOXY_STORE_SECRET env var
   custom_ssl: 0     # (optional) enable custom ssl setting from Foxy store advanced settings
   max_quantity: 10  # maximum number of the same product that can be added to the cart
   product_classes:

@@ -13,7 +13,6 @@ use SilverStripe\Security\Member;
  */
 class SettingsTest extends SapphireTest
 {
-
     /**
      * @var string
      */
@@ -51,7 +50,7 @@ class SettingsTest extends SapphireTest
         $this->assertNull($object->StoreKey);
 
         $object->write();
-        $this->assertInternalType('string', $object->StoreKey);
+        $this->assertIsString($object->StoreKey);
     }
 
     /**
@@ -92,7 +91,7 @@ class SettingsTest extends SapphireTest
     {
         /** @var Setting $object */
         $object = singleton(Setting::class);
-        $this->assertInternalType('array', $object->providePermissions());
+        $this->assertIsArray($object->providePermissions());
         $this->assertArrayHasKey('EDIT_FOXY_SETTING', $object->providePermissions());
     }
 
@@ -117,7 +116,7 @@ class SettingsTest extends SapphireTest
      */
     public function testGetTemplateGlobalVariables()
     {
-        $this->assertInternalType('array', Setting::get_template_global_variables());
+        $this->assertIsArray(Setting::get_template_global_variables());
         $this->assertArrayHasKey('FoxyStripe', Setting::get_template_global_variables());
     }
 }
